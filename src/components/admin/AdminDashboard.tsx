@@ -4,12 +4,14 @@ import { videoService } from '../../services/video.service';
 import VideoUploadForm from './VideoUploadForm';
 import VideoLinkForm from './VideoLinkForm';
 import VideoList from './VideoList';
+import VideoEditModal from '../video/VideoEditModal';
 import Loader from '../common/Loader';
 
 export const AdminDashboard: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'upload' | 'link'>('upload');
+  const [editingVideo, setEditingVideo] = useState<Video | null>(null);
 
   const fetchVideos = async () => {
     try {
@@ -27,6 +29,10 @@ export const AdminDashboard: React.FC = () => {
   }, []);
 
   const handleUploadSuccess = () => {
+    fetchVideos();
+  };
+
+  const handleEditSuccess = () => {
     fetchVideos();
   };
 
@@ -96,9 +102,23 @@ export const AdminDashboard: React.FC = () => {
         {loading ? (
           <Loader text="Loading videos..." />
         ) : (
-          <VideoList videos={videos} onVideoDeleted={fetchVideos} />
+          <VideoList
+            videos={videos}
+            onVideoDeleted={fetchVideos}
+            onVideoEdit={setEditingVideo}
+          />
         )}
       </div>
+
+      {/* Edit Modal */}
+      {editingVideo && (
+        <VideoEditModal
+          video={editingVideo}
+          isOpen={!!editingVideo}
+          onClose={() => setEditingVideo(null)}
+          onSuccess={handleEditSuccess}
+        />
+      )}
     </div>
   );
 };

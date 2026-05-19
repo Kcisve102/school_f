@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Eye } from 'lucide-react';
+import { Trash2, Eye, Edit } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Video } from '../../types';
 import { videoService } from '../../services/video.service';
@@ -9,9 +9,10 @@ import toast from 'react-hot-toast';
 interface VideoListProps {
   videos: Video[];
   onVideoDeleted?: () => void;
+  onVideoEdit?: (video: Video) => void;
 }
 
-export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted }) => {
+export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, onVideoEdit }) => {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const navigate = useNavigate();
 
@@ -118,6 +119,13 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted }) 
                       title="View"
                     >
                       <Eye className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => onVideoEdit?.(video)}
+                      className="p-2 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 hover:text-purple-300 transition-all"
+                      title="Edit"
+                    >
+                      <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(video.id, video.title)}

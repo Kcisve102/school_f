@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import VideoUploadForm from '../components/admin/VideoUploadForm';
 import VideoLinkForm from '../components/admin/VideoLinkForm';
 import VideoList from '../components/admin/VideoList';
+import VideoEditModal from '../components/video/VideoEditModal';
 import {
   LayoutDashboard,
   Upload,
@@ -21,6 +22,7 @@ export const AdminPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'upload' | 'link'>('upload');
+  const [editingVideo, setEditingVideo] = useState<Video | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -40,6 +42,10 @@ export const AdminPage: React.FC = () => {
   }, []);
 
   const handleUploadSuccess = () => {
+    fetchVideos();
+  };
+
+  const handleEditSuccess = () => {
     fetchVideos();
   };
 
@@ -232,12 +238,26 @@ export const AdminPage: React.FC = () => {
                   <p className="text-gray-400 mt-4">Loading videos...</p>
                 </div>
               ) : (
-                <VideoList videos={videos} onVideoDeleted={fetchVideos} />
+                <VideoList
+                  videos={videos}
+                  onVideoDeleted={fetchVideos}
+                  onVideoEdit={setEditingVideo}
+                />
               )}
             </div>
           </div>
         </div>
       </main>
+
+      {/* Edit Modal */}
+      {editingVideo && (
+        <VideoEditModal
+          video={editingVideo}
+          isOpen={!!editingVideo}
+          onClose={() => setEditingVideo(null)}
+          onSuccess={handleEditSuccess}
+        />
+      )}
     </div>
   );
 };
