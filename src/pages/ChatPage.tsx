@@ -97,9 +97,9 @@ export const ChatPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a1f] flex flex-col">
+    <div className="min-h-screen bg-bg-primary flex flex-col">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6 shadow-2xl">
+      <div className="bg-accent p-6 shadow-xl">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -107,24 +107,17 @@ export const ChatPage: React.FC = () => {
                 <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm">
                   <Settings className="w-8 h-8 text-white animate-spin-slow" />
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-purple-600 animate-pulse"></div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-success rounded-full border-2 border-accent animate-pulse"></div>
               </div>
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-white">
                   工厂技能AI助手
                 </h1>
-                <p className="text-purple-100 text-sm md:text-base">
+                <p className="text-white/80 text-sm md:text-base">
                   Factory Skills AI Assistant - 专注于流水线技能培训
                 </p>
               </div>
             </div>
-            {/* <button
-              onClick={() => navigate('/')}
-              className="p-3 hover:bg-white/10 rounded-lg transition-colors"
-              title="返回首页"
-            >
-              <Home className="w-6 h-6 text-white" />
-            </button> */}
           </div>
         </div>
       </div>
@@ -144,8 +137,8 @@ export const ChatPage: React.FC = () => {
               <div
                 className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-lg ${
                   message.role === 'user'
-                    ? 'bg-gradient-to-br from-purple-600 to-blue-600'
-                    : 'bg-gradient-to-br from-orange-500 to-red-500'
+                    ? 'bg-accent'
+                    : 'bg-warning'
                 }`}
               >
                 {message.role === 'user' ? (
@@ -159,8 +152,8 @@ export const ChatPage: React.FC = () => {
               <div
                 className={`max-w-[70%] rounded-2xl px-6 py-4 shadow-xl ${
                   message.role === 'user'
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                    : 'bg-white/5 text-gray-200 border border-white/10 backdrop-blur-sm'
+                    ? 'bg-accent text-white'
+                    : 'bg-surface text-text-primary border border-border'
                 }`}
               >
                 <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap">
@@ -173,13 +166,13 @@ export const ChatPage: React.FC = () => {
           {/* Loading indicator */}
           {isLoading && (
             <div className="flex gap-4 animate-fadeIn">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-lg">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-warning flex items-center justify-center shadow-lg">
                 <Bot className="w-6 h-6 text-white" />
               </div>
-              <div className="bg-white/5 border border-white/10 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-xl">
+              <div className="bg-surface border border-border rounded-2xl px-6 py-4 shadow-xl">
                 <div className="flex items-center gap-3">
-                  <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
-                  <span className="text-sm text-gray-400">AI正在思考中...</span>
+                  <Loader2 className="w-5 h-5 text-info animate-spin" />
+                  <span className="text-sm text-text-secondary">AI正在思考中...</span>
                 </div>
               </div>
             </div>
@@ -189,16 +182,16 @@ export const ChatPage: React.FC = () => {
         </div>
 
         {/* Input Area */}
-        <div className="p-6 bg-[#0f0f23] border-t border-white/10">
+        <div className="p-6 bg-surface-secondary border-t border-border">
           <div className="max-w-4xl mx-auto">
             {/* Quick Actions */}
             <div className="flex items-center justify-between mb-4">
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-text-muted">
                 提示：您可以用中文或英文提问，AI将用中文回答
               </p>
               <button
                 onClick={handleClearChat}
-                className="flex items-center gap-2 px-3 py-2 text-xs text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-all"
+                className="flex items-center gap-2 px-3 py-2 text-xs text-text-secondary hover:text-text-primary bg-surface hover:bg-surface-hover rounded-lg transition-all border border-border"
                 title="清空聊天记录"
               >
                 <Trash2 className="w-3 h-3" />
@@ -214,14 +207,14 @@ export const ChatPage: React.FC = () => {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="输入您的问题... (按 Enter 发送，Shift+Enter 换行)"
-                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors resize-none text-sm md:text-base"
+                className="flex-1 bg-surface border border-border rounded-xl px-5 py-4 text-text-primary placeholder-text-muted focus:outline-none focus:border-accent/50 transition-colors resize-none text-sm md:text-base"
                 rows={3}
                 disabled={isLoading}
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!inputValue.trim() || isLoading}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white rounded-xl px-6 py-4 transition-all flex items-center justify-center shadow-lg hover:shadow-purple-500/50 disabled:shadow-none"
+                className="bg-accent hover:bg-accent-dark disabled:bg-surface-secondary disabled:text-text-muted disabled:cursor-not-allowed text-white rounded-xl px-6 py-4 transition-all flex items-center justify-center shadow-lg hover:shadow-accent/30 disabled:shadow-none"
                 aria-label="发送消息"
               >
                 {isLoading ? (
@@ -233,7 +226,7 @@ export const ChatPage: React.FC = () => {
             </div>
 
             {/* Disclaimer */}
-            <p className="text-xs text-gray-600 mt-3 text-center">
+            <p className="text-xs text-text-muted mt-3 text-center">
               🤖 AI助手由 Google Gemini 提供支持 · 回答可能不完全准确，请注意核实
             </p>
           </div>

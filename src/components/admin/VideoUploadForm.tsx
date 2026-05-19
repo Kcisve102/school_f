@@ -72,7 +72,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
     <div>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-text-secondary mb-2">
             Title
           </label>
           <input
@@ -81,31 +81,31 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
             onChange={(e) => setTitle(e.target.value)}
             required
             placeholder="Enter video title"
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+            className="w-full px-4 py-3 bg-surface-secondary border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-accent/50 transition-colors"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-text-secondary mb-2">
             Description (Optional)
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors resize-none"
+            className="w-full px-4 py-3 bg-surface-secondary border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-accent/50 transition-colors resize-none"
             rows={3}
             placeholder="Enter video description"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-text-secondary mb-2">
             Category (Optional)
           </label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500/50 transition-colors"
+            className="w-full px-4 py-3 bg-surface-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-accent/50 transition-colors"
           >
             <option value="">No Category</option>
             {CATEGORIES.map((cat) => (
@@ -117,24 +117,24 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-text-secondary mb-2">
             Video File
           </label>
           <input
             type="file"
             accept="video/*"
             onChange={handleFileChange}
-            className="block w-full text-sm text-gray-400
+            className="block w-full text-sm text-text-secondary
               file:mr-4 file:py-2 file:px-4
               file:rounded-lg file:border-0
               file:text-sm file:font-semibold
-              file:bg-purple-600 file:text-white
-              hover:file:bg-purple-500
+              file:bg-accent file:text-white
+              hover:file:bg-accent-dark
               cursor-pointer"
             required
           />
           {file && (
-            <p className="mt-2 text-sm text-gray-400">
+            <p className="mt-2 text-sm text-text-muted">
               Selected: {file.name} ({(file.size / (1024 * 1024)).toFixed(2)} MB)
             </p>
           )}
@@ -142,20 +142,20 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
 
         {uploadProgress > 0 && uploadProgress < 100 && (
           <div>
-            <div className="w-full bg-white/10 rounded-full h-2">
+            <div className="w-full bg-surface-secondary rounded-full h-2">
               <div
-                className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full transition-all duration-300"
+                className="bg-accent h-2 rounded-full transition-all duration-300"
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>
-            <p className="text-sm text-gray-400 mt-1">{uploadProgress}% uploaded</p>
+            <p className="text-sm text-text-muted mt-1">{uploadProgress}% uploaded</p>
           </div>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:from-purple-500 hover:to-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Uploading...' : 'Upload Video'}
         </button>

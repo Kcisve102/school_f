@@ -17,6 +17,7 @@ import {
   Settings,
   Video as VideoIcon,
 } from 'lucide-react';
+import ThemeToggle from '../components/common/ThemeToggle';
 
 export const AdminPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -67,11 +68,11 @@ export const AdminPage: React.FC = () => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a1f] text-white">
+    <div className="flex min-h-screen bg-bg-primary text-text-primary">
       {/* Sidebar */}
-      <aside className="w-64 bg-[#0f0f23] border-r border-white/10 flex flex-col fixed h-full">
+      <aside className="w-64 bg-surface border-r border-border flex flex-col fixed h-full">
         <div className="p-6">
-          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
+          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">
             Main Menu
           </h2>
           <nav className="space-y-1">
@@ -81,8 +82,8 @@ export const AdminPage: React.FC = () => {
                 onClick={() => navigate(item.path)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                   item.active
-                    ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-white border border-purple-500/30'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    ? 'bg-accent/10 text-accent border border-accent/30'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-surface-secondary'
                 }`}
               >
                 <item.icon className="w-5 h-5" />
@@ -92,8 +93,8 @@ export const AdminPage: React.FC = () => {
           </nav>
         </div>
 
-        <div className="p-6 border-t border-white/10">
-          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
+        <div className="p-6 border-t border-border">
+          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">
             Personal
           </h2>
           <nav className="space-y-1">
@@ -101,7 +102,7 @@ export const AdminPage: React.FC = () => {
               <button
                 key={index}
                 onClick={() => navigate(item.path)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-all"
               >
                 <item.icon className="w-5 h-5" />
                 <span className="font-medium">{item.label}</span>
@@ -112,14 +113,14 @@ export const AdminPage: React.FC = () => {
 
         {/* User Profile at Bottom */}
         {user && (
-          <div className="mt-auto p-6 border-t border-white/10">
+          <div className="mt-auto p-6 border-t border-border">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white font-semibold">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-info flex items-center justify-center text-white font-semibold">
                 {user.full_name.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{user.full_name}</p>
-                <p className="text-xs text-gray-400">Admin</p>
+                <p className="text-sm font-medium text-text-primary truncate">{user.full_name}</p>
+                <p className="text-xs text-text-muted">Admin</p>
               </div>
             </div>
           </div>
@@ -128,82 +129,71 @@ export const AdminPage: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto ml-64">
-        {/* Search Bar */}
-        {/* <div className="bg-[#0f0f23]/50 backdrop-blur-xl border-b border-white/10 p-6 sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search videos, manage content..."
-                className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
-              />
-            </div>
-          </div>
-        </div> */}
-
         <div className="p-6 md:p-8">
           <div className="max-w-7xl mx-auto">
             {/* Welcome Section */}
-            <div className="mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                Admin Dashboard
-              </h1>
-              <p className="text-gray-400">
-                Manage videos and monitor platform statistics
-              </p>
+            <div className="flex items-start justify-between mb-8">
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
+                  Admin Dashboard
+                </h1>
+                <p className="text-text-secondary">
+                  Manage videos and monitor platform statistics
+                </p>
+              </div>
+              <ThemeToggle />
             </div>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+              <div className="bg-surface rounded-xl p-6 border border-border">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-purple-500/20">
-                    <VideoIcon className="w-5 h-5 text-purple-400" />
+                  <div className="p-2 rounded-lg bg-accent/10">
+                    <VideoIcon className="w-5 h-5 text-accent" />
                   </div>
-                  <span className="text-sm text-gray-400">Total Videos</span>
+                  <span className="text-sm text-text-secondary">Total Videos</span>
                 </div>
-                <div className="text-4xl font-bold text-white mb-1">{totalVideos}</div>
-                <div className="text-sm text-gray-400">All uploaded videos</div>
+                <div className="text-4xl font-bold text-text-primary mb-1">{totalVideos}</div>
+                <div className="text-sm text-text-muted">All uploaded videos</div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+              <div className="bg-surface rounded-xl p-6 border border-border">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-green-500/20">
-                    <CheckCircle className="w-5 h-5 text-green-400" />
+                  <div className="p-2 rounded-lg bg-success/10">
+                    <CheckCircle className="w-5 h-5 text-success" />
                   </div>
-                  <span className="text-sm text-gray-400">Processed</span>
+                  <span className="text-sm text-text-secondary">Processed</span>
                 </div>
-                <div className="text-4xl font-bold text-white mb-1">{processedVideos}</div>
-                <div className="text-sm text-gray-400">Ready for learning</div>
+                <div className="text-4xl font-bold text-text-primary mb-1">{processedVideos}</div>
+                <div className="text-sm text-text-muted">Ready for learning</div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+              <div className="bg-surface rounded-xl p-6 border border-border">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-blue-500/20">
-                    <Clock className="w-5 h-5 text-blue-400" />
+                  <div className="p-2 rounded-lg bg-info/10">
+                    <Clock className="w-5 h-5 text-info" />
                   </div>
-                  <span className="text-sm text-gray-400">Processing</span>
+                  <span className="text-sm text-text-secondary">Processing</span>
                 </div>
-                <div className="text-4xl font-bold text-white mb-1">{processingVideos}</div>
-                <div className="text-sm text-gray-400">In queue</div>
+                <div className="text-4xl font-bold text-text-primary mb-1">{processingVideos}</div>
+                <div className="text-sm text-text-muted">In queue</div>
               </div>
             </div>
 
             {/* Upload Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                  <Upload className="w-5 h-5 text-purple-400" />
+              <div className="bg-surface rounded-xl p-6 border border-border">
+                <h3 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-2">
+                  <Upload className="w-5 h-5 text-accent" />
                   Upload Video
                 </h3>
 
-                <div className="flex border-b border-white/10 mb-6">
+                <div className="flex border-b border-border mb-6">
                   <button
                     className={`px-4 py-2 font-medium text-sm transition-colors ${
                       activeTab === 'upload'
-                        ? 'border-b-2 border-purple-500 text-purple-400'
-                        : 'text-gray-400 hover:text-gray-300'
+                        ? 'border-b-2 border-accent text-accent'
+                        : 'text-text-secondary hover:text-text-primary'
                     }`}
                     onClick={() => setActiveTab('upload')}
                   >
@@ -212,8 +202,8 @@ export const AdminPage: React.FC = () => {
                   <button
                     className={`px-4 py-2 font-medium text-sm transition-colors ${
                       activeTab === 'link'
-                        ? 'border-b-2 border-purple-500 text-purple-400'
-                        : 'text-gray-400 hover:text-gray-300'
+                        ? 'border-b-2 border-accent text-accent'
+                        : 'text-text-secondary hover:text-text-primary'
                     }`}
                     onClick={() => setActiveTab('link')}
                   >
@@ -231,11 +221,11 @@ export const AdminPage: React.FC = () => {
 
             {/* Video List */}
             <div>
-              <h3 className="text-2xl font-bold text-white mb-6">Manage Videos</h3>
+              <h3 className="text-2xl font-bold text-text-primary mb-6">Manage Videos</h3>
               {loading ? (
                 <div className="text-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto"></div>
-                  <p className="text-gray-400 mt-4">Loading videos...</p>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto"></div>
+                  <p className="text-text-secondary mt-4">Loading videos...</p>
                 </div>
               ) : (
                 <VideoList

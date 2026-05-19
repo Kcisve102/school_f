@@ -1,33 +1,69 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import VideoGrid from '../components/video/VideoGrid';
 import {
-  FileText,
-  Brain,
   ArrowRight,
-  Sparkles,
-  Code,
-  Lightbulb,
-  Globe,
-  Briefcase,
-  Dumbbell,
+  Bot,
+  MessageSquare,
+  Play,
+  Wrench,
+  Shield,
+  Languages,
+  Heart,
+  Zap,
+  Search,
 } from 'lucide-react';
 
-export const CATEGORIES = [
-  { id: 'factory skills', name: 'Factory Skills', icon: Code, color: 'from-blue-500 to-cyan-500' },
-  { id: 'safety guide', name: 'Safety Guide', icon: Lightbulb, color: 'from-purple-500 to-pink-500' },
-  { id: 'language', name: 'Language', icon: Globe, color: 'from-green-500 to-emerald-500' },
-  { id: 'other', name: 'Other', icon: Briefcase, color: 'from-orange-500 to-red-500' },
-  // { id: 'art', name: 'Art & Design', icon: Palette, color: 'from-pink-500 to-rose-500' },
-  { id: 'health', name: 'Health', icon: Dumbbell, color: 'from-teal-500 to-cyan-500' },
+// AI capabilities for the new design
+const AI_CAPABILITIES = [
+  {
+    icon: MessageSquare,
+    title: 'Instant Answers',
+    description: 'Ask anything about factory operations, safety procedures, or equipment handling.',
+  },
+  {
+    icon: Search,
+    title: 'Smart Video Discovery',
+    description: 'AI finds the most relevant training videos based on your specific questions.',
+  },
+  {
+    icon: Zap,
+    title: '24/7 Availability',
+    description: 'Get help anytime, whether you\'re on the night shift or preparing for the day.',
+  },
 ];
+
+// Hook for scroll animations
+const useScrollAnimation = () => {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+};
 
 export const HomePage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
+  const [scrollY, setScrollY] = useState(0);
+  const heroRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  useScrollAnimation();
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -44,391 +80,514 @@ export const HomePage: React.FC = () => {
     fetchVideos();
   }, []);
 
-  const features = [
-    {
-      icon: Brain,
-      title: 'AI Transcription',
-      description: 'Convert speech to text with timestamps automatically.',
-    },
-    {
-      icon: FileText,
-      title: 'Smart Summaries',
-      description: 'Get key points extracted from your videos.',
-    },
-    {
-      icon: Sparkles,
-      title: 'Quiz Yourself',
-      description: 'Test your understanding with generated questions.',
-    },
-  ];
+  // Parallax scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0a1f]">
-      {/* Hero Section */}
-      <section className="relative bg-[#0a0a1f] text-white overflow-hidden pt-20 pb-32">
-        {/* Factory Background Image */}
-        <div className="absolute inset-0">
+    <div className="min-h-screen bg-bg-primary">
+      {/* Hero Section - Full Background with Centered Content */}
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{ transform: `translateY(${scrollY * 0.15}px)` }}
+        >
           <img
-                src="/assets/herodv.png"
-                alt="Interface Preview - Video Learning Dashboard"
-                className="w-full h-full object-cover"
-
-              />
-          {/* <img
-            src="/assets/factory-hero-bg.jpg"
-            alt=""
+            src="/assets/herodv.png"
+            alt="Smart Factory Environment"
             className="w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&q=80';
-            }}
-          /> */}
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a1f]/95 via-[#0a0a1f]/85 to-[#0a0a1f]/95"></div>
-          {/* Top gradient blend */}
-          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
-          {/* Bottom gradient blend */}
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0a1f] to-transparent"></div>
+          />
+          {/* Theme-aware overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/40 to-transparent dark:from-bg-primary dark:via-bg-primary/60 dark:to-transparent"></div>
         </div>
 
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600 rounded-full filter blur-3xl"></div>
-        </div>
-
-        <div className="relative px-4 sm:px-6 lg:px-8 py-24">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-full px-4 py-2 mb-8 border border-white/10">
-              <Sparkles className="w-4 h-4 text-purple-400" />
-              <span className="text-sm font-medium text-gray-300">AI-POWERED VIDEO LEARNING</span>
+        {/* Content - Centered */}
+        <div className="relative z-10 w-full px-6 lg:px-12 xl:px-20 py-32 text-center">
+          <div className="max-w-4xl mx-auto">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-surface/70 backdrop-blur-sm rounded-full px-5 py-2.5 mb-8 border border-border">
+              <Bot className="w-4 h-4 text-accent" />
+              <span className="text-sm font-semibold text-text-primary tracking-wide">工厂技能AI助手</span>
             </div>
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              Video Learning,
-              <span className="block bg-gradient-to-r from-purple-400 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
-                Reinvented
-              </span>
+            {/* Main Headline */}
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6 leading-tight drop-shadow-sm">
+              Learn Factory Skills
+              <span className="block text-accent mt-2">with AI Guidance</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto">
-              Experience a premium educational platform with AI-driven insights and sophisticated tools designed for deep focus and long-term retention.
+            {/* Subheadline */}
+            <p className="text-lg md:text-xl text-text-primary max-w-2xl mx-auto mb-10 leading-relaxed drop-shadow-sm font-medium">
+              Ask questions, get instant answers, and discover relevant training videos. 
+              Your personal AI assistant for factory operations and safety.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <button
-                onClick={() => navigate('/admin')}
-                className="group bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-purple-500 hover:to-blue-500 transition-all duration-200 shadow-xl hover:shadow-2xl flex items-center gap-2"
+                onClick={() => navigate('/chat')}
+                className="group inline-flex items-center justify-center gap-3 bg-accent text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-accent-dark transition-all duration-300 shadow-xl shadow-accent/25"
               >
-                Start Learning Free
+                Start Chatting
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
+              <button
+                onClick={() => navigate('/categories')}
+                className="inline-flex items-center justify-center gap-2 bg-surface/70 backdrop-blur-sm hover:bg-surface text-text-primary px-8 py-4 rounded-xl font-medium text-lg border border-border transition-all duration-300"
+              >
+                <Play className="w-5 h-5" />
+                Browse Videos
+              </button>
+            </div>
+
+            {/* Feature Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+              {[
+                { icon: MessageSquare, title: 'Ask Anything', desc: 'Get instant answers' },
+                { icon: Play, title: 'Video Learning', desc: 'Watch & learn' },
+                { icon: Zap, title: 'Always Available', desc: '24/7 AI support' },
+              ].map((feature, index) => (
+                <div 
+                  key={index}
+                  className="flex flex-col items-center gap-3 p-4 bg-surface/50 backdrop-blur-sm rounded-2xl border border-border"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                    <feature.icon className="w-6 h-6 text-accent" />
+                  </div>
+                  <div className="text-center">
+                    <div className="font-semibold text-text-primary">{feature.title}</div>
+                    <div className="text-sm text-text-secondary">{feature.desc}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+          <div className="w-px h-12 bg-gradient-to-b from-accent to-transparent"></div>
+        </div>
       </section>
-       {/* Interface Preview Section */}
-       <section className="relative py-20 overflow-hidden">
-        {/* Subtle factory background */}
-        <div className="absolute inset-0">
+
+      {/* AI Capabilities Section */}
+      <section className="relative py-32 overflow-hidden animate-on-scroll">
+        {/* Background Image - dvb.png as subtle backdrop */}
+        <div className="absolute inset-0 opacity-20">
           <img
-            src="/assets/factory-interface-bg.jpg"
+            src="/assets/dvb.png"
             alt=""
-            className="w-full h-full object-cover opacity-30"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1920&q=80';
-            }}
+            className="w-full h-full object-cover"
           />
-          {/* Very dark overlay for subtle effect */}
-          <div className="absolute inset-0 bg-[#0a0a1f]/95"></div>
-          {/* Top gradient blend */}
-          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
-          {/* Bottom gradient blend */}
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a0a1f] to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-primary/95 to-bg-primary"></div>
         </div>
 
-        <div className="relative px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Experience the Interface
-            </h2>
-            <p className="text-lg text-gray-400">
-              Our minimalistic dashboard is engineered for flow, helping you stay in the zone while you master complex topics
-            </p>
-          </div>
-
-          <div className="max-w-6xl mx-auto">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src="/assets/video_player.png"
-                alt="Interface Preview - Video Learning Dashboard"
-                className="w-full h-auto"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="relative py-20 overflow-hidden">
-        {/* Factory Background Image */}
-        <div className="absolute inset-0">
-          {/* <img
-            src="/assets/factory-features-bg.jpg"
-            alt=""
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1920&q=80';
-            }}
-          /> */}
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-[#0a0a1f]/92"></div>
-          {/* Top gradient blend */}
-          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
-          {/* Bottom gradient blend */}
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a0a1f] to-transparent"></div>
-        </div>
-
-        <div className="relative px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Our Core Features
-            </h2>
-            <p className="text-lg text-gray-400">
-              Designed for the modern learner who demands excellence and high-fidelity insights
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:border-purple-500/50"
-              >
-                <div className="inline-flex p-4 rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 mb-6">
-                  <feature.icon className="w-8 h-8 text-purple-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-400 leading-relaxed">
-                  {feature.description}
-                </p>
+        <div className="relative px-6 lg:px-12 xl:px-20">
+          <div className="max-w-7xl mx-auto">
+            {/* Section Header */}
+            <div className="text-center max-w-3xl mx-auto mb-20">
+              <div className="inline-flex items-center gap-2 bg-surface-secondary rounded-full px-4 py-2 mb-6 border border-border">
+                <Bot className="w-4 h-4 text-accent" />
+                <span className="text-sm font-medium text-text-secondary">HOW IT WORKS</span>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Factory Skills Showcase Section */}
-      <section className="relative py-20 overflow-hidden">
-        {/* Factory Background Image */}
-        <div className="absolute inset-0">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src="/assets/dvb.png"
-                alt="Interface Preview - Video Learning Dashboard"
-                className="w-full h-auto"
-              />
-            </div>
-          {/* <img
-            src="/assets/factory-skills-bg.jpg"
-            alt=""
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = 'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=1920&q=80';
-            }}
-          /> */}
-          {/* Dark overlay with gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a1f]/90 via-[#0f0f2e]/85 to-[#0a0a1f]/90"></div>
-          {/* Top gradient blend */}
-          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
-          {/* Bottom gradient blend */}
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a0a1f] to-transparent"></div>
-        </div>
-
-        <div className="relative px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-blue-500/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-blue-500/30">
-              <Code className="w-4 h-4 text-blue-400" />
-              <span className="text-sm font-medium text-blue-300">FACTORY SKILLS</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Master Factory Skills
-            </h2>
-            <p className="text-lg text-gray-400">
-              Learn essential manufacturing and industrial skills through comprehensive video tutorials
-            </p>
-          </div>
-
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {/* Factory Image 1 */}
-              <div className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-blue-500/50 transition-all duration-300">
-                <div className="aspect-video overflow-hidden">
-                  <img
-                    src="/assets/factory-1.jpg"
-                    alt="Factory Manufacturing Floor"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = 'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=800&q=80';
-                    }}
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-white">Factory Skills</h3>
-                  <p className="text-sm text-gray-400 mt-1">Master production line workflows and workplace safety standards</p>
-                </div>
-              </div>
-
-              {/* Factory Image 2 */}
-              <div className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-blue-500/50 transition-all duration-300">
-                <div className="aspect-video overflow-hidden">
-                  <img
-                    src="/assets/factory-2.jpg"
-                    alt="Industrial Equipment"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80';
-                    }}
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-white">Safety Guide</h3>
-                  <p className="text-sm text-gray-400 mt-1">Learn proper handling of industrial machinery and equipment</p>
-                </div>
-              </div>
-
-              {/* Factory Image 3 */}
-              <div className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-blue-500/50 transition-all duration-300">
-                <div className="aspect-video overflow-hidden">
-                  <img
-                    src="/assets/factory-3.jpg"
-                    alt="Quality Control"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80';
-                    }}
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-white">Language</h3>
-                  <p className="text-sm text-gray-400 mt-1">Study quality control terminology and inspection procedures</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <button
-                onClick={() => navigate('/categories')}
-                className="group bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-blue-500 hover:to-cyan-500 transition-all duration-200 shadow-xl hover:shadow-2xl flex items-center gap-2 mx-auto"
-              >
-                Explore Skills Videos
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Categories Section */}
-      <section className="py-20 bg-[#0a0a1f] border-t border-white/5">
-        <div className="px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Explore by Category
-            </h2>
-            <p className="text-lg text-gray-400">
-              Browse videos organized by topic
-            </p>
-          </div>
-
-          <div className="flex flex-wrap justify-center items-center gap-4">
-            {CATEGORIES.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => navigate('/categories')}
-                className="group relative overflow-hidden rounded-xl p-6 text-white transition-all hover:scale-105 hover:shadow-2xl w-40"
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-90 group-hover:opacity-100 transition-opacity`}></div>
-                <div className="relative z-10 flex flex-col items-center">
-                  <category.icon className="w-8 h-8 mb-3" />
-                  <h3 className="font-semibold text-sm md:text-base text-center">{category.name}</h3>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Videos Section */}
-      {videos.length > 0 && (
-        <section className="py-20 bg-[#0a0a1f]">
-          <div className="px-4 sm:px-6 lg:px-8">
-            <div className="mb-12 max-w-3xl">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Latest Videos
+              <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+                Learning Made Simple
               </h2>
-              <p className="text-lg text-gray-400">
-                Browse our collection of educational videos
+              <p className="text-xl text-text-secondary">
+                Just ask. Our AI understands your questions and finds the best way to help you learn.
               </p>
             </div>
 
-            <VideoGrid videos={videos.slice(0, 4)} loading={loading} mobile2x2 />
+            {/* Capabilities Grid */}
+            <div className="grid md:grid-cols-3 gap-8">
+              {AI_CAPABILITIES.map((capability, index) => (
+                <div
+                  key={index}
+                  className="group relative"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
+                  <div className="relative bg-surface border border-border rounded-2xl p-8 hover:border-accent/30 transition-all duration-300">
+                    <div className="w-14 h-14 rounded-xl bg-accent-subtle flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                      <capability.icon className="w-7 h-7 text-accent" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-text-primary mb-3">
+                      {capability.title}
+                    </h3>
+                    <p className="text-text-secondary leading-relaxed">
+                      {capability.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
-            {videos.length > 3 && (
-              <div className="flex justify-center mt-12">
+      {/* Visual Learning Section - Asymmetric Editorial Layout */}
+      <section className="relative py-32 overflow-hidden animate-on-scroll">
+        {/* Full-bleed Background */}
+        <div className="absolute inset-0">
+          <img
+            src="/assets/video_player.png"
+            alt=""
+            className="w-full h-full object-cover opacity-15 dark:opacity-25"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-bg-primary/95 via-bg-primary/90 to-info/5"></div>
+        </div>
+
+        <div className="relative px-6 lg:px-12 xl:px-20">
+          <div className="max-w-7xl mx-auto">
+            {/* Asymmetric Two Column Layout */}
+            <div className="grid lg:grid-cols-12 gap-12 items-center">
+              
+              {/* Left Column - Large Typography */}
+              <div className="lg:col-span-7">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-12 h-px bg-info"></div>
+                  <span className="text-sm font-semibold text-info uppercase tracking-widest">Video Learning</span>
+                </div>
+                
+                <h2 className="text-6xl md:text-7xl lg:text-8xl font-bold text-text-primary leading-[0.9] mb-8">
+                  Watch &
+                  <span className="block text-info">Learn</span>
+                </h2>
+                
+                <p className="text-xl text-text-secondary max-w-lg leading-relaxed mb-10">
+                  Sometimes words aren't enough. Our AI matches your questions with step-by-step video demonstrations from industry experts.
+                </p>
+
+                {/* Stats Row */}
+                <div className="flex gap-8">
+                  <div>
+                    <div className="text-4xl font-bold text-text-primary">100+</div>
+                    <div className="text-sm text-text-secondary">Video Tutorials</div>
+                  </div>
+                  <div className="w-px bg-border"></div>
+                  <div>
+                    <div className="text-4xl font-bold text-text-primary">4K</div>
+                    <div className="text-sm text-text-secondary">Video Quality</div>
+                  </div>
+                  <div className="w-px bg-border"></div>
+                  <div>
+                    <div className="text-4xl font-bold text-text-primary">5</div>
+                    <div className="text-sm text-text-secondary">Languages</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column - Feature Stack */}
+              <div className="lg:col-span-5 space-y-4">
+                {[
+                  { icon: Search, title: 'Smart Matching', desc: 'AI finds videos based on your specific questions' },
+                  { icon: Play, title: 'Step-by-Step', desc: 'Detailed demonstrations with clear instructions' },
+                  { icon: Shield, title: 'Safety Focused', desc: 'Learn proper protocols and best practices' },
+                ].map((feature, index) => (
+                  <div 
+                    key={index}
+                    className="group bg-surface/80 backdrop-blur-sm border border-border hover:border-info/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center flex-shrink-0 group-hover:bg-info/20 transition-colors">
+                        <feature.icon className="w-6 h-6 text-info" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-text-primary mb-1">{feature.title}</h3>
+                        <p className="text-sm text-text-secondary">{feature.desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {/* CTA Button */}
                 <button
                   onClick={() => navigate('/categories')}
-                  className="group flex items-center gap-2 px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/50 rounded-lg text-white font-semibold transition-all duration-300"
+                  className="w-full group flex items-center justify-between bg-info text-white rounded-2xl px-6 py-5 hover:bg-info-dark transition-all duration-300"
                 >
-                  See All Videos
+                  <span className="font-semibold">Browse Video Library</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
-            )}
+            </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
-      {/* CTA Section */}
-      <section className="relative py-20 overflow-hidden">
-        {/* Factory Background Image */}
+      {/* Categories Section - Distinctive Bento Layout */}
+      <section className="relative py-32 animate-on-scroll">
+        <div className="relative px-6 lg:px-12 xl:px-20">
+          <div className="max-w-7xl mx-auto">
+            {/* Section Header - Left aligned, editorial style */}
+            <div className="mb-16">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-px bg-accent"></div>
+                <span className="text-sm font-medium text-accent uppercase tracking-widest">Browse Topics</span>
+              </div>
+              <div className="grid md:grid-cols-2 gap-8 items-end">
+                <h2 className="text-5xl md:text-6xl font-bold text-text-primary leading-tight">
+                  Skills for the
+                  <span className="block text-text-muted">modern factory</span>
+                </h2>
+                <p className="text-lg text-text-secondary md:text-right md:pb-2">
+                  Curated learning paths across essential industrial competencies. 
+                  Each category connects to AI-assisted guidance.
+                </p>
+              </div>
+            </div>
+
+            {/* Asymmetrical Bento Grid */}
+            <div className="grid grid-cols-12 gap-4 md:gap-6">
+              {/* Factory Skills - Large Feature Card */}
+              <button
+                onClick={() => navigate('/categories')}
+                className="group col-span-12 md:col-span-7 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-factory/30 transition-all duration-500 text-left"
+              >
+                <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-factory/10 to-warning/5 rounded-full filter blur-3xl group-hover:blur-2xl transition-all duration-700 translate-x-1/2 -translate-y-1/2"></div>
+                <div className="relative p-8 md:p-12 min-h-[320px] flex flex-col justify-between">
+                  <div className="flex items-start justify-between">
+                    <div className="w-16 h-16 rounded-2xl bg-factory/10 border border-factory/20 flex items-center justify-center group-hover:bg-factory/20 transition-colors">
+                      <Wrench className="w-8 h-8 text-factory" />
+                    </div>
+                    <span className="text-7xl font-bold text-text-primary/5 group-hover:text-factory/10 transition-colors">01</span>
+                  </div>
+                  <div>
+                    <h3 className="text-3xl md:text-4xl font-bold text-text-primary mb-3 group-hover:text-factory transition-colors">Factory Skills</h3>
+                    <p className="text-text-secondary text-lg max-w-md">
+                      Master equipment operation, assembly line workflows, and quality control procedures with AI-guided tutorials.
+                    </p>
+                    <div className="mt-6 flex items-center gap-2 text-factory opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+                      <span className="text-sm font-medium">Explore skills</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              </button>
+
+              {/* Safety Guide - Tall Card */}
+              <button
+                onClick={() => navigate('/categories')}
+                className="group col-span-12 md:col-span-5 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-safety/30 transition-all duration-500 text-left"
+              >
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-safety/10 to-success/5 rounded-full filter blur-3xl group-hover:blur-2xl transition-all duration-700 -translate-x-1/2 translate-y-1/2"></div>
+                <div className="relative p-8 md:p-10 min-h-[320px] flex flex-col justify-between">
+                  <div className="flex items-start justify-between">
+                    <div className="w-14 h-14 rounded-xl bg-safety/10 border border-safety/20 flex items-center justify-center group-hover:bg-safety/20 transition-colors">
+                      <Shield className="w-7 h-7 text-safety" />
+                    </div>
+                    <span className="text-6xl font-bold text-text-primary/5 group-hover:text-safety/10 transition-colors">02</span>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-text-primary mb-3 group-hover:text-safety transition-colors">Safety Guide</h3>
+                    <p className="text-text-secondary">
+                      Essential protocols, PPE requirements, and emergency procedures for a secure workplace.
+                    </p>
+                    <div className="mt-4 flex items-center gap-2 text-safety opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-sm font-medium">Stay protected</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              </button>
+
+              {/* Language - Horizontal Card */}
+              <button
+                onClick={() => navigate('/categories')}
+                className="group col-span-12 md:col-span-5 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-language/30 transition-all duration-500 text-left"
+              >
+                <div className="absolute top-1/2 right-0 w-48 h-48 bg-gradient-to-l from-language/10 to-info/5 rounded-full filter blur-3xl group-hover:blur-2xl transition-all duration-700 translate-x-1/2 -translate-y-1/2"></div>
+                <div className="relative p-8 md:p-10 min-h-[260px] flex flex-col md:flex-row gap-6 items-start md:items-center">
+                  <div className="w-14 h-14 rounded-xl bg-language/10 border border-language/20 flex items-center justify-center group-hover:bg-language/20 transition-colors flex-shrink-0">
+                    <Languages className="w-7 h-7 text-language" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-5xl font-bold text-text-primary/5 group-hover:text-language/10 transition-colors absolute top-6 right-6">03</span>
+                    <h3 className="text-2xl font-bold text-text-primary mb-2 group-hover:text-language transition-colors">Language</h3>
+                    <p className="text-text-secondary text-sm">
+                      Technical terminology and communication skills for diverse factory environments.
+                    </p>
+                    <div className="mt-3 flex items-center gap-2 text-language opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-sm font-medium">Learn more</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              </button>
+
+              {/* Health - Feature Card with Image Space */}
+              <button
+                onClick={() => navigate('/categories')}
+                className="group col-span-12 md:col-span-7 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-health/30 transition-all duration-500 text-left"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-health/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="relative p-8 md:p-10 min-h-[260px] flex flex-col md:flex-row gap-8">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-health/10 border border-health/20 flex items-center justify-center group-hover:bg-health/20 transition-colors">
+                        <Heart className="w-6 h-6 text-health" />
+                      </div>
+                      <span className="text-5xl font-bold text-text-primary/5 group-hover:text-health/10 transition-colors">04</span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-text-primary mb-3 group-hover:text-health transition-colors">Health & Wellness</h3>
+                    <p className="text-text-secondary mb-4">
+                      Ergonomics, mental health, and physical wellbeing practices for demanding industrial roles.
+                    </p>
+                    <div className="flex items-center gap-2 text-health opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-sm font-medium">Prioritize health</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                  {/* Decorative geometric element */}
+                  <div className="hidden md:flex w-32 h-32 items-center justify-center">
+                    <div className="relative w-full h-full">
+                      <div className="absolute inset-0 border-2 border-health/20 rounded-full group-hover:scale-110 group-hover:border-health/40 transition-all duration-500"></div>
+                      <div className="absolute inset-4 border border-health/10 rounded-full group-hover:scale-95 transition-all duration-500"></div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Heart className="w-8 h-8 text-health/40 group-hover:text-health/60 transition-colors" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+
+            {/* Bottom Note */}
+            <div className="mt-12 flex items-center justify-between border-t border-border pt-8">
+              <p className="text-text-muted text-sm">
+                Each category is continuously updated with new AI-curated content
+              </p>
+              <button
+                onClick={() => navigate('/categories')}
+                className="group inline-flex items-center gap-3 px-6 py-3 bg-surface border border-border rounded-xl hover:border-accent transition-all"
+              >
+                <span className="font-medium text-text-primary">View all categories</span>
+                <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-colors">
+                  <ArrowRight className="w-4 h-4 text-accent group-hover:text-white transition-colors" />
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* dvb.png Feature Showcase */}
+      <section className="relative py-32 overflow-hidden animate-on-scroll">
         <div className="absolute inset-0">
           <img
-            src="/assets/factory-cta-bg.jpg"
-            alt=""
+            src="/assets/dvb.png"
+            alt="Advanced Factory Technology"
             className="w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1920&q=80';
-            }}
           />
-          {/* Gradient overlay for CTA */}
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/90 via-blue-600/85 to-cyan-600/90"></div>
-          {/* Top gradient blend */}
-          <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-bg-primary via-bg-primary/90 to-bg-primary/70"></div>
         </div>
 
-        <div className="relative px-4 sm:px-6 lg:px-8">
+        <div className="relative px-6 lg:px-12 xl:px-20">
+          <div className="max-w-7xl mx-auto">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 bg-surface-secondary rounded-full px-4 py-2 mb-6 border border-border">
+                <Zap className="w-4 h-4 text-success" />
+                <span className="text-sm font-medium text-text-secondary">ADVANCED LOGISTICS</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+                Master Modern
+                <span className="block text-success">Factory Operations</span>
+              </h2>
+              <p className="text-xl text-text-secondary mb-10 leading-relaxed">
+                From automated assembly lines to quality control systems, learn the skills that power today's smart factories.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                {['Automation', 'Quality Control', 'Logistics', 'Prototyping'].map((tag) => (
+                  <span 
+                    key={tag}
+                    className="px-4 py-2 bg-surface-secondary border border-border rounded-full text-sm text-text-secondary"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Videos Section */}
+      <section className="relative py-32 overflow-hidden animate-on-scroll">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="/assets/dvb.png"
+            alt=""
+            className="w-full h-full object-cover opacity-10 dark:opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-primary/98 to-bg-primary"></div>
+        </div>
+
+        <div className="relative px-6 lg:px-12 xl:px-20">
+          <div className="max-w-7xl mx-auto">
+            {/* Section Header with accent line */}
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-16 h-px bg-accent"></div>
+              <span className="text-sm font-semibold text-accent uppercase tracking-widest">Video Library</span>
+            </div>
+
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+              <div>
+                <h2 className="text-5xl md:text-6xl font-bold text-text-primary mb-4">Latest Videos</h2>
+                <p className="text-xl text-text-secondary max-w-xl">
+                  Fresh training content added regularly. Learn from expert-led tutorials.
+                </p>
+              </div>
+              <button
+                onClick={() => navigate('/categories')}
+                className="group inline-flex items-center gap-3 px-6 py-3 bg-surface border border-border rounded-xl hover:border-accent transition-all"
+              >
+                <span className="font-medium text-text-primary">View All Videos</span>
+                <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-colors">
+                  <ArrowRight className="w-4 h-4 text-accent group-hover:text-white transition-colors" />
+                </div>
+              </button>
+            </div>
+
+            <VideoGrid videos={videos.slice(0, 4)} loading={loading} mobile2x2 />
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="relative py-32 overflow-hidden animate-on-scroll">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-warning/10 to-info/10"></div>
+        <div className="absolute inset-0 bg-bg-primary/80"></div>
+        
+        <div className="relative px-6 lg:px-12 xl:px-20">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to elevate your learning?
+            <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+              Ready to learn smarter?
             </h2>
-            <p className="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-              Join thousands of students and professionals who have unlocked a more effective way to learn from video content
+            <p className="text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
+              Start a conversation with our AI assistant and discover a more effective way to master factory skills
             </p>
-            <button
-              onClick={() => navigate('/admin')}
-              className="bg-white text-purple-600 px-10 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all duration-200 shadow-xl hover:shadow-2xl"
-            >
-              Get Started Now
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => navigate('/chat')}
+                className="group inline-flex items-center justify-center gap-3 bg-accent text-white px-10 py-5 rounded-xl font-semibold text-lg hover:bg-accent-dark transition-all duration-300 shadow-xl shadow-accent/25 hover:shadow-accent/35"
+              >
+                <Bot className="w-5 h-5" />
+                Start Chatting
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button
+                onClick={() => navigate('/signup')}
+                className="inline-flex items-center justify-center gap-2 bg-surface-secondary hover:bg-surface-hover text-text-primary px-10 py-5 rounded-xl font-medium text-lg border border-border hover:border-accent/30 transition-all duration-300"
+              >
+                Create Account
+              </button>
+            </div>
           </div>
         </div>
       </section>

@@ -40,11 +40,11 @@ export const SignupForm: React.FC = () => {
 
   return (
     <div className="w-full max-w-md">
-      <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-        <h2 className="text-2xl font-bold text-center mb-6 text-white">Create Account</h2>
+      <div className="bg-surface rounded-2xl p-8 border border-border">
+        <h2 className="text-2xl font-bold text-center mb-6 text-text-primary">Create Account</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Full Name
             </label>
             <input
@@ -53,12 +53,12 @@ export const SignupForm: React.FC = () => {
               onChange={(e) => setFullName(e.target.value)}
               required
               placeholder="John Doe"
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+              className="input"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Email
             </label>
             <input
@@ -67,12 +67,12 @@ export const SignupForm: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="you@example.com"
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+              className="input"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Password
             </label>
             <input
@@ -81,12 +81,12 @@ export const SignupForm: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+              className="input"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Confirm Password
             </label>
             <input
@@ -95,25 +95,25 @@ export const SignupForm: React.FC = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               placeholder="••••••••"
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+              className="input"
             />
             {error && (
-              <p className="mt-2 text-sm text-red-400">{error}</p>
+              <p className="mt-2 text-sm text-error">{error}</p>
             )}
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:from-purple-500 hover:to-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full btn-primary"
           >
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-400">
+        <p className="mt-6 text-center text-sm text-text-secondary">
           Already have an account?{' '}
-          <Link to="/login" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
+          <Link to="/login" className="text-accent hover:text-accent-dark font-medium transition-colors">
             Login
           </Link>
         </p>
