@@ -5,6 +5,7 @@ import { videoService } from '../services/video.service';
 import VideoPlayer from '../components/video/VideoPlayer';
 import TranscriptDisplay from '../components/video/TranscriptDisplay';
 import SummaryPanel from '../components/video/SummaryPanel';
+import QuizModal from '../components/quiz/QuizModal';
 import Loader from '../components/common/Loader';
 import Button from '../components/common/Button';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
@@ -19,6 +20,7 @@ export const VideoDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
+  const [showQuiz, setShowQuiz] = useState(false);
 
   useEffect(() => {
     const fetchVideoData = async () => {
@@ -54,6 +56,18 @@ export const VideoDetailPage: React.FC = () => {
 
     fetchVideoData();
   }, [id]);
+
+  const handleVideoEnded = () => {
+    // Only show quiz if transcript and summary are completed
+    if (video?.transcription_status === 'completed' &&
+        video?.summary_status === 'completed') {
+      setShowQuiz(true);
+    }
+  };
+
+  const handleCloseQuiz = () => {
+    setShowQuiz(false);
+  };
 
   if (loading) {
     return <Loader text="Loading video..." />;
@@ -97,6 +111,7 @@ export const VideoDetailPage: React.FC = () => {
             <VideoPlayer
               url={video.s3_url}
               onProgress={setCurrentTime}
+              onEnded={handleVideoEnded}
             />
 
             {transcription && transcription.segments && transcription.segments.length > 0 && (
@@ -175,6 +190,15 @@ export const VideoDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Quiz Modal */}
+      {showQuiz && video && (
+        <QuizModal
+          videoId={video.id}
+          isOpen={showQuiz}
+          onClose={handleCloseQuiz}
+        />
+      )}
     </div>
   );
 };

@@ -4,14 +4,21 @@ import ReactPlayer from 'react-player';
 interface VideoPlayerProps {
   url: string;
   onProgress?: (played: number) => void;
+  onEnded?: () => void;
 }
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onProgress }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onProgress, onEnded }) => {
   const playerRef = useRef<ReactPlayer>(null);
 
   const handleProgress = (state: { played: number; playedSeconds: number }) => {
     if (onProgress) {
       onProgress(state.playedSeconds);
+    }
+  };
+
+  const handleEnded = () => {
+    if (onEnded) {
+      onEnded();
     }
   };
 
@@ -25,6 +32,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onProgress }) => 
         style={{ position: 'absolute', top: 0, left: 0 }}
         controls
         onProgress={handleProgress}
+        onEnded={handleEnded}
         progressInterval={1000}
         config={{
           file: {

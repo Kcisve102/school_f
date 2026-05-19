@@ -58,3 +58,5 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
 }
+
+export * from './quiz.types';
