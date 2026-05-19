@@ -12,7 +12,6 @@ import {
   Lightbulb,
   Globe,
   Briefcase,
-  Palette,
   Dumbbell,
 } from 'lucide-react';
 
