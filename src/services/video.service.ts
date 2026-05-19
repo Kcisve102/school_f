@@ -44,6 +44,13 @@ export const videoService = {
     await api.delete(`/admin/videos/${id}`);
   },
 
+  updateVideo: async (id: number, title: string, description?: string): Promise<void> => {
+    await api.put(`/admin/videos/${id}`, {
+      title,
+      description,
+    });
+  },
+
   getAIStatus: async (videoId: number): Promise<{
     compression_status: string;
     transcription_status: string;

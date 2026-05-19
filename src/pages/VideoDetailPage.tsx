@@ -6,14 +6,17 @@ import VideoPlayer from '../components/video/VideoPlayer';
 import TranscriptDisplay from '../components/video/TranscriptDisplay';
 import SummaryPanel from '../components/video/SummaryPanel';
 import QuizModal from '../components/quiz/QuizModal';
+import VideoEditModal from '../components/video/VideoEditModal';
 import Loader from '../components/common/Loader';
 import Button from '../components/common/Button';
-import { ArrowLeft, AlertCircle } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Edit } from 'lucide-react';
 import { formatDate } from '../utils/helpers';
+import { useAuth } from '../hooks/useAuth';
 
 export const VideoDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [video, setVideo] = useState<Video | null>(null);
   const [transcription, setTranscription] = useState<Transcription | null>(null);
   const [summary, setSummary] = useState<Summary | null>(null);
@@ -21,6 +24,7 @@ export const VideoDetailPage: React.FC = () => {
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     const fetchVideoData = async () => {
@@ -69,6 +73,17 @@ export const VideoDetailPage: React.FC = () => {
     setShowQuiz(false);
   };
 
+  const handleEditSuccess = async () => {
+    // Refresh video data after edit
+    if (!id) return;
+    try {
+      const videoData = await videoService.getById(parseInt(id));
+      setVideo(videoData);
+    } catch (err) {
+      console.error('Failed to refresh video:', err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -105,7 +120,18 @@ export const VideoDetailPage: React.FC = () => {
 
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{video.title}</h1>
+          <div className="flex items-start justify-between mb-2">
+            <h1 className="text-3xl font-bold text-gray-900">{video.title}</h1>
+            {user?.is_admin && (
+              <button
+                onClick={() => setShowEditModal(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-500 transition-colors"
+              >
+                <Edit className="w-4 h-4" />
+                Edit
+              </button>
+            )}
+          </div>
           {video.description && (
             <p className="text-gray-600 mb-4">{video.description}</p>
           )}
@@ -203,6 +229,16 @@ export const VideoDetailPage: React.FC = () => {
           videoId={video.id}
           isOpen={showQuiz}
           onClose={handleCloseQuiz}
+        />
+      )}
+
+      {/* Edit Modal */}
+      {showEditModal && video && (
+        <VideoEditModal
+          video={video}
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onSuccess={handleEditSuccess}
         />
       )}
     </div>
