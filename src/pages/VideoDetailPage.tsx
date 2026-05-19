@@ -70,24 +70,30 @@ export const VideoDetailPage: React.FC = () => {
   };
 
   if (loading) {
-    return <Loader text="Loading video..." />;
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Loader text="Loading video..." />
+      </div>
+    );
   }
 
   if (error || !video) {
     return (
-      <div className="text-center py-12">
-        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Video Not Found</h2>
-        <p className="text-gray-600 mb-6">{error || 'The video you are looking for does not exist.'}</p>
-        <Button variant="primary" onClick={() => navigate('/')}>
-          Back to Home
-        </Button>
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center py-12">
+          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Video Not Found</h2>
+          <p className="text-gray-600 mb-6">{error || 'The video you are looking for does not exist.'}</p>
+          <Button variant="primary" onClick={() => navigate('/')}>
+            Back to Home
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="container mx-auto px-4 py-8">
       <Button
         variant="secondary"
         onClick={() => navigate('/')}

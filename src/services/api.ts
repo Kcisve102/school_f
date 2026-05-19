@@ -13,13 +13,8 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      const currentPath = window.location.pathname;
-      // Only redirect to login if on admin page and not authenticated
-      if (currentPath === '/admin') {
-        window.location.href = '/login';
-      }
-    }
+    // Let the components handle 401 errors instead of automatically redirecting
+    // This prevents logging out users during file uploads or temporary network issues
     return Promise.reject(error);
   }
 );

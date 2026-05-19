@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -9,38 +9,50 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import AdminPage from './pages/AdminPage';
 import VideoDetailPage from './pages/VideoDetailPage';
+import CategoriesPage from './pages/CategoriesPage';
+import DashboardPage from './pages/DashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
+
+function AppContent() {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+
+      <main className="flex-grow ">
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+
+          <Route path="/" element={<HomePage />} />
+
+          <Route path="/dashboard" element={<DashboardPage />} />
+
+          <Route path="/categories" element={<CategoriesPage />} />
+
+          <Route path="/video/:id" element={<VideoDetailPage />} />
+
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-
-          <main className="flex-grow container mx-auto px-4 py-8">
-            <Routes>
-              <Route path="/login" element={<LoginPage />} />
-
-              <Route path="/" element={<HomePage />} />
-
-              <Route path="/video/:id" element={<VideoDetailPage />} />
-
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute requireAdmin={true}>
-                    <AdminPage />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </main>
-
-          <Footer />
-        </div>
+        <AppContent />
 
         <Toaster
           position="top-right"

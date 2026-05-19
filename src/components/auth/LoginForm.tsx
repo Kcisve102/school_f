@@ -27,42 +27,51 @@ export const LoginForm: React.FC = () => {
 
   return (
     <div className="w-full max-w-md">
-      <div className="card">
-        <h2 className="text-2xl font-bold text-center mb-2">Admin Login</h2>
-        <p className="text-center text-sm text-gray-600 mb-6">
+      <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+        <h2 className="text-2xl font-bold text-center mb-2 text-white">Admin Login</h2>
+        <p className="text-center text-sm text-gray-400 mb-6">
           Login to upload and manage videos
         </p>
-        <form onSubmit={handleSubmit}>
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            placeholder="you@example.com"
-          />
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="you@example.com"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+            />
+          </div>
 
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            placeholder="••••••••"
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+            />
+          </div>
 
-          <Button
+          <button
             type="submit"
-            variant="primary"
-            loading={loading}
-            className="w-full"
+            disabled={loading}
+            className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:from-purple-500 hover:to-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Login
-          </Button>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
-          <Link to="/" className="text-primary-600 hover:text-primary-700 font-medium">
+        <p className="mt-6 text-center text-sm text-gray-400">
+          <Link to="/" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
             ← Back to Videos
           </Link>
         </p>

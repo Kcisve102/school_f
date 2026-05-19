@@ -66,73 +66,78 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
   };
 
   return (
-    <div className="card">
-      <h3 className="text-lg font-semibold mb-4 flex items-center">
-        <Upload className="w-5 h-5 mr-2" />
-        Upload Video File
-      </h3>
+    <div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Title
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            placeholder="Enter video title"
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+          />
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <Input
-          label="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          placeholder="Enter video title"
-        />
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Description (Optional)
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="input resize-none"
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors resize-none"
             rows={3}
             placeholder="Enter video description"
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Video File
           </label>
           <input
             type="file"
             accept="video/*"
             onChange={handleFileChange}
-            className="block w-full text-sm text-gray-500
+            className="block w-full text-sm text-gray-400
               file:mr-4 file:py-2 file:px-4
               file:rounded-lg file:border-0
               file:text-sm file:font-semibold
-              file:bg-primary-50 file:text-primary-700
-              hover:file:bg-primary-100
+              file:bg-purple-600 file:text-white
+              hover:file:bg-purple-500
               cursor-pointer"
             required
           />
           {file && (
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-400">
               Selected: {file.name} ({(file.size / (1024 * 1024)).toFixed(2)} MB)
             </p>
           )}
         </div>
 
         {uploadProgress > 0 && uploadProgress < 100 && (
-          <div className="mb-4">
-            <div className="w-full bg-gray-200 rounded-full h-2">
+          <div>
+            <div className="w-full bg-white/10 rounded-full h-2">
               <div
-                className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>
-            <p className="text-sm text-gray-600 mt-1">{uploadProgress}% uploaded</p>
+            <p className="text-sm text-gray-400 mt-1">{uploadProgress}% uploaded</p>
           </div>
         )}
 
-        <Button type="submit" variant="primary" loading={loading} className="w-full">
-          Upload Video
-        </Button>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:from-purple-500 hover:to-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? 'Uploading...' : 'Upload Video'}
+        </button>
       </form>
     </div>
   );

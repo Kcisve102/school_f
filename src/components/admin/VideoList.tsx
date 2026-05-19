@@ -39,14 +39,14 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted }) 
 
   const getStatusBadge = (status: string) => {
     const statusColors: Record<string, string> = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      processing: 'bg-blue-100 text-blue-800',
-      completed: 'bg-green-100 text-green-800',
-      failed: 'bg-red-100 text-red-800',
+      pending: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+      processing: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+      completed: 'bg-green-500/20 text-green-400 border-green-500/30',
+      failed: 'bg-red-500/20 text-red-400 border-red-500/30',
     };
 
     return (
-      <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColors[status] || 'bg-gray-100 text-gray-800'}`}>
+      <span className={`px-3 py-1 text-xs font-medium rounded-full border ${statusColors[status] || 'bg-gray-500/20 text-gray-400 border-gray-500/30'}`}>
         {status}
       </span>
     );
@@ -54,52 +54,52 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted }) 
 
   if (videos.length === 0) {
     return (
-      <div className="card text-center py-8">
-        <p className="text-gray-500">No videos uploaded yet</p>
+      <div className="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10 text-center">
+        <p className="text-gray-400">No videos uploaded yet</p>
       </div>
     );
   }
 
   return (
-    <div className="card overflow-hidden">
+    <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        <table className="min-w-full">
+          <thead>
+            <tr className="border-b border-white/10">
+              <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Title
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Duration
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Transcription
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Summary
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Uploaded
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="divide-y divide-white/5">
             {videos.map((video) => (
-              <tr key={video.id} className="hover:bg-gray-50">
+              <tr key={video.id} className="hover:bg-white/5 transition-colors">
                 <td className="px-6 py-4">
-                  <div className="text-sm font-medium text-gray-900 max-w-xs truncate">
+                  <div className="text-sm font-medium text-white max-w-xs truncate">
                     {video.title}
                   </div>
                   {video.description && (
-                    <div className="text-sm text-gray-500 max-w-xs truncate">
+                    <div className="text-sm text-gray-400 max-w-xs truncate">
                       {video.description}
                     </div>
                   )}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                   {video.duration ? formatDuration(video.duration) : '-'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -108,26 +108,26 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted }) 
                 <td className="px-6 py-4 whitespace-nowrap">
                   {getStatusBadge(video.summary_status)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                   {formatDate(video.created_at)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
-                    <Button
-                      variant="secondary"
+                    <button
                       onClick={() => navigate(`/video/${video.id}`)}
-                      className="!p-2"
+                      className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all"
+                      title="View"
                     >
                       <Eye className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="danger"
+                    </button>
+                    <button
                       onClick={() => handleDelete(video.id, video.title)}
-                      loading={deletingId === video.id}
-                      className="!p-2"
+                      disabled={deletingId === video.id}
+                      className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="Delete"
                     >
                       <Trash2 className="w-4 h-4" />
-                    </Button>
+                    </button>
                   </div>
                 </td>
               </tr>

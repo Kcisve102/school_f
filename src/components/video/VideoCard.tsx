@@ -50,26 +50,27 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   return (
     <div
       onClick={() => navigate(`/video/${video.id}`)}
-      className="card cursor-pointer hover:shadow-lg transition-shadow"
+      className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10 cursor-pointer hover:bg-white/10 hover:border-purple-500/50 transition-all duration-300 hover:shadow-2xl"
     >
-      <div className="relative bg-gray-200 rounded-lg mb-4 aspect-video flex items-center justify-center">
-        <Play className="w-12 h-12 text-white opacity-80" />
+      <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg mb-4 aspect-video flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20"></div>
+        <Play className="relative w-12 h-12 text-purple-400 opacity-80" />
         {video.duration && (
-          <span className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">
+          <span className="absolute bottom-2 right-2 bg-black/75 text-white text-xs px-2 py-1 rounded">
             {formatDuration(video.duration)}
           </span>
         )}
       </div>
 
       <div className="flex items-start justify-between mb-2">
-        <h3 className="font-semibold text-gray-900 line-clamp-2 flex-1">
+        <h3 className="font-semibold text-white line-clamp-2 flex-1">
           {video.title}
         </h3>
         {getStatusBadge()}
       </div>
 
       {video.description && (
-        <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+        <p className="text-sm text-gray-400 line-clamp-2 mb-3">
           {video.description}
         </p>
       )}
