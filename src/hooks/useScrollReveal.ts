@@ -1,13 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, DependencyList } from 'react';
 
 /**
  * Attaches an IntersectionObserver to every element matching [class*="reveal-"].
  * Adds `.in-view` when the element enters the viewport, removes it when it leaves —
  * so animations re-fire on both scroll-down AND scroll-up.
  *
- * Call once per page (or in a layout component).
+ * Pass `deps` to re-observe after async content renders (e.g. after loading state clears).
  */
-export function useScrollReveal(options?: IntersectionObserverInit) {
+export function useScrollReveal(
+  options?: IntersectionObserverInit,
+  deps: DependencyList = []
+) {
   useEffect(() => {
     const defaultOptions: IntersectionObserverInit = {
       threshold: 0.12,
@@ -32,5 +35,6 @@ export function useScrollReveal(options?: IntersectionObserverInit) {
     targets.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
 }

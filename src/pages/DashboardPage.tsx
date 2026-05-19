@@ -23,7 +23,7 @@ export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  useScrollReveal();
+  useScrollReveal(undefined, [loading]);
 
   useEffect(() => {
     const fetchVideos = async () => {

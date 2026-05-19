@@ -22,7 +22,7 @@ export const VideoDetailPage: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [showQuiz, setShowQuiz] = useState(false);
 
-  useScrollReveal();
+  useScrollReveal(undefined, [loading]);
 
   useEffect(() => {
     const fetchVideoData = async () => {
