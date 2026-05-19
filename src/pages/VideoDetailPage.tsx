@@ -70,7 +70,7 @@ export const VideoDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 bg-[#0a0a1f] min-h-screen">
+      <div className="container mx-auto px-4 py-8 min-h-screen">
         <Loader text="Loading video..." />
       </div>
     );
@@ -78,14 +78,14 @@ export const VideoDetailPage: React.FC = () => {
 
   if (error || !video) {
     return (
-      <div className="container mx-auto px-4 py-8 bg-[#0a0a1f] min-h-screen">
+      <div className="container mx-auto px-4 py-8 min-h-screen">
         <div className="text-center py-12">
-          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">Video Not Found</h2>
-          <p className="text-gray-400 mb-6">{error || 'The video you are looking for does not exist.'}</p>
+          <AlertCircle className="w-16 h-16 text-error mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-text-primary mb-2">Video Not Found</h2>
+          <p className="text-text-secondary mb-6">{error || 'The video you are looking for does not exist.'}</p>
           <button
             onClick={() => navigate('/')}
-            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:from-purple-500 hover:to-blue-500 transition-all"
+            className="px-6 py-3 bg-accent hover:bg-accent-dark text-white rounded-lg font-semibold transition-all"
           >
             Back to Home
           </button>
@@ -95,10 +95,10 @@ export const VideoDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-[#0a0a1f] min-h-screen">
+    <div className="container mx-auto px-4 py-8 min-h-screen">
       <button
         onClick={() => navigate('/')}
-        className="mb-6 flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-colors"
+        className="mb-6 flex items-center gap-2 px-4 py-2 bg-surface hover:bg-surface-hover border border-border rounded-lg text-text-primary transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Videos
@@ -106,11 +106,11 @@ export const VideoDetailPage: React.FC = () => {
 
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">{video.title}</h1>
+          <h1 className="text-3xl font-bold text-text-primary mb-2">{video.title}</h1>
           {video.description && (
-            <p className="text-gray-300 mb-4">{video.description}</p>
+            <p className="text-text-secondary mb-4">{video.description}</p>
           )}
-          <p className="text-sm text-gray-400">Uploaded on {formatDate(video.created_at)}</p>
+          <p className="text-sm text-text-muted">Uploaded on {formatDate(video.created_at)}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -129,17 +129,17 @@ export const VideoDetailPage: React.FC = () => {
             )}
 
             {video.transcription_status === 'processing' && (
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                <div className="flex items-center text-blue-400">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400 mr-3"></div>
+              <div className="bg-surface rounded-xl p-6 border border-border">
+                <div className="flex items-center text-info">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-info mr-3"></div>
                   <p>Transcription in progress...</p>
                 </div>
               </div>
             )}
 
             {video.transcription_status === 'failed' && (
-              <div className="bg-red-500/10 backdrop-blur-sm rounded-xl p-6 border border-red-500/30">
-                <div className="flex items-center text-red-400">
+              <div className="bg-error/10 rounded-xl p-6 border border-error/30">
+                <div className="flex items-center text-error">
                   <AlertCircle className="w-5 h-5 mr-2" />
                   <p>Transcription failed. Please contact support.</p>
                 </div>
@@ -156,41 +156,41 @@ export const VideoDetailPage: React.FC = () => {
             )}
 
             {video.summary_status === 'processing' && (
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                <div className="flex items-center text-blue-400">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400 mr-3"></div>
+              <div className="bg-surface rounded-xl p-6 border border-border">
+                <div className="flex items-center text-info">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-info mr-3"></div>
                   <p>Summarization in progress...</p>
                 </div>
               </div>
             )}
 
             {video.summary_status === 'failed' && (
-              <div className="bg-red-500/10 backdrop-blur-sm rounded-xl p-6 border border-red-500/30">
-                <div className="flex items-center text-red-400">
+              <div className="bg-error/10 rounded-xl p-6 border border-error/30">
+                <div className="flex items-center text-error">
                   <AlertCircle className="w-5 h-5 mr-2" />
                   <p>Summarization failed. Please contact support.</p>
                 </div>
               </div>
             )}
 
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-              <h3 className="font-semibold mb-3 text-white">Video Information</h3>
+            <div className="bg-surface rounded-xl p-6 border border-border">
+              <h3 className="font-semibold mb-3 text-text-primary">Video Information</h3>
               <dl className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <dt className="text-gray-400">Upload Type:</dt>
-                  <dd className="font-medium capitalize text-gray-200">{video.upload_type}</dd>
+                  <dt className="text-text-muted">Upload Type:</dt>
+                  <dd className="font-medium capitalize text-text-primary">{video.upload_type}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-gray-400">Compression:</dt>
-                  <dd className="font-medium capitalize text-gray-200">{video.compression_status}</dd>
+                  <dt className="text-text-muted">Compression:</dt>
+                  <dd className="font-medium capitalize text-text-primary">{video.compression_status}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-gray-400">Transcription:</dt>
-                  <dd className="font-medium capitalize text-gray-200">{video.transcription_status}</dd>
+                  <dt className="text-text-muted">Transcription:</dt>
+                  <dd className="font-medium capitalize text-text-primary">{video.transcription_status}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-gray-400">Summary:</dt>
-                  <dd className="font-medium capitalize text-gray-200">{video.summary_status}</dd>
+                  <dt className="text-text-muted">Summary:</dt>
+                  <dd className="font-medium capitalize text-text-primary">{video.summary_status}</dd>
                 </div>
               </dl>
             </div>

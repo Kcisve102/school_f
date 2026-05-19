@@ -127,14 +127,14 @@ export const QuizModal: React.FC<QuizModalProps> = ({
         ></div>
 
         {/* Modal panel */}
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+        <div className="inline-block align-bottom bg-bg-primary rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-border">
           {/* Header */}
-          <div className="bg-[#0a0a1f] px-6 py-4">
+          <div className="bg-surface px-6 py-4 border-b border-border">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white">Video Quiz</h2>
+              <h2 className="text-2xl font-bold text-text-primary">Video Quiz</h2>
               <button
                 onClick={handleClose}
-                className="text-white hover:text-gray-200 transition-colors"
+                className="text-text-secondary hover:text-text-primary transition-colors"
               >
                 <svg
                   className="w-6 h-6"
@@ -158,15 +158,15 @@ export const QuizModal: React.FC<QuizModalProps> = ({
             {/* Loading State */}
             {quizState === 'loading' && (
               <div className="text-center py-12">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-                <p className="text-gray-600">Generating your quiz...</p>
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-accent mb-4"></div>
+                <p className="text-text-secondary">Generating your quiz...</p>
               </div>
             )}
 
             {/* Error State */}
             {error && quizState === 'loading' && (
               <div className="text-center py-12">
-                <div className="text-red-500 mb-4">
+                <div className="text-error mb-4">
                   <svg
                     className="w-16 h-16 mx-auto"
                     fill="none"
@@ -181,11 +181,11 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                     />
                   </svg>
                 </div>
-                <p className="text-gray-800 font-medium mb-2">Quiz Generation Failed</p>
-                <p className="text-gray-600 mb-4">{error}</p>
+                <p className="text-text-primary font-medium mb-2">Quiz Generation Failed</p>
+                <p className="text-text-secondary mb-4">{error}</p>
                 <button
                   onClick={loadQuiz}
-                  className="px-6 py-2 bg-[#0a0a1f] text-white rounded-lg hover:bg-blue-700"
+                  className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-accent-dark transition-colors"
                 >
                   Try Again
                 </button>
@@ -207,14 +207,14 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                 />
 
                 {/* Navigation Buttons */}
-                <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+                <div className="flex justify-between items-center mt-6 pt-4 border-t border-border">
                   <button
                     onClick={handlePrevious}
                     disabled={currentQuestionIndex === 0}
                     className={`px-6 py-2 rounded-lg font-medium transition-colors ${
                       currentQuestionIndex === 0
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        ? 'bg-surface-secondary text-text-muted cursor-not-allowed'
+                        : 'bg-surface-secondary text-text-primary hover:bg-surface-hover'
                     }`}
                   >
                     Previous
@@ -226,8 +226,8 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                       disabled={!allQuestionsAnswered}
                       className={`px-8 py-2 rounded-lg font-semibold transition-colors ${
                         allQuestionsAnswered
-                          ? 'bg-green-600 text-white hover:bg-green-700'
-                          : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          ? 'bg-success text-white hover:bg-success/80'
+                          : 'bg-surface-secondary text-text-muted cursor-not-allowed'
                       }`}
                     >
                       Submit Quiz
@@ -235,7 +235,7 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                   ) : (
                     <button
                       onClick={handleNext}
-                      className="px-6 py-2 bg-[#0a0a1f] text-white rounded-lg font-medium hover:bg-blue-900 transition-colors"
+                      className="px-6 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent-dark transition-colors"
                     >
                       Next
                     </button>
@@ -243,7 +243,7 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                 </div>
 
                 {/* Progress Indicator */}
-                <div className="mt-4 text-center text-sm text-gray-600">
+                <div className="mt-4 text-center text-sm text-text-muted">
                   {userAnswers.size} of {questions.length} questions answered
                 </div>
               </div>
@@ -252,8 +252,8 @@ export const QuizModal: React.FC<QuizModalProps> = ({
             {/* Submitting State */}
             {quizState === 'submitting' && (
               <div className="text-center py-12">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-                <p className="text-gray-600">Analyzing your answers...</p>
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-accent mb-4"></div>
+                <p className="text-text-secondary">Analyzing your answers...</p>
               </div>
             )}
 

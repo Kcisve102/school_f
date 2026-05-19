@@ -24,20 +24,20 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
       // In results mode
       if (index === question.correctAnswer) {
         // Correct answer - always show green
-        return `${baseClasses} border-green-500 bg-green-50`;
+        return `${baseClasses} border-success bg-success/10`;
       } else if (index === selectedOption && !result?.isCorrect) {
         // User's wrong answer - show red
-        return `${baseClasses} border-red-500 bg-red-50`;
+        return `${baseClasses} border-error bg-error/10`;
       } else {
-        // Other options - gray
-        return `${baseClasses} border-gray-300 bg-gray-50`;
+        // Other options - neutral
+        return `${baseClasses} border-border bg-surface-secondary`;
       }
     } else {
       // In answering mode
       if (selectedOption === index) {
-        return `${baseClasses} border-blue-500 bg-blue-50`;
+        return `${baseClasses} border-accent bg-accent/10`;
       } else {
-        return `${baseClasses} border-gray-300 hover:border-blue-300 hover:bg-gray-50`;
+        return `${baseClasses} border-border hover:border-accent/50 hover:bg-surface-secondary`;
       }
     }
   };
@@ -59,7 +59,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 
   return (
     <div className="w-full">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <h3 className="text-lg font-semibold text-text-primary mb-4">
         {question.question}
       </h3>
 
@@ -79,10 +79,10 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <span className="font-medium text-gray-700 mr-3">
+                <span className="font-medium text-text-secondary mr-3">
                   {String.fromCharCode(65 + index)}.
                 </span>
-                <span className="text-gray-800">{option}</span>
+                <span className="text-text-primary">{option}</span>
               </div>
               {getOptionIcon(index)}
             </div>
@@ -91,13 +91,13 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
       </div>
 
       {showResult && result && (
-        <div className="mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-          <p className="text-sm font-medium text-blue-900 mb-1">
+        <div className="mt-4 p-4 bg-info/10 border-l-4 border-info rounded">
+          <p className="text-sm font-medium text-info mb-1">
             {result.isCorrect ? 'Correct!' : 'Incorrect'}
           </p>
-          <p className="text-sm text-blue-800">{result.explanation}</p>
+          <p className="text-sm text-text-secondary">{result.explanation}</p>
           {!result.isCorrect && (
-            <p className="text-sm text-blue-800 mt-2">
+            <p className="text-sm text-text-secondary mt-2">
               <strong>Correct answer:</strong> {result.correctAnswer}
             </p>
           )}
