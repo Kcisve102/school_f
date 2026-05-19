@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Loader2, Settings, Trash2, Home } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Send, Bot, User, Loader2, Settings, Trash2 } from 'lucide-react';
 import { chatService, ChatMessage } from '../services/chat.service';
 import toast from 'react-hot-toast';
 
@@ -10,7 +9,6 @@ export const ChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const navigate = useNavigate();
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
