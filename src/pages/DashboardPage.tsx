@@ -9,7 +9,6 @@ import {
   PlayCircle,
   Search,
   Clock,
-  CheckCircle,
   Trophy,
   BookOpen,
   Bookmark,

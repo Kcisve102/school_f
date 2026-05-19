@@ -6,15 +6,11 @@ import { useAuth } from '../hooks/useAuth';
 import VideoUploadForm from '../components/admin/VideoUploadForm';
 import VideoLinkForm from '../components/admin/VideoLinkForm';
 import VideoList from '../components/admin/VideoList';
-import Loader from '../components/common/Loader';
 import {
   LayoutDashboard,
-  PlayCircle,
-  Search,
   Upload,
   CheckCircle,
   Clock,
-  AlertCircle,
   BookOpen,
   Bookmark,
   Settings,

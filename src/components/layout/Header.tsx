@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Video, LogOut, LayoutDashboard, Home } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import Button from '../common/Button';
 
 export const Header: React.FC = () => {
   const { user, logout } = useAuth();

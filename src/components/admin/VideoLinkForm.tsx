@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { Link2 } from 'lucide-react';
 import { videoService } from '../../services/video.service';
-import Input from '../common/Input';
-import Button from '../common/Button';
 import toast from 'react-hot-toast';
 
 interface VideoLinkFormProps {

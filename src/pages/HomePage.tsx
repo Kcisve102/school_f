@@ -1,14 +1,11 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import VideoGrid from '../components/video/VideoGrid';
 import {
-  PlayCircle,
   FileText,
   Brain,
-  Clock,
-  CheckCircle2,
   ArrowRight,
   Sparkles,
   Code,
@@ -47,23 +44,6 @@ export const HomePage: React.FC = () => {
 
     fetchVideos();
   }, []);
-
-  // Calculate real stats from video data
-  const stats = useMemo(() => {
-    const totalVideos = videos.length;
-    const totalSeconds = videos.reduce((sum, video) => sum + (video.duration || 0), 0);
-    const totalMinutes = Math.floor(totalSeconds / 60);
-    const readyVideos = videos.filter(v =>
-      v.transcription_status === 'completed' &&
-      v.summary_status === 'completed'
-    ).length;
-
-    return [
-      { label: 'Videos', value: totalVideos.toString(), icon: PlayCircle },
-      { label: 'Minutes of Content', value: totalMinutes.toString(), icon: Clock },
-      { label: 'Ready to Learn', value: readyVideos.toString(), icon: CheckCircle2 },
-    ];
-  }, [videos]);
 
   const features = [
     {

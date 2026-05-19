@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import VideoCard from '../components/video/VideoCard';
-import Loader from '../components/common/Loader';
 import { CATEGORIES } from './HomePage';
 
 export const CategoriesPage: React.FC = () => {
