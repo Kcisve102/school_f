@@ -42,41 +42,32 @@ export const AdminPage: React.FC = () => {
     fetchVideos();
   }, []);
 
-  const handleUploadSuccess = () => {
-    fetchVideos();
-  };
+  const handleUploadSuccess = () => fetchVideos();
+  const handleEditSuccess = () => fetchVideos();
 
-  const handleEditSuccess = () => {
-    fetchVideos();
-  };
-
-  // Calculate stats
   const totalVideos = videos.length;
   const processedVideos = videos.filter(v => v.transcription_status === 'completed').length;
   const processingVideos = videos.filter(v => v.transcription_status === 'processing').length;
 
-  const menuItems = [
+  const allNavItems = [
     { icon: LayoutDashboard, label: 'Dashboard', active: true, path: '/admin' },
-    // { icon: PlayCircle, label: 'All Videos', active: false, path: '/' },
-    // { icon: Search, label: 'Browse', active: false, path: '/categories' },
     { icon: BookOpen, label: 'Categories', active: false, path: '/categories' },
+    { icon: Bookmark, label: 'Bookmarks', active: false, path: '#' },
+    { icon: Settings, label: 'Settings', active: false, path: '#' },
   ];
 
-  const personalItems = [
-    { icon: Bookmark, label: 'Bookmarks', path: '#' },
-    { icon: Settings, label: 'Settings', path: '#' },
-  ];
+  const sidebarMenuItems = allNavItems.slice(0, 2);
+  const sidebarPersonalItems = allNavItems.slice(2);
 
   return (
     <div className="flex min-h-screen bg-bg-primary text-text-primary">
-      {/* Sidebar */}
-      <aside className="w-64 bg-surface border-r border-border flex flex-col fixed h-full">
+
+      {/* ── Desktop sidebar ── */}
+      <aside className="hidden lg:flex w-64 bg-surface border-r border-border flex-col fixed h-full z-30">
         <div className="p-6">
-          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">
-            Main Menu
-          </h2>
+          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">Main Menu</h2>
           <nav className="space-y-1">
-            {menuItems.map((item, index) => (
+            {sidebarMenuItems.map((item, index) => (
               <button
                 key={index}
                 onClick={() => navigate(item.path)}
@@ -92,13 +83,10 @@ export const AdminPage: React.FC = () => {
             ))}
           </nav>
         </div>
-
         <div className="p-6 border-t border-border">
-          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">
-            Personal
-          </h2>
+          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">Personal</h2>
           <nav className="space-y-1">
-            {personalItems.map((item, index) => (
+            {sidebarPersonalItems.map((item, index) => (
               <button
                 key={index}
                 onClick={() => navigate(item.path)}
@@ -110,8 +98,6 @@ export const AdminPage: React.FC = () => {
             ))}
           </nav>
         </div>
-
-        {/* User Profile at Bottom */}
         {user && (
           <div className="mt-auto p-6 border-t border-border">
             <div className="flex items-center gap-3">
@@ -127,67 +113,93 @@ export const AdminPage: React.FC = () => {
         )}
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto ml-64">
-        <div className="p-6 md:p-8">
+      {/* ── Main content ── */}
+      <main className="flex-1 overflow-auto lg:ml-64">
+
+        {/* ── Mobile: sticky top bar ── */}
+        <div className="lg:hidden sticky top-0 z-30 bg-bg-primary/95 backdrop-blur-xl  border-border">
+         
+
+          {/* Horizontal scrollable nav */}
+          <div className="flex gap-2 px-4 p-6 overflow-x-auto scrollbar-hide">
+            {allNavItems.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => navigate(item.path)}
+                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  item.active
+                    ? 'bg-accent/10 text-accent border border-accent/30'
+                    : 'text-text-secondary bg-surface-secondary border border-border hover:text-text-primary hover:border-accent/30'
+                }`}
+              >
+                <item.icon className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-4 md:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
-            {/* Welcome Section */}
+
+            {/* Welcome */}
             <div className="flex items-start justify-between mb-8">
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary mb-2">
                   Admin Dashboard
                 </h1>
                 <p className="text-text-secondary">
                   Manage videos and monitor platform statistics
                 </p>
               </div>
-              <ThemeToggle />
+              <div className="hidden lg:block">
+                <ThemeToggle />
+              </div>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              <div className="bg-surface rounded-xl p-6 border border-border">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-10 lg:mb-12">
+              <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-accent/10">
                     <VideoIcon className="w-5 h-5 text-accent" />
                   </div>
                   <span className="text-sm text-text-secondary">Total Videos</span>
                 </div>
-                <div className="text-4xl font-bold text-text-primary mb-1">{totalVideos}</div>
+                <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{totalVideos}</div>
                 <div className="text-sm text-text-muted">All uploaded videos</div>
               </div>
 
-              <div className="bg-surface rounded-xl p-6 border border-border">
+              <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-success/10">
                     <CheckCircle className="w-5 h-5 text-success" />
                   </div>
                   <span className="text-sm text-text-secondary">Processed</span>
                 </div>
-                <div className="text-4xl font-bold text-text-primary mb-1">{processedVideos}</div>
+                <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{processedVideos}</div>
                 <div className="text-sm text-text-muted">Ready for learning</div>
               </div>
 
-              <div className="bg-surface rounded-xl p-6 border border-border">
+              <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-info/10">
                     <Clock className="w-5 h-5 text-info" />
                   </div>
                   <span className="text-sm text-text-secondary">Processing</span>
                 </div>
-                <div className="text-4xl font-bold text-text-primary mb-1">{processingVideos}</div>
+                <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{processingVideos}</div>
                 <div className="text-sm text-text-muted">In queue</div>
               </div>
             </div>
 
             {/* Upload Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
-              <div className="bg-surface rounded-xl p-6 border border-border">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10 lg:mb-12">
+              <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border">
                 <h3 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-2">
                   <Upload className="w-5 h-5 text-accent" />
                   Upload Video
                 </h3>
-
                 <div className="flex border-b border-border mb-6">
                   <button
                     className={`px-4 py-2 font-medium text-sm transition-colors ${
@@ -210,7 +222,6 @@ export const AdminPage: React.FC = () => {
                     Upload from URL
                   </button>
                 </div>
-
                 {activeTab === 'upload' ? (
                   <VideoUploadForm onSuccess={handleUploadSuccess} />
                 ) : (
@@ -221,7 +232,7 @@ export const AdminPage: React.FC = () => {
 
             {/* Video List */}
             <div>
-              <h3 className="text-2xl font-bold text-text-primary mb-6">Manage Videos</h3>
+              <h3 className="text-xl lg:text-2xl font-bold text-text-primary mb-6">Manage Videos</h3>
               {loading ? (
                 <div className="text-center py-12">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto"></div>
@@ -239,7 +250,6 @@ export const AdminPage: React.FC = () => {
         </div>
       </main>
 
-      {/* Edit Modal */}
       {editingVideo && (
         <VideoEditModal
           video={editingVideo}
