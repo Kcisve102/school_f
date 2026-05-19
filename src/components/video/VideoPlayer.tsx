@@ -26,6 +26,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onProgress }) => 
         controls
         onProgress={handleProgress}
         progressInterval={1000}
+        config={{
+          file: {
+            attributes: {
+              crossOrigin: 'anonymous'
+            }
+          }
+        }}
       />
     </div>
   );
