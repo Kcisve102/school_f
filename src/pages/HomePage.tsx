@@ -17,12 +17,12 @@ import {
 } from 'lucide-react';
 
 export const CATEGORIES = [
-  { id: 'technology', name: 'Technology', icon: Code, color: 'from-blue-500 to-cyan-500' },
-  { id: 'science', name: 'Science', icon: Lightbulb, color: 'from-purple-500 to-pink-500' },
+  { id: 'factory skills', name: 'Factory Skills', icon: Code, color: 'from-blue-500 to-cyan-500' },
+  // { id: 'science', name: 'Science', icon: Lightbulb, color: 'from-purple-500 to-pink-500' },
   { id: 'language', name: 'Language', icon: Globe, color: 'from-green-500 to-emerald-500' },
-  { id: 'business', name: 'Business', icon: Briefcase, color: 'from-orange-500 to-red-500' },
-  { id: 'art', name: 'Art & Design', icon: Palette, color: 'from-pink-500 to-rose-500' },
-  { id: 'health', name: 'Health', icon: Dumbbell, color: 'from-teal-500 to-cyan-500' },
+  { id: 'other', name: 'Other', icon: Briefcase, color: 'from-orange-500 to-red-500' },
+  // { id: 'art', name: 'Art & Design', icon: Palette, color: 'from-pink-500 to-rose-500' },
+  // { id: 'health', name: 'Health', icon: Dumbbell, color: 'from-teal-500 to-cyan-500' },
 ];
 
 export const HomePage: React.FC = () => {
@@ -67,7 +67,26 @@ export const HomePage: React.FC = () => {
     <div className="min-h-screen bg-[#0a0a1f]">
       {/* Hero Section */}
       <section className="relative bg-[#0a0a1f] text-white overflow-hidden pt-20 pb-32">
-        <div className="absolute inset-0 opacity-30">
+        {/* Factory Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="/assets/factory-hero-bg.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&q=80';
+            }}
+          />
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a1f]/95 via-[#0a0a1f]/85 to-[#0a0a1f]/95"></div>
+          {/* Top gradient blend */}
+          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
+          {/* Bottom gradient blend */}
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0a1f] to-transparent"></div>
+        </div>
+
+        <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl"></div>
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600 rounded-full filter blur-3xl"></div>
         </div>
@@ -104,8 +123,27 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-[#0a0a1f]">
-        <div className="px-4 sm:px-6 lg:px-8">
+      <section className="relative py-20 overflow-hidden">
+        {/* Factory Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="/assets/factory-features-bg.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1920&q=80';
+            }}
+          />
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-[#0a0a1f]/92"></div>
+          {/* Top gradient blend */}
+          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
+          {/* Bottom gradient blend */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a0a1f] to-transparent"></div>
+        </div>
+
+        <div className="relative px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Our Core Features
@@ -137,8 +175,27 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Interface Preview Section */}
-      <section className="py-20 bg-[#0a0a1f]">
-        <div className="px-4 sm:px-6 lg:px-8">
+      <section className="relative py-20 overflow-hidden">
+        {/* Subtle factory background */}
+        <div className="absolute inset-0">
+          <img
+            src="/assets/factory-interface-bg.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-30"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1920&q=80';
+            }}
+          />
+          {/* Very dark overlay for subtle effect */}
+          <div className="absolute inset-0 bg-[#0a0a1f]/95"></div>
+          {/* Top gradient blend */}
+          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
+          {/* Bottom gradient blend */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a0a1f] to-transparent"></div>
+        </div>
+
+        <div className="relative px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Experience the Interface
@@ -155,6 +212,114 @@ export const HomePage: React.FC = () => {
                 alt="Interface Preview - Video Learning Dashboard"
                 className="w-full h-auto"
               />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Factory Skills Showcase Section */}
+      <section className="relative py-20 overflow-hidden">
+        {/* Factory Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="/assets/factory-skills-bg.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=1920&q=80';
+            }}
+          />
+          {/* Dark overlay with gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a1f]/90 via-[#0f0f2e]/85 to-[#0a0a1f]/90"></div>
+          {/* Top gradient blend */}
+          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
+          {/* Bottom gradient blend */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a0a1f] to-transparent"></div>
+        </div>
+
+        <div className="relative px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 bg-blue-500/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-blue-500/30">
+              <Code className="w-4 h-4 text-blue-400" />
+              <span className="text-sm font-medium text-blue-300">FACTORY SKILLS</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Master Factory Skills
+            </h2>
+            <p className="text-lg text-gray-400">
+              Learn essential manufacturing and industrial skills through comprehensive video tutorials
+            </p>
+          </div>
+
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {/* Factory Image 1 */}
+              <div className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-blue-500/50 transition-all duration-300">
+                <div className="aspect-video overflow-hidden">
+                  <img
+                    src="/assets/factory-1.jpg"
+                    alt="Factory Manufacturing Floor"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=800&q=80';
+                    }}
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-white">Manufacturing Operations</h3>
+                  <p className="text-sm text-gray-400 mt-1">Learn production line operations and safety protocols</p>
+                </div>
+              </div>
+
+              {/* Factory Image 2 */}
+              <div className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-blue-500/50 transition-all duration-300">
+                <div className="aspect-video overflow-hidden">
+                  <img
+                    src="/assets/factory-2.jpg"
+                    alt="Industrial Equipment"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80';
+                    }}
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-white">Equipment Handling</h3>
+                  <p className="text-sm text-gray-400 mt-1">Master industrial equipment and machinery operation</p>
+                </div>
+              </div>
+
+              {/* Factory Image 3 */}
+              <div className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-blue-500/50 transition-all duration-300">
+                <div className="aspect-video overflow-hidden">
+                  <img
+                    src="/assets/factory-3.jpg"
+                    alt="Quality Control"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80';
+                    }}
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-white">Quality Control</h3>
+                  <p className="text-sm text-gray-400 mt-1">Understand quality assurance and inspection techniques</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <button
+                onClick={() => navigate('/categories')}
+                className="group bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-blue-500 hover:to-cyan-500 transition-all duration-200 shadow-xl hover:shadow-2xl flex items-center gap-2 mx-auto"
+              >
+                Explore Factory Skills Videos
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
             </div>
           </div>
         </div>
@@ -209,8 +374,25 @@ export const HomePage: React.FC = () => {
       )}
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600">
-        <div className="px-4 sm:px-6 lg:px-8">
+      <section className="relative py-20 overflow-hidden">
+        {/* Factory Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="/assets/factory-cta-bg.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1920&q=80';
+            }}
+          />
+          {/* Gradient overlay for CTA */}
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/90 via-blue-600/85 to-cyan-600/90"></div>
+          {/* Top gradient blend */}
+          <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
+        </div>
+
+        <div className="relative px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Ready to elevate your learning?
