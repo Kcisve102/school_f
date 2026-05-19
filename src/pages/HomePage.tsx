@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import VideoGrid from '../components/video/VideoGrid';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 import {
   ArrowRight,
   Bot,
@@ -35,26 +36,6 @@ const AI_CAPABILITIES = [
   },
 ];
 
-// Hook for scroll animations
-const useScrollAnimation = () => {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
-
-    const elements = document.querySelectorAll('.animate-on-scroll');
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-};
 
 export const HomePage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -63,7 +44,7 @@ export const HomePage: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  useScrollAnimation();
+  useScrollReveal();
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -177,7 +158,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* AI Capabilities Section */}
-      <section className="relative py-32 overflow-hidden animate-on-scroll">
+      <section className="relative py-32 overflow-hidden">
         {/* Background Image - dvb.png as subtle backdrop */}
         <div className="absolute inset-0 opacity-20">
           <img
@@ -191,7 +172,7 @@ export const HomePage: React.FC = () => {
         <div className="relative px-6 lg:px-12 xl:px-20">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
-            <div className="text-center max-w-3xl mx-auto mb-20">
+            <div className="text-center max-w-3xl mx-auto mb-20 reveal-up">
               <div className="inline-flex items-center gap-2 bg-surface-secondary rounded-full px-4 py-2 mb-6 border border-border">
                 <Bot className="w-4 h-4 text-accent" />
                 <span className="text-sm font-medium text-text-secondary">HOW IT WORKS</span>
@@ -209,7 +190,7 @@ export const HomePage: React.FC = () => {
               {AI_CAPABILITIES.map((capability, index) => (
                 <div
                   key={index}
-                  className="group relative"
+                  className={`group relative reveal-up delay-${index + 1}`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-b from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
                   <div className="relative bg-surface border border-border rounded-2xl p-8 hover:border-accent/30 transition-all duration-300">
@@ -231,7 +212,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Visual Learning Section - Asymmetric Editorial Layout */}
-      <section className="relative py-32 overflow-hidden animate-on-scroll">
+      <section className="relative py-32 overflow-hidden">
         {/* Full-bleed Background */}
         <div className="absolute inset-0">
           <img
@@ -248,7 +229,7 @@ export const HomePage: React.FC = () => {
             <div className="grid lg:grid-cols-12 gap-12 items-center">
               
               {/* Left Column - Large Typography */}
-              <div className="lg:col-span-7">
+              <div className="lg:col-span-7 reveal-left">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-12 h-px bg-info"></div>
                   <span className="text-sm font-semibold text-info uppercase tracking-widest">Video Learning</span>
@@ -283,7 +264,7 @@ export const HomePage: React.FC = () => {
               </div>
 
               {/* Right Column - Feature Stack */}
-              <div className="lg:col-span-5 space-y-4">
+              <div className="lg:col-span-5 space-y-4 reveal-right delay-2">
                 {[
                   { icon: Search, title: 'Smart Matching', desc: 'AI finds videos based on your specific questions' },
                   { icon: Play, title: 'Step-by-Step', desc: 'Detailed demonstrations with clear instructions' },
@@ -320,11 +301,11 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Categories Section - Distinctive Bento Layout */}
-      <section className="relative py-32 animate-on-scroll">
+      <section className="relative py-32">
         <div className="relative px-6 lg:px-12 xl:px-20">
           <div className="max-w-7xl mx-auto">
             {/* Section Header - Left aligned, editorial style */}
-            <div className="mb-16">
+            <div className="mb-16 reveal-up">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-px bg-accent"></div>
                 <span className="text-sm font-medium text-accent uppercase tracking-widest">Browse Topics</span>
@@ -346,7 +327,7 @@ export const HomePage: React.FC = () => {
               {/* Factory Skills - Large Feature Card */}
               <button
                 onClick={() => navigate('/categories')}
-                className="group col-span-12 md:col-span-7 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-factory/30 transition-all duration-500 text-left"
+                className="group col-span-12 md:col-span-7 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-factory/30 transition-all duration-500 text-left reveal-up delay-1"
               >
                 <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-factory/10 to-warning/5 rounded-full filter blur-3xl group-hover:blur-2xl transition-all duration-700 translate-x-1/2 -translate-y-1/2"></div>
                 <div className="relative p-8 md:p-12 min-h-[320px] flex flex-col justify-between">
@@ -372,7 +353,7 @@ export const HomePage: React.FC = () => {
               {/* Safety Guide - Tall Card */}
               <button
                 onClick={() => navigate('/categories')}
-                className="group col-span-12 md:col-span-5 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-safety/30 transition-all duration-500 text-left"
+                className="group col-span-12 md:col-span-5 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-safety/30 transition-all duration-500 text-left reveal-up delay-2"
               >
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-safety/10 to-success/5 rounded-full filter blur-3xl group-hover:blur-2xl transition-all duration-700 -translate-x-1/2 translate-y-1/2"></div>
                 <div className="relative p-8 md:p-10 min-h-[320px] flex flex-col justify-between">
@@ -398,7 +379,7 @@ export const HomePage: React.FC = () => {
               {/* Language - Horizontal Card */}
               <button
                 onClick={() => navigate('/categories')}
-                className="group col-span-12 md:col-span-5 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-language/30 transition-all duration-500 text-left"
+                className="group col-span-12 md:col-span-5 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-language/30 transition-all duration-500 text-left reveal-up delay-3"
               >
                 <div className="absolute top-1/2 right-0 w-48 h-48 bg-gradient-to-l from-language/10 to-info/5 rounded-full filter blur-3xl group-hover:blur-2xl transition-all duration-700 translate-x-1/2 -translate-y-1/2"></div>
                 <div className="relative p-8 md:p-10 min-h-[260px] flex flex-col md:flex-row gap-6 items-start md:items-center">
@@ -422,7 +403,7 @@ export const HomePage: React.FC = () => {
               {/* Health - Feature Card with Image Space */}
               <button
                 onClick={() => navigate('/categories')}
-                className="group col-span-12 md:col-span-7 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-health/30 transition-all duration-500 text-left"
+                className="group col-span-12 md:col-span-7 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-health/30 transition-all duration-500 text-left reveal-up delay-4"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-health/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="relative p-8 md:p-10 min-h-[260px] flex flex-col md:flex-row gap-8">
@@ -476,7 +457,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* dvb.png Feature Showcase */}
-      <section className="relative py-32 overflow-hidden animate-on-scroll">
+      <section className="relative py-32 overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="/assets/dvb.png"
@@ -488,7 +469,7 @@ export const HomePage: React.FC = () => {
 
         <div className="relative px-6 lg:px-12 xl:px-20">
           <div className="max-w-7xl mx-auto">
-            <div className="max-w-2xl">
+            <div className="max-w-2xl reveal-left">
               <div className="inline-flex items-center gap-2 bg-surface-secondary rounded-full px-4 py-2 mb-6 border border-border">
                 <Zap className="w-4 h-4 text-success" />
                 <span className="text-sm font-medium text-text-secondary">ADVANCED LOGISTICS</span>
@@ -516,7 +497,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Latest Videos Section */}
-      <section className="relative py-32 overflow-hidden animate-on-scroll">
+      <section className="relative py-32 overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
@@ -530,12 +511,12 @@ export const HomePage: React.FC = () => {
         <div className="relative px-6 lg:px-12 xl:px-20">
           <div className="max-w-7xl mx-auto">
             {/* Section Header with accent line */}
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-4 mb-4 reveal-up">
               <div className="w-16 h-px bg-accent"></div>
               <span className="text-sm font-semibold text-accent uppercase tracking-widest">Video Library</span>
             </div>
 
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4 reveal-up delay-1">
               <div>
                 <h2 className="text-5xl md:text-6xl font-bold text-text-primary mb-4">Latest Videos</h2>
                 <p className="text-xl text-text-secondary max-w-xl">
@@ -559,13 +540,13 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-32 overflow-hidden animate-on-scroll">
+      <section className="relative py-32 overflow-hidden">
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-warning/10 to-info/10"></div>
         <div className="absolute inset-0 bg-bg-primary/80"></div>
         
         <div className="relative px-6 lg:px-12 xl:px-20">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="max-w-4xl mx-auto text-center reveal-scale">
             <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
               Ready to learn smarter?
             </h2>

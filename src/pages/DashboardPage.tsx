@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import { useAuth } from '../hooks/useAuth';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 import VideoCard from '../components/video/VideoCard';
 import {
   LayoutDashboard,
@@ -21,6 +22,8 @@ export const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  useScrollReveal();
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -138,7 +141,7 @@ export const DashboardPage: React.FC = () => {
         <div className="p-6 md:p-8">
           <div className="max-w-7xl mx-auto">
             {/* Welcome Section */}
-            <div className="mb-8">
+            <div className="mb-8 reveal-up">
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
                 Welcome back, {user?.full_name.split(' ')[0] || 'there'}!
               </h1>
@@ -149,7 +152,7 @@ export const DashboardPage: React.FC = () => {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 reveal-up delay-1">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-purple-500/20">
                     <BookOpen className="w-5 h-5 text-purple-400" />
@@ -160,7 +163,7 @@ export const DashboardPage: React.FC = () => {
                 <div className="text-sm text-gray-400">Active Videos</div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 reveal-up delay-2">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-blue-500/20">
                     <Clock className="w-5 h-5 text-blue-400" />
@@ -171,7 +174,7 @@ export const DashboardPage: React.FC = () => {
                 <div className="text-sm text-gray-400">Time Spent Learning</div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 reveal-up delay-3">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-green-500/20">
                     <Trophy className="w-5 h-5 text-green-400" />
@@ -184,7 +187,7 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             {/* Recommended Videos */}
-            <div className="mb-8">
+            <div className="mb-8 reveal-up">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-white">Recommended for you</h2>
                 <button className="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors">

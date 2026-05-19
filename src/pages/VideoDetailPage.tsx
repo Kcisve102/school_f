@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Video, Transcription, Summary } from '../types';
 import { videoService } from '../services/video.service';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 import VideoPlayer from '../components/video/VideoPlayer';
 import TranscriptDisplay from '../components/video/TranscriptDisplay';
 import SummaryPanel from '../components/video/SummaryPanel';
@@ -20,6 +21,8 @@ export const VideoDetailPage: React.FC = () => {
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
   const [showQuiz, setShowQuiz] = useState(false);
+
+  useScrollReveal();
 
   useEffect(() => {
     const fetchVideoData = async () => {
@@ -105,7 +108,7 @@ export const VideoDetailPage: React.FC = () => {
       </button>
 
       <div className="space-y-6">
-        <div>
+        <div className="reveal-up">
           <h1 className="text-3xl font-bold text-text-primary mb-2">{video.title}</h1>
           {video.description && (
             <p className="text-text-secondary mb-4">{video.description}</p>
@@ -114,7 +117,7 @@ export const VideoDetailPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6 reveal-up delay-1">
             <VideoPlayer
               url={video.s3_url}
               onProgress={setCurrentTime}
@@ -147,7 +150,7 @@ export const VideoDetailPage: React.FC = () => {
             )}
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-6 reveal-up delay-2">
             {summary && (
               <SummaryPanel
                 summaryText={summary.summary_text}

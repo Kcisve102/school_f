@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 import VideoCard from '../components/video/VideoCard';
 import { CATEGORIES } from '../constants/categories';
 import { 
@@ -49,6 +50,8 @@ export const CategoriesPage: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
+
+  useScrollReveal();
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -309,7 +312,7 @@ export const CategoriesPage: React.FC = () => {
         {/* Main Content */}
         <main className="flex-1 lg:ml-72">
           {/* Desktop Header */}
-          <div className="hidden lg:block sticky top-0 z-30 bg-bg-primary/95 backdrop-blur-xl border-b border-border px-8 py-6">
+          <div className="hidden lg:block sticky top-0 z-30 bg-bg-primary/95 backdrop-blur-xl border-b border-border px-8 py-6 reveal-up">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-text-primary mb-1">
