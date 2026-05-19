@@ -129,7 +129,7 @@ export const QuizModal: React.FC<QuizModalProps> = ({
         {/* Modal panel */}
         <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
           {/* Header */}
-          <div className="bg-blue-600 px-6 py-4">
+          <div className="bg-[#0a0a1f] px-6 py-4">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-white">Video Quiz</h2>
               <button
@@ -185,7 +185,7 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                 <p className="text-gray-600 mb-4">{error}</p>
                 <button
                   onClick={loadQuiz}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="px-6 py-2 bg-[#0a0a1f] text-white rounded-lg hover:bg-blue-700"
                 >
                   Try Again
                 </button>
@@ -235,7 +235,7 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                   ) : (
                     <button
                       onClick={handleNext}
-                      className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                      className="px-6 py-2 bg-[#0a0a1f] text-white rounded-lg font-medium hover:bg-blue-900 transition-colors"
                     >
                       Next
                     </button>

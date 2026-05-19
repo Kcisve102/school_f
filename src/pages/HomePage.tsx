@@ -367,7 +367,19 @@ export const HomePage: React.FC = () => {
               </p>
             </div>
 
-            <VideoGrid videos={videos} loading={loading} />
+            <VideoGrid videos={videos.slice(0, 3)} loading={loading} />
+
+            {videos.length > 3 && (
+              <div className="flex justify-center mt-12">
+                <button
+                  onClick={() => navigate('/categories')}
+                  className="group flex items-center gap-2 px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/50 rounded-lg text-white font-semibold transition-all duration-300"
+                >
+                  See All Videos
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            )}
           </div>
         </section>
       )}
