@@ -69,6 +69,12 @@ export const HomePage: React.FC = () => {
         {/* Factory Background Image */}
         <div className="absolute inset-0">
           <img
+                src="/assets/herodv.png"
+                alt="Interface Preview - Video Learning Dashboard"
+                className="w-full h-full object-cover"
+
+              />
+          {/* <img
             src="/assets/factory-hero-bg.jpg"
             alt=""
             className="w-full h-full object-cover"
@@ -76,7 +82,7 @@ export const HomePage: React.FC = () => {
               const target = e.target as HTMLImageElement;
               target.src = 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&q=80';
             }}
-          />
+          /> */}
           {/* Dark overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a1f]/95 via-[#0a0a1f]/85 to-[#0a0a1f]/95"></div>
           {/* Top gradient blend */}
@@ -120,61 +126,8 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Features Section */}
-      <section className="relative py-20 overflow-hidden">
-        {/* Factory Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src="/assets/factory-features-bg.jpg"
-            alt=""
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1920&q=80';
-            }}
-          />
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-[#0a0a1f]/92"></div>
-          {/* Top gradient blend */}
-          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
-          {/* Bottom gradient blend */}
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a0a1f] to-transparent"></div>
-        </div>
-
-        <div className="relative px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Our Core Features
-            </h2>
-            <p className="text-lg text-gray-400">
-              Designed for the modern learner who demands excellence and high-fidelity insights
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:border-purple-500/50"
-              >
-                <div className="inline-flex p-4 rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 mb-6">
-                  <feature.icon className="w-8 h-8 text-purple-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-400 leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Interface Preview Section */}
-      <section className="relative py-20 overflow-hidden">
+       {/* Interface Preview Section */}
+       <section className="relative py-20 overflow-hidden">
         {/* Subtle factory background */}
         <div className="absolute inset-0">
           <img
@@ -216,11 +169,70 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Features Section */}
+      <section className="relative py-20 overflow-hidden">
+        {/* Factory Background Image */}
+        <div className="absolute inset-0">
+          {/* <img
+            src="/assets/factory-features-bg.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1920&q=80';
+            }}
+          /> */}
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-[#0a0a1f]/92"></div>
+          {/* Top gradient blend */}
+          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#0a0a1f] to-transparent"></div>
+          {/* Bottom gradient blend */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a0a1f] to-transparent"></div>
+        </div>
+
+        <div className="relative px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Our Core Features
+            </h2>
+            <p className="text-lg text-gray-400">
+              Designed for the modern learner who demands excellence and high-fidelity insights
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:border-purple-500/50"
+              >
+                <div className="inline-flex p-4 rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 mb-6">
+                  <feature.icon className="w-8 h-8 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-400 leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Factory Skills Showcase Section */}
       <section className="relative py-20 overflow-hidden">
         {/* Factory Background Image */}
         <div className="absolute inset-0">
-          <img
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="/assets/dvb.png"
+                alt="Interface Preview - Video Learning Dashboard"
+                className="w-full h-auto"
+              />
+            </div>
+          {/* <img
             src="/assets/factory-skills-bg.jpg"
             alt=""
             className="w-full h-full object-cover"
@@ -228,7 +240,7 @@ export const HomePage: React.FC = () => {
               const target = e.target as HTMLImageElement;
               target.src = 'https://images.unsplash.com/photo-1565043666747-69f6646db940?w=1920&q=80';
             }}
-          />
+          /> */}
           {/* Dark overlay with gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a1f]/90 via-[#0f0f2e]/85 to-[#0a0a1f]/90"></div>
           {/* Top gradient blend */}
@@ -267,8 +279,8 @@ export const HomePage: React.FC = () => {
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-white">Manufacturing Operations</h3>
-                  <p className="text-sm text-gray-400 mt-1">Learn production line operations and safety protocols</p>
+                  <h3 className="text-lg font-semibold text-white">Factory Skills</h3>
+                  <p className="text-sm text-gray-400 mt-1">Master production line workflows and workplace safety standards</p>
                 </div>
               </div>
 
@@ -286,8 +298,8 @@ export const HomePage: React.FC = () => {
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-white">Equipment Handling</h3>
-                  <p className="text-sm text-gray-400 mt-1">Master industrial equipment and machinery operation</p>
+                  <h3 className="text-lg font-semibold text-white">Safety Guide</h3>
+                  <p className="text-sm text-gray-400 mt-1">Learn proper handling of industrial machinery and equipment</p>
                 </div>
               </div>
 
@@ -305,8 +317,8 @@ export const HomePage: React.FC = () => {
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-white">Quality Control</h3>
-                  <p className="text-sm text-gray-400 mt-1">Understand quality assurance and inspection techniques</p>
+                  <h3 className="text-lg font-semibold text-white">Language</h3>
+                  <p className="text-sm text-gray-400 mt-1">Study quality control terminology and inspection procedures</p>
                 </div>
               </div>
             </div>
@@ -316,7 +328,7 @@ export const HomePage: React.FC = () => {
                 onClick={() => navigate('/categories')}
                 className="group bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-blue-500 hover:to-cyan-500 transition-all duration-200 shadow-xl hover:shadow-2xl flex items-center gap-2 mx-auto"
               >
-                Explore Factory Skills Videos
+                Explore Skills Videos
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
