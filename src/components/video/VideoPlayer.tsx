@@ -36,9 +36,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onProgress, onEnd
         progressInterval={1000}
         config={{
           file: {
-            attributes: {
-              crossOrigin: 'anonymous'
-            }
+            attributes: {}
           }
         }}
       />
