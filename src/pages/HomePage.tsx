@@ -18,11 +18,11 @@ import {
 
 export const CATEGORIES = [
   { id: 'factory skills', name: 'Factory Skills', icon: Code, color: 'from-blue-500 to-cyan-500' },
-  // { id: 'science', name: 'Science', icon: Lightbulb, color: 'from-purple-500 to-pink-500' },
+  { id: 'safety guide', name: 'Safety Guide', icon: Lightbulb, color: 'from-purple-500 to-pink-500' },
   { id: 'language', name: 'Language', icon: Globe, color: 'from-green-500 to-emerald-500' },
   { id: 'other', name: 'Other', icon: Briefcase, color: 'from-orange-500 to-red-500' },
   // { id: 'art', name: 'Art & Design', icon: Palette, color: 'from-pink-500 to-rose-500' },
-  // { id: 'health', name: 'Health', icon: Dumbbell, color: 'from-teal-500 to-cyan-500' },
+  { id: 'health', name: 'Health', icon: Dumbbell, color: 'from-teal-500 to-cyan-500' },
 ];
 
 export const HomePage: React.FC = () => {
@@ -337,12 +337,12 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
+          <div className="flex flex-wrap justify-center items-center gap-4">
             {CATEGORIES.map((category) => (
               <button
                 key={category.id}
                 onClick={() => navigate('/categories')}
-                className="group relative overflow-hidden rounded-xl p-6 text-white transition-all hover:scale-105 hover:shadow-2xl"
+                className="group relative overflow-hidden rounded-xl p-6 text-white transition-all hover:scale-105 hover:shadow-2xl w-40"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-90 group-hover:opacity-100 transition-opacity`}></div>
                 <div className="relative z-10 flex flex-col items-center">

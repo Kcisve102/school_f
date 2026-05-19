@@ -52,11 +52,31 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
       onClick={() => navigate(`/video/${video.id}`)}
       className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10 cursor-pointer hover:bg-white/10 hover:border-purple-500/50 transition-all duration-300 hover:shadow-2xl"
     >
-      <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg mb-4 aspect-video flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20"></div>
-        <Play className="relative w-12 h-12 text-purple-400 opacity-80" />
+      <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg mb-4 aspect-video flex items-center justify-center overflow-hidden group">
+        {/* Video thumbnail - shows first frame */}
+        <video
+          src={video.s3_url}
+          preload="metadata"
+          className="w-full h-full object-cover"
+          muted
+          playsInline
+          onError={(e) => {
+            // Fallback to gradient background if video fails to load
+            const target = e.target as HTMLVideoElement;
+            target.style.display = 'none';
+          }}
+        />
+
+        {/* Fallback gradient overlay (shown if video fails to load) */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 pointer-events-none"></div>
+
+        {/* Play icon overlay */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">
+          <Play className="w-12 h-12 text-white opacity-90 group-hover:scale-110 transition-transform" />
+        </div>
+
         {video.duration && (
-          <span className="absolute bottom-2 right-2 bg-black/75 text-white text-xs px-2 py-1 rounded">
+          <span className="absolute bottom-2 right-2 bg-black/75 text-white text-xs px-2 py-1 rounded z-10">
             {formatDuration(video.duration)}
           </span>
         )}
