@@ -1,13 +1,12 @@
 import { io, Socket } from 'socket.io-client';
-
-const WS_URL = import.meta.env.VITE_WS_URL || 'https://api.trainflowai.com';
+import { WS_BASE_URL } from '../config/BaseUrl';
 
 class WebSocketService {
   private socket: Socket | null = null;
 
   connect() {
     if (!this.socket) {
-      this.socket = io(WS_URL, {
+      this.socket = io(WS_BASE_URL, {
         withCredentials: true,
       });
 
