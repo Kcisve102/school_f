@@ -99,9 +99,15 @@ export const Header: React.FC = () => {
                 <LanguageToggle size="sm" />
                 <Link
                   to="/login"
-                  className="px-6 py-2 rounded-lg bg-accent text-white font-medium hover:bg-accent-dark transition-all"
+                  className="px-4 py-2 rounded-lg border border-border text-text-secondary font-medium hover:text-text-primary hover:border-accent/40 transition-all"
                 >
                   {t.login}
+                </Link>
+                <Link
+                  to="/signup"
+                  className="px-4 py-2 rounded-lg bg-accent text-white font-medium hover:bg-accent-dark transition-all"
+                >
+                  {t.signUp}
                 </Link>
               </div>
             </div>
@@ -194,13 +200,20 @@ export const Header: React.FC = () => {
                   <span className="font-medium">{label}</span>
                 </Link>
               ))}
-              <div className="pt-2">
+              <div className="pt-2 flex flex-col gap-2">
                 <Link
                   to="/login"
                   onClick={closeMenu}
-                  className="block px-6 py-2.5 rounded-lg bg-accent text-white font-medium text-center hover:bg-accent-dark transition-all"
+                  className="block px-6 py-2.5 rounded-lg border border-border text-text-secondary font-medium text-center hover:text-text-primary hover:border-accent/40 transition-all"
                 >
                   {t.login}
+                </Link>
+                <Link
+                  to="/signup"
+                  onClick={closeMenu}
+                  className="block px-6 py-2.5 rounded-lg bg-accent text-white font-medium text-center hover:bg-accent-dark transition-all"
+                >
+                  {t.signUp}
                 </Link>
               </div>
             </>

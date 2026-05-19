@@ -13,6 +13,7 @@ import VideoDetailPage from './pages/VideoDetailPage';
 import CategoriesPage from './pages/CategoriesPage';
 import DashboardPage from './pages/DashboardPage';
 import ChatPage from './pages/ChatPage';
+import SignupPage from './pages/SignupPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 function AppContent() {
@@ -25,6 +26,7 @@ function AppContent() {
       <main className="flex-grow">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
