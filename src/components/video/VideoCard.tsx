@@ -6,9 +6,10 @@ import { formatDuration, formatDate } from '../../utils/helpers';
 
 interface VideoCardProps {
   video: Video;
+  compact?: boolean;
 }
 
-export const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
+export const VideoCard: React.FC<VideoCardProps> = ({ video, compact }) => {
   const navigate = useNavigate();
 
   const getStatusBadge = () => {
@@ -50,9 +51,9 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   return (
     <div
       onClick={() => navigate(`/video/${video.id}`)}
-      className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10 cursor-pointer hover:bg-white/10 hover:border-purple-500/50 transition-all duration-300 hover:shadow-2xl"
+      className={`h-full flex flex-col bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 cursor-pointer hover:bg-white/10 hover:border-purple-500/50 transition-all duration-300 hover:shadow-2xl ${compact ? 'p-2 md:p-5' : 'p-5'}`}
     >
-      <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg mb-4 aspect-video flex items-center justify-center overflow-hidden group">
+      <div className={`relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg aspect-video flex items-center justify-center overflow-hidden group ${compact ? 'mb-2 md:mb-4' : 'mb-4'}`}>
         {/* Video thumbnail - shows first frame */}
         <video
           src={video.s3_url}
@@ -72,7 +73,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
 
         {/* Play icon overlay */}
         <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">
-          <Play className="w-12 h-12 text-white opacity-90 group-hover:scale-110 transition-transform" />
+          <Play className={`text-white opacity-90 group-hover:scale-110 transition-transform ${compact ? 'w-7 h-7 md:w-12 md:h-12' : 'w-12 h-12'}`} />
         </div>
 
         {video.duration && (
@@ -82,20 +83,20 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
         )}
       </div>
 
-      <div className="flex items-start justify-between mb-2">
-        <h3 className="font-semibold text-white line-clamp-2 flex-1">
+      <div className={`flex items-start justify-between ${compact ? 'md:mb-2' : 'mb-2'}`}>
+        <h3 className={`font-semibold text-white line-clamp-1 flex-1 ${compact ? 'text-xs md:text-base' : ''}`}>
           {video.title}
         </h3>
-        {getStatusBadge()}
+        {compact ? <span className="hidden md:inline">{getStatusBadge()}</span> : getStatusBadge()}
       </div>
 
       {video.description && (
-        <p className="text-sm text-gray-400 line-clamp-2 mb-3">
+        <p className={`text-sm text-gray-400 line-clamp-1 mb-3 ${compact ? 'hidden md:block' : ''}`}>
           {video.description}
         </p>
       )}
 
-      <div className="flex items-center text-xs text-gray-500">
+      <div className={`flex items-center text-xs text-gray-500 mt-2 ${compact ? 'hidden md:flex' : ''}`}>
         <Clock className="w-3 h-3 mr-1" />
         {formatDate(video.created_at)}
       </div>

@@ -379,7 +379,7 @@ export const HomePage: React.FC = () => {
               </p>
             </div>
 
-            <VideoGrid videos={videos.slice(0, 3)} loading={loading} />
+            <VideoGrid videos={videos.slice(0, 4)} loading={loading} mobile2x2 />
 
             {videos.length > 3 && (
               <div className="flex justify-center mt-12">

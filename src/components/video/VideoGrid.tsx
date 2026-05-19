@@ -6,9 +6,10 @@ import Loader from '../common/Loader';
 interface VideoGridProps {
   videos: Video[];
   loading?: boolean;
+  mobile2x2?: boolean;
 }
 
-export const VideoGrid: React.FC<VideoGridProps> = ({ videos, loading }) => {
+export const VideoGrid: React.FC<VideoGridProps> = ({ videos, loading, mobile2x2 }) => {
   if (loading) {
     return <Loader text="Loading videos..." />;
   }
@@ -25,9 +26,11 @@ export const VideoGrid: React.FC<VideoGridProps> = ({ videos, loading }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {videos.map((video) => (
-        <VideoCard key={video.id} video={video} />
+    <div className={`grid gap-3 ${mobile2x2 ? 'grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
+      {videos.map((video, index) => (
+        <div key={video.id} className={`flex ${mobile2x2 && index === 3 ? 'lg:hidden' : ''}`}>
+          <VideoCard video={video} compact={mobile2x2} />
+        </div>
       ))}
     </div>
   );
