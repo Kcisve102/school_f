@@ -28,8 +28,22 @@ function AppContent() {
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
-          <Route path="/video/:id" element={<VideoDetailPage />} />
-          <Route path="/chat" element={<ChatPage />} />
+          <Route
+            path="/video/:id"
+            element={
+              <ProtectedRoute>
+                <VideoDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute>
+                <ChatPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/admin"
             element={
