@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { videoService } from '../../services/video.service';
 import toast from 'react-hot-toast';
+import { CATEGORIES } from '../../constants/categories';
 
 interface VideoLinkFormProps {
   onSuccess?: () => void;
@@ -11,6 +12,7 @@ export const VideoLinkForm: React.FC<VideoLinkFormProps> = ({ onSuccess }) => {
   const [description, setDescription] = useState('');
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState<string>('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,13 +25,14 @@ export const VideoLinkForm: React.FC<VideoLinkFormProps> = ({ onSuccess }) => {
     setLoading(true);
 
     try {
-      await videoService.uploadVideoLink(url, title, description);
+      await videoService.uploadVideoLink(url, title, description, category || undefined);
 
       toast.success('Video download started! Processing will continue in the background.');
 
       setTitle('');
       setDescription('');
       setUrl('');
+      setCategory('');
 
       if (onSuccess) {
         onSuccess();
@@ -69,6 +72,24 @@ export const VideoLinkForm: React.FC<VideoLinkFormProps> = ({ onSuccess }) => {
             rows={3}
             placeholder="Enter video description"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Category (Optional)
+          </label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500/50 transition-colors"
+          >
+            <option value="">No Category</option>
+            {CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>

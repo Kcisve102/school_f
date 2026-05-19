@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { videoService } from '../../services/video.service';
 import toast from 'react-hot-toast';
+import { CATEGORIES } from '../../constants/categories';
 
 interface VideoUploadFormProps {
   onSuccess?: () => void;
@@ -12,6 +13,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [category, setCategory] = useState<string>('');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -42,6 +44,9 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
       if (description) {
         formData.append('description', description);
       }
+      if (category) {
+        formData.append('category', category);
+      }
 
       await videoService.uploadVideo(formData);
 
@@ -51,6 +56,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
       setDescription('');
       setFile(null);
       setUploadProgress(0);
+      setCategory('');
 
       if (onSuccess) {
         onSuccess();
@@ -90,6 +96,24 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
             rows={3}
             placeholder="Enter video description"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Category (Optional)
+          </label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500/50 transition-colors"
+          >
+            <option value="">No Category</option>
+            {CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>

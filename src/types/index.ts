@@ -13,6 +13,7 @@ export interface Video {
   s3_url: string;
   duration: number | null;
   upload_type: 'file' | 'link';
+  category: string | null;
   compression_status: 'pending' | 'processing' | 'completed' | 'failed';
   transcription_status: 'pending' | 'processing' | 'completed' | 'failed';
   summary_status: 'pending' | 'processing' | 'completed' | 'failed';

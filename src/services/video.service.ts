@@ -31,11 +31,12 @@ export const videoService = {
     return response.data.data!;
   },
 
-  uploadVideoLink: async (url: string, title: string, description?: string): Promise<{ videoId: number }> => {
+  uploadVideoLink: async (url: string, title: string, description?: string, category?: string): Promise<{ videoId: number }> => {
     const response = await api.post<ApiResponse<{ videoId: number }>>('/admin/videos/upload-link', {
       url,
       title,
       description,
+      category,
     });
     return response.data.data!;
   },
@@ -44,11 +45,17 @@ export const videoService = {
     await api.delete(`/admin/videos/${id}`);
   },
 
-  updateVideo: async (id: number, title: string, description?: string): Promise<void> => {
+  updateVideo: async (id: number, title: string, description?: string, category?: string): Promise<void> => {
     await api.put(`/admin/videos/${id}`, {
       title,
       description,
+      category,
     });
+  },
+
+  getByCategory: async (category: string): Promise<Video[]> => {
+    const response = await api.get<ApiResponse<Video[]>>(`/videos/category/${encodeURIComponent(category)}`);
+    return response.data.data!;
   },
 
   getAIStatus: async (videoId: number): Promise<{

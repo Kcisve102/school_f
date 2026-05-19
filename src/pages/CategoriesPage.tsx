@@ -2,17 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import VideoCard from '../components/video/VideoCard';
-import { CATEGORIES } from './HomePage';
+import { CATEGORIES } from '../constants/categories';
 
 export const CategoriesPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>(CATEGORIES[0].id);
+  const [selectedCategory, setSelectedCategory] = useState<string | 'all'>('all');
 
   useEffect(() => {
     const fetchVideos = async () => {
+      setLoading(true);
       try {
-        const data = await videoService.getAll();
+        let data: Video[];
+        if (selectedCategory === 'all') {
+          data = await videoService.getAll();
+        } else {
+          data = await videoService.getByCategory(selectedCategory);
+        }
         setVideos(data);
       } catch (error) {
         console.error('Failed to fetch videos:', error);
@@ -22,9 +28,7 @@ export const CategoriesPage: React.FC = () => {
     };
 
     fetchVideos();
-  }, []);
-
-  const selectedCategoryData = CATEGORIES.find(cat => cat.id === selectedCategory);
+  }, [selectedCategory]);
 
   return (
     <div className="flex min-h-screen bg-[#0a0a1f] text-white">
@@ -33,20 +37,30 @@ export const CategoriesPage: React.FC = () => {
         <h2 className="text-2xl font-bold text-white mb-6">Categories</h2>
 
         <nav className="space-y-2">
+          <button
+            onClick={() => setSelectedCategory('all')}
+            className={`w-full px-4 py-3 rounded-lg transition-all font-medium text-left ${
+              selectedCategory === 'all'
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            All Categories
+          </button>
+
           {CATEGORIES.map((category) => {
-            const isSelected = selectedCategory === category.id;
+            const isSelected = selectedCategory === category;
             return (
               <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`w-full px-4 py-3 rounded-lg transition-all font-medium text-left ${
                   isSelected
-                    ? `bg-gradient-to-r ${category.color} text-white shadow-md`
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <category.icon className="w-5 h-5" />
-                <span className="font-medium">{category.name}</span>
+                {category}
               </button>
             );
           })}
@@ -56,20 +70,14 @@ export const CategoriesPage: React.FC = () => {
       {/* Main Content */}
       <main className="flex-1 p-8 ml-64">
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            {selectedCategoryData && (
-              <>
-                <div className={`p-3 rounded-xl bg-gradient-to-br ${selectedCategoryData.color} text-white`}>
-                  <selectedCategoryData.icon className="w-6 h-6" />
-                </div>
-                <h1 className="text-4xl font-bold text-white">
-                  {selectedCategoryData.name}
-                </h1>
-              </>
-            )}
-          </div>
-          <p className="text-gray-400 ml-14">
-            Explore {videos.length} educational videos in this category
+          <h1 className="text-4xl font-bold text-white mb-2">
+            {selectedCategory === 'all' ? 'All Categories' : selectedCategory}
+          </h1>
+          <p className="text-gray-400">
+            {selectedCategory === 'all'
+              ? `Explore all ${videos.length} educational videos`
+              : `Explore ${videos.length} videos in ${selectedCategory}`
+            }
           </p>
         </div>
 

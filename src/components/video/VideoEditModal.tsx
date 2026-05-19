@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { videoService } from '../../services/video.service';
 import toast from 'react-hot-toast';
 import { Video } from '../../types';
+import { CATEGORIES } from '../../constants/categories';
 
 interface VideoEditModalProps {
   video: Video;
@@ -19,12 +20,14 @@ export const VideoEditModal: React.FC<VideoEditModalProps> = ({
 }) => {
   const [title, setTitle] = useState(video.title);
   const [description, setDescription] = useState(video.description || '');
+  const [category, setCategory] = useState<string>(video.category || '');
   const [loading, setLoading] = useState(false);
 
   // Update local state when video prop changes
   useEffect(() => {
     setTitle(video.title);
     setDescription(video.description || '');
+    setCategory(video.category || '');
   }, [video]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,7 +41,7 @@ export const VideoEditModal: React.FC<VideoEditModalProps> = ({
     setLoading(true);
 
     try {
-      await videoService.updateVideo(video.id, title, description || undefined);
+      await videoService.updateVideo(video.id, title, description || undefined, category || undefined);
 
       toast.success('Video updated successfully!');
 
@@ -96,6 +99,24 @@ export const VideoEditModal: React.FC<VideoEditModalProps> = ({
               rows={4}
               placeholder="Enter video description"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Category (Optional)
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500/50 transition-colors"
+            >
+              <option value="">No Category</option>
+              {CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Actions */}
