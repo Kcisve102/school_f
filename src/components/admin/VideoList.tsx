@@ -70,6 +70,9 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, on
                 Title
               </th>
               <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Category
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Duration
               </th>
               <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
@@ -99,6 +102,11 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, on
                     </div>
                   )}
                 </td>
+                <div className="px-6 py-4 whitespace-nowrap mx-auto">
+                  
+                  {video.category ? getStatusBadge(video.category) : ''}
+                </div>
+
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                   {video.duration ? formatDuration(video.duration) : '-'}
                 </td>
