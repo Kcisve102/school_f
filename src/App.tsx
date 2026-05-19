@@ -4,7 +4,6 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
-import FactoryChatbot from './components/chat/FactoryChatbot';
 
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -12,6 +11,7 @@ import AdminPage from './pages/AdminPage';
 import VideoDetailPage from './pages/VideoDetailPage';
 import CategoriesPage from './pages/CategoriesPage';
 import DashboardPage from './pages/DashboardPage';
+import ChatPage from './pages/ChatPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 function AppContent() {
@@ -30,6 +30,8 @@ function AppContent() {
           <Route path="/categories" element={<CategoriesPage />} />
 
           <Route path="/video/:id" element={<VideoDetailPage />} />
+
+          <Route path="/chat" element={<ChatPage />} />
 
           <Route
             path="/admin"
@@ -77,9 +79,6 @@ function App() {
             },
           }}
         />
-
-        {/* Factory Skills Chatbot - Available on all pages */}
-        <FactoryChatbot />
       </AuthProvider>
     </BrowserRouter>
   );

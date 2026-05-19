@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Video, LogOut, LayoutDashboard, Home } from 'lucide-react';
+import { Video, LogOut, LayoutDashboard, Home, MessageSquare } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 export const Header: React.FC = () => {
@@ -37,6 +37,14 @@ export const Header: React.FC = () => {
               >
                 <Home className="w-5 h-5" />
                 <span className="font-medium">Home</span>
+              </Link>
+
+              <Link
+                to="/chat"
+                className="flex items-center space-x-1 text-gray-300 hover:text-purple-400 transition-colors"
+              >
+                <MessageSquare className="w-5 h-5" />
+                <span className="font-medium">AI Assistant</span>
               </Link>
 
               {user.is_admin ? (
@@ -81,6 +89,14 @@ export const Header: React.FC = () => {
                 className="flex items-center space-x-1 text-gray-300 hover:text-purple-400 transition-colors"
               >
                 <Home className="w-5 h-5" />
+                <span className="font-medium">Home</span>
+              </Link>
+              <Link
+                to="/chat"
+                className="flex items-center space-x-1 text-gray-300 hover:text-purple-400 transition-colors"
+              >
+                <MessageSquare className="w-5 h-5" />
+                <span className="font-medium">AI Assistant</span>
               </Link>
               <Link
                 to="/login"
