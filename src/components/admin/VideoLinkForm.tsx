@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { videoService } from '../../services/video.service';
 import toast from 'react-hot-toast';
 import { CATEGORIES } from '../../constants/categories';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 interface VideoLinkFormProps {
   onSuccess?: () => void;
@@ -13,12 +15,14 @@ export const VideoLinkForm: React.FC<VideoLinkFormProps> = ({ onSuccess }) => {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState<string>('');
+  const { language } = useLanguage();
+  const t = translations[language].admin;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!url.trim() || !title.trim()) {
-      toast.error('Please enter both title and URL');
+      toast.error(t.pleaseEnterTitleUrl);
       return;
     }
 
@@ -27,7 +31,7 @@ export const VideoLinkForm: React.FC<VideoLinkFormProps> = ({ onSuccess }) => {
     try {
       await videoService.uploadVideoLink(url, title, description, category || undefined);
 
-      toast.success('Video download started! Processing will continue in the background.');
+      toast.success(t.downloadStarted);
 
       setTitle('');
       setDescription('');
@@ -49,41 +53,41 @@ export const VideoLinkForm: React.FC<VideoLinkFormProps> = ({ onSuccess }) => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-sm font-medium text-text-secondary mb-2">
-            Title
+            {t.title}
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            placeholder="Enter video title"
+            placeholder={t.enterVideoTitle}
             className="w-full px-4 py-3 bg-surface-secondary border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-accent/50 transition-colors"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-text-secondary mb-2">
-            Description (Optional)
+            {t.descriptionOptional}
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="w-full px-4 py-3 bg-surface-secondary border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-accent/50 transition-colors resize-none"
             rows={3}
-            placeholder="Enter video description"
+            placeholder={t.enterVideoDesc}
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-text-secondary mb-2">
-            Category (Optional)
+            {t.categoryOptional}
           </label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="w-full px-4 py-3 bg-surface-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-accent/50 transition-colors"
           >
-            <option value="">No Category</option>
+            <option value="">{t.noCategory}</option>
             {CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
@@ -94,7 +98,7 @@ export const VideoLinkForm: React.FC<VideoLinkFormProps> = ({ onSuccess }) => {
 
         <div>
           <label className="block text-sm font-medium text-text-secondary mb-2">
-            Video URL
+            {t.videoUrl}
           </label>
           <input
             type="url"
@@ -111,7 +115,7 @@ export const VideoLinkForm: React.FC<VideoLinkFormProps> = ({ onSuccess }) => {
           disabled={loading}
           className="w-full px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Uploading...' : 'Download & Upload'}
+          {loading ? t.uploading : t.downloadUpload}
         </button>
       </form>
     </div>

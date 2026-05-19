@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { videoService } from '../../services/video.service';
 import toast from 'react-hot-toast';
 import { CATEGORIES } from '../../constants/categories';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 interface VideoUploadFormProps {
   onSuccess?: () => void;
@@ -14,6 +16,8 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [category, setCategory] = useState<string>('');
+  const { language } = useLanguage();
+  const t = translations[language].admin;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -25,12 +29,12 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
     e.preventDefault();
 
     if (!file) {
-      toast.error('Please select a video file');
+      toast.error(t.pleaseSelectFile);
       return;
     }
 
     if (!title.trim()) {
-      toast.error('Please enter a video title');
+      toast.error(t.pleaseEnterTitle);
       return;
     }
 
@@ -50,7 +54,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
 
       await videoService.uploadVideo(formData);
 
-      toast.success('Video upload started! Processing will continue in the background.');
+      toast.success(t.uploadStarted);
 
       setTitle('');
       setDescription('');
@@ -73,41 +77,41 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-sm font-medium text-text-secondary mb-2">
-            Title
+            {t.title}
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            placeholder="Enter video title"
+            placeholder={t.enterVideoTitle}
             className="w-full px-4 py-3 bg-surface-secondary border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-accent/50 transition-colors"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-text-secondary mb-2">
-            Description (Optional)
+            {t.descriptionOptional}
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="w-full px-4 py-3 bg-surface-secondary border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-accent/50 transition-colors resize-none"
             rows={3}
-            placeholder="Enter video description"
+            placeholder={t.enterVideoDesc}
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-text-secondary mb-2">
-            Category (Optional)
+            {t.categoryOptional}
           </label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="w-full px-4 py-3 bg-surface-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-accent/50 transition-colors"
           >
-            <option value="">No Category</option>
+            <option value="">{t.noCategory}</option>
             {CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
@@ -118,7 +122,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
 
         <div>
           <label className="block text-sm font-medium text-text-secondary mb-2">
-            Video File
+            {t.videoFile}
           </label>
           <input
             type="file"
@@ -135,7 +139,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
           />
           {file && (
             <p className="mt-2 text-sm text-text-muted">
-              Selected: {file.name} ({(file.size / (1024 * 1024)).toFixed(2)} MB)
+              {t.selected}: {file.name} ({(file.size / (1024 * 1024)).toFixed(2)} MB)
             </p>
           )}
         </div>
@@ -148,7 +152,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>
-            <p className="text-sm text-text-muted mt-1">{uploadProgress}% uploaded</p>
+            <p className="text-sm text-text-muted mt-1">{uploadProgress}% {t.uploaded}</p>
           </div>
         )}
 
@@ -157,7 +161,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
           disabled={loading}
           className="w-full px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Uploading...' : 'Upload Video'}
+          {loading ? t.uploading : t.uploadVideo}
         </button>
       </form>
     </div>

@@ -5,6 +5,8 @@ import { Video } from '../../types';
 import { videoService } from '../../services/video.service';
 import { formatDate, formatDuration } from '../../utils/helpers';
 import toast from 'react-hot-toast';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 interface VideoListProps {
   videos: Video[];
@@ -15,9 +17,11 @@ interface VideoListProps {
 export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, onVideoEdit }) => {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const t = translations[language].admin;
 
   const handleDelete = async (videoId: number, title: string) => {
-    if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+    if (!confirm(`${t.deleteConfirm} "${title}"?`)) {
       return;
     }
 
@@ -25,13 +29,13 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, on
 
     try {
       await videoService.deleteVideo(videoId);
-      toast.success('Video deleted successfully');
+      toast.success(t.videoDeleted);
 
       if (onVideoDeleted) {
         onVideoDeleted();
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to delete video');
+      toast.error(error.response?.data?.error || t.failedToDelete);
     } finally {
       setDeletingId(null);
     }
@@ -55,7 +59,7 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, on
   if (videos.length === 0) {
     return (
       <div className="bg-surface rounded-xl p-8 border border-border text-center">
-        <p className="text-text-secondary">No videos uploaded yet</p>
+        <p className="text-text-secondary">{t.noVideosUploaded}</p>
       </div>
     );
   }
@@ -67,25 +71,25 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, on
           <thead>
             <tr className="border-b border-border">
               <th className="px-6 py-4 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                Title
+                {t.tableTitle}
               </th>
               <th className="px-6 py-4 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                Category
+                {t.tableCategory}
               </th>
               <th className="px-6 py-4 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                Duration
+                {t.tableDuration}
               </th>
               <th className="px-6 py-4 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                Transcription
+                {t.tableTranscription}
               </th>
               <th className="px-6 py-4 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                Summary
+                {t.tableSummary}
               </th>
               <th className="px-6 py-4 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                Uploaded
+                {t.tableUploaded}
               </th>
               <th className="px-6 py-4 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
-                Actions
+                {t.tableActions}
               </th>
             </tr>
           </thead>
@@ -105,7 +109,6 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, on
                 <td className="px-6 py-4 whitespace-nowrap">
                   {video.category ? getStatusBadge(video.category) : ''}
                 </td>
-
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                   {video.duration ? formatDuration(video.duration) : '-'}
                 </td>
