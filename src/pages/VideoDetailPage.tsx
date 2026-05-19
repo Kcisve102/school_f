@@ -7,7 +7,6 @@ import TranscriptDisplay from '../components/video/TranscriptDisplay';
 import SummaryPanel from '../components/video/SummaryPanel';
 import QuizModal from '../components/quiz/QuizModal';
 import Loader from '../components/common/Loader';
-import Button from '../components/common/Button';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 import { formatDate } from '../utils/helpers';
 

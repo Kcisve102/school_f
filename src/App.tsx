@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import FactoryChatbot from './components/chat/FactoryChatbot';
 
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -76,6 +77,9 @@ function App() {
             },
           }}
         />
+
+        {/* Factory Skills Chatbot - Available on all pages */}
+        <FactoryChatbot />
       </AuthProvider>
     </BrowserRouter>
   );
