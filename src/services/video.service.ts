@@ -125,6 +125,10 @@ export const videoService = {
     return response.data.data!;
   },
 
+  reRenderTranscript: async (id: number): Promise<void> => {
+    await api.post(`/admin/videos/${id}/re-render`);
+  },
+
   getAIStatus: async (videoId: number): Promise<{
     compression_status: string;
     transcription_status: string;

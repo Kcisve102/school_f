@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Eye, Edit } from 'lucide-react';
+import { Trash2, Eye, Edit, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Video } from '../../types';
 import { videoService } from '../../services/video.service';
@@ -16,9 +16,31 @@ interface VideoListProps {
 
 export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, onVideoEdit }) => {
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [reRenderingId, setReRenderingId] = useState<number | null>(null);
   const navigate = useNavigate();
   const { language } = useLanguage();
   const t = translations[language].admin;
+
+  const handleReRender = async (videoId: number, title: string) => {
+    if (!confirm(`${t.reRenderConfirm} "${title}"?`)) {
+      return;
+    }
+
+    setReRenderingId(videoId);
+
+    try {
+      await videoService.reRenderTranscript(videoId);
+      toast.success(t.reRenderStarted);
+
+      if (onVideoDeleted) {
+        onVideoDeleted();
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || t.failedToReRender);
+    } finally {
+      setReRenderingId(null);
+    }
+  };
 
   const handleDelete = async (videoId: number, title: string) => {
     if (!confirm(`${t.deleteConfirm} "${title}"?`)) {
@@ -136,6 +158,14 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, on
                       title="Edit"
                     >
                       <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleReRender(video.id, video.title)}
+                      disabled={reRenderingId === video.id}
+                      className="p-2 rounded-lg bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      title={t.reRender}
+                    >
+                      <RefreshCw className={`w-4 h-4 ${reRenderingId === video.id ? 'animate-spin' : ''}`} />
                     </button>
                     <button
                       onClick={() => handleDelete(video.id, video.title)}

@@ -262,6 +262,10 @@ export const translations = {
       deleteConfirm: 'Are you sure you want to delete',
       videoDeleted: 'Video deleted successfully',
       failedToDelete: 'Failed to delete video',
+      reRender: 'Re-render',
+      reRenderConfirm: 'Re-render transcript and summary for',
+      reRenderStarted: 'Re-render started successfully',
+      failedToReRender: 'Failed to start re-render',
     },
     notFound: {
       heading: 'Page Not Found',
@@ -534,6 +538,10 @@ export const translations = {
       deleteConfirm: '确定要删除',
       videoDeleted: '视频删除成功',
       failedToDelete: '删除视频失败',
+      reRender: '重新生成',
+      reRenderConfirm: '重新生成转录和摘要',
+      reRenderStarted: '重新生成已成功启动',
+      failedToReRender: '启动重新生成失败',
     },
     notFound: {
       heading: '页面未找到',
