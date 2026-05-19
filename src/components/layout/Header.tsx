@@ -114,73 +114,91 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div className="sm:hidden absolute top-full left-0 right-0 border-t border-border px-4 py-4 flex flex-col space-y-4 bg-bg-primary/95 backdrop-blur-lg shadow-xl">
+      {/* Mobile menu — always mounted, animated open/close */}
+      <div
+        className="sm:hidden absolute top-full left-0 right-0 overflow-hidden"
+        style={{
+          maxHeight: menuOpen ? '600px' : '0px',
+          opacity: menuOpen ? 1 : 0,
+          transform: menuOpen ? 'translateY(0)' : 'translateY(-8px)',
+          transition: menuOpen
+            ? 'max-height 0.35s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease, transform 0.25s cubic-bezier(0.22,1,0.36,1)'
+            : 'max-height 0.25s cubic-bezier(0.4,0,1,1), opacity 0.2s ease, transform 0.2s ease',
+          pointerEvents: menuOpen ? 'auto' : 'none',
+        }}
+      >
+        <div
+          className="border-t border-border/60 px-4 py-4 flex flex-col space-y-1 shadow-2xl bg-white/80 dark:bg-[#0a0a0f]/90"
+          style={{
+            backdropFilter: 'blur(20px) saturate(1.8)',
+            WebkitBackdropFilter: 'blur(20px) saturate(1.8)',
+          }}
+        >
           {user ? (
             <>
-              <div className="flex items-center space-x-3 pb-3 border-b border-border">
+              <div className="flex items-center space-x-3 pb-3 mb-2 border-b border-border/60">
                 <div>
                   <p className="text-sm font-medium text-text-primary">{user.full_name}</p>
                   <p className="text-xs text-text-muted">{user.is_admin ? 'Admin' : 'User'}</p>
                 </div>
               </div>
-              <Link to="/" onClick={closeMenu} className="flex items-center space-x-2 text-text-secondary hover:text-accent transition-colors">
-                <Home className="w-5 h-5" />
-                <span className="font-medium">Home</span>
-              </Link>
-              <Link to="/categories" onClick={closeMenu} className="flex items-center space-x-2 text-text-secondary hover:text-accent transition-colors">
-                <Grid3X3 className="w-5 h-5" />
-                <span className="font-medium">Categories</span>
-              </Link>
-              <Link to="/chat" onClick={closeMenu} className="flex items-center space-x-2 text-text-secondary hover:text-accent transition-colors">
-                <MessageSquare className="w-5 h-5" />
-                <span className="font-medium">AI Assistant</span>
-              </Link>
-              {user.is_admin ? (
-                <Link to="/admin" onClick={closeMenu} className="flex items-center space-x-2 text-text-secondary hover:text-accent transition-colors">
-                  <LayoutDashboard className="w-5 h-5" />
-                  <span className="font-medium">Admin</span>
+              {[
+                { to: '/', Icon: Home, label: 'Home' },
+                { to: '/categories', Icon: Grid3X3, label: 'Categories' },
+                { to: '/chat', Icon: MessageSquare, label: 'AI Assistant' },
+                user.is_admin
+                  ? { to: '/admin', Icon: LayoutDashboard, label: 'Admin' }
+                  : { to: '/dashboard', Icon: LayoutDashboard, label: 'Dashboard' },
+              ].map(({ to, Icon, label }, i) => (
+                <Link
+                  key={to}
+                  to={to}
+                  onClick={closeMenu}
+                  className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-text-secondary hover:text-accent hover:bg-accent/8 transition-all duration-150"
+                  style={{ animationDelay: `${i * 40}ms` }}
+                >
+                  <Icon className="w-4.5 h-4.5 flex-shrink-0" />
+                  <span className="font-medium">{label}</span>
                 </Link>
-              ) : (
-                <Link to="/dashboard" onClick={closeMenu} className="flex items-center space-x-2 text-text-secondary hover:text-accent transition-colors">
-                  <LayoutDashboard className="w-5 h-5" />
-                  <span className="font-medium">Dashboard</span>
-                </Link>
-              )}
+              ))}
               <button
                 onClick={() => { closeMenu(); handleLogout(); }}
-                className="flex items-center space-x-2 text-text-secondary hover:text-error transition-colors cursor-pointer"
+                className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-text-secondary hover:text-error hover:bg-error/8 transition-all duration-150 cursor-pointer w-full mt-1"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-4.5 h-4.5 flex-shrink-0" />
                 <span className="font-medium">Logout</span>
               </button>
             </>
           ) : (
             <>
-              <Link to="/" onClick={closeMenu} className="flex items-center space-x-2 text-text-secondary hover:text-accent transition-colors">
-                <Home className="w-5 h-5" />
-                <span className="font-medium">Home</span>
-              </Link>
-              <Link to="/categories" onClick={closeMenu} className="flex items-center space-x-2 text-text-secondary hover:text-accent transition-colors">
-                <Grid3X3 className="w-5 h-5" />
-                <span className="font-medium">Categories</span>
-              </Link>
-              <Link to="/chat" onClick={closeMenu} className="flex items-center space-x-2 text-text-secondary hover:text-accent transition-colors">
-                <MessageSquare className="w-5 h-5" />
-                <span className="font-medium">AI Assistant</span>
-              </Link>
-              <Link
-                to="/login"
-                onClick={closeMenu}
-                className="px-6 py-2 rounded-lg bg-accent text-white font-medium text-center hover:bg-accent-dark transition-all"
-              >
-                Login
-              </Link>
+              {[
+                { to: '/', Icon: Home, label: 'Home' },
+                { to: '/categories', Icon: Grid3X3, label: 'Categories' },
+                { to: '/chat', Icon: MessageSquare, label: 'AI Assistant' },
+              ].map(({ to, Icon, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  onClick={closeMenu}
+                  className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-text-secondary hover:text-accent hover:bg-accent/8 transition-all duration-150"
+                >
+                  <Icon className="w-4.5 h-4.5 flex-shrink-0" />
+                  <span className="font-medium">{label}</span>
+                </Link>
+              ))}
+              <div className="pt-2">
+                <Link
+                  to="/login"
+                  onClick={closeMenu}
+                  className="block px-6 py-2.5 rounded-lg bg-accent text-white font-medium text-center hover:bg-accent-dark transition-all"
+                >
+                  Login
+                </Link>
+              </div>
             </>
           )}
         </div>
-      )}
+      </div>
     </header>
   );
 };
