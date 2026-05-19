@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 export const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -8,6 +10,8 @@ export const LoginForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const t = translations[language].auth;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,14 +30,14 @@ export const LoginForm: React.FC = () => {
   return (
     <div className="w-full max-w-md">
       <div className="bg-surface rounded-2xl p-8 border border-border">
-        <h2 className="text-2xl font-bold text-center mb-2 text-text-primary">Admin Login</h2>
+        <h2 className="text-2xl font-bold text-center mb-2 text-text-primary">{t.adminLogin}</h2>
         <p className="text-center text-sm text-text-secondary mb-6">
-          Login to upload and manage videos
+          {t.loginSubtitle}
         </p>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
-              Email
+              {t.email}
             </label>
             <input
               type="email"
@@ -47,7 +51,7 @@ export const LoginForm: React.FC = () => {
 
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
-              Password
+              {t.password}
             </label>
             <input
               type="password"
@@ -64,13 +68,13 @@ export const LoginForm: React.FC = () => {
             disabled={loading}
             className="w-full btn-primary"
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? t.loggingIn : t.login}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-text-secondary">
           <Link to="/" className="text-accent hover:text-accent-dark font-medium transition-colors">
-            ← Back to Videos
+            {t.backToVideos}
           </Link>
         </p>
       </div>

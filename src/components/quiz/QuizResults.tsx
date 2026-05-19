@@ -1,6 +1,8 @@
 import React from 'react';
 import { ValidationResponse, Question } from '../../types';
 import QuestionCard from './QuestionCard';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 interface QuizResultsProps {
   validationResults: ValidationResponse;
@@ -19,6 +21,8 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
 }) => {
   const { score, totalQuestions, percentageScore, results } = validationResults;
   const passed = percentageScore >= 60;
+  const { language } = useLanguage();
+  const t = translations[language].quiz;
 
   return (
     <div className="w-full max-h-[70vh] overflow-y-auto">
@@ -36,7 +40,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
               passed ? 'bg-success' : 'bg-warning'
             }`}
           >
-            {passed ? 'Passed!' : 'Keep Learning!'}
+            {passed ? t.passed : t.keepLearning}
           </div>
         </div>
       </div>
@@ -44,15 +48,13 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
       {/* Pass/Fail Message */}
       <div className={`p-4 mb-6 rounded-lg border ${passed ? 'bg-success/10 border-success/30' : 'bg-warning/10 border-warning/30'}`}>
         <p className={`text-center font-medium ${passed ? 'text-success' : 'text-warning'}`}>
-          {passed
-            ? 'Great job! You have a good understanding of the video content.'
-            : 'Not quite there yet. Review the explanations below and try again!'}
+          {passed ? t.passMessage : t.failMessage}
         </p>
       </div>
 
       {/* Questions Review */}
       <div className="space-y-6">
-        <h3 className="text-xl font-bold text-text-primary mb-4">Review Your Answers</h3>
+        <h3 className="text-xl font-bold text-text-primary mb-4">{t.reviewAnswers}</h3>
         {questions.map((question, index) => {
           const result = results.find((r) => r.questionId === question.id);
           const selectedOption = userAnswers.get(question.id) ?? null;
@@ -68,7 +70,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
                   {result?.isCorrect ? '✓' : '✗'}
                 </span>
                 <span className="text-sm font-medium text-text-secondary">
-                  Question {index + 1}
+                  {t.question} {index + 1}
                 </span>
               </div>
               <QuestionCard
@@ -89,13 +91,13 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
           onClick={onRetake}
           className="flex-1 px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent-dark transition-colors duration-200"
         >
-          Retake Quiz
+          {t.retake}
         </button>
         <button
           onClick={onClose}
           className="flex-1 px-6 py-3 bg-surface-secondary text-text-primary font-semibold rounded-lg hover:bg-surface-hover transition-colors duration-200"
         >
-          Close
+          {t.close}
         </button>
       </div>
     </div>

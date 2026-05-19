@@ -5,6 +5,8 @@ import { videoService } from '../services/video.service';
 import { useAuth } from '../hooks/useAuth';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import VideoCard from '../components/video/VideoCard';
+import { useLanguage } from '../contexts/LanguageContext';
+import { translations } from '../translations';
 import {
   LayoutDashboard,
   PlayCircle,
@@ -22,6 +24,8 @@ export const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const t = translations[language].dashboard;
 
   useScrollReveal(undefined, [loading]);
 
@@ -49,12 +53,12 @@ export const DashboardPage: React.FC = () => {
   );
 
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', active: true, path: '/dashboard' },
-    { icon: PlayCircle, label: 'My Videos', active: false, path: '/' },
-    { icon: Search, label: 'Browse', active: false, path: '/categories' },
-    { icon: BookOpen, label: 'Categories', active: false, path: '/categories' },
-    { icon: Bookmark, label: 'Bookmarks', active: false, path: '#' },
-    { icon: Settings, label: 'Settings', active: false, path: '#' },
+    { icon: LayoutDashboard, label: t.menuDashboard, active: true, path: '/dashboard' },
+    { icon: PlayCircle, label: t.menuMyVideos, active: false, path: '/' },
+    { icon: Search, label: t.menuBrowse, active: false, path: '/categories' },
+    { icon: BookOpen, label: t.menuCategories, active: false, path: '/categories' },
+    { icon: Bookmark, label: t.menuBookmarks, active: false, path: '#' },
+    { icon: Settings, label: t.menuSettings, active: false, path: '#' },
   ];
 
   const sidebarMenuItems = menuItems.slice(0, 4);
@@ -66,7 +70,7 @@ export const DashboardPage: React.FC = () => {
       {/* ── Desktop sidebar ── */}
       <aside className="hidden lg:flex w-64 bg-surface border-r border-border flex-col fixed h-full z-30">
         <div className="p-6">
-          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">Main Menu</h2>
+          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">{t.mainMenu}</h2>
           <nav className="space-y-1">
             {sidebarMenuItems.map((item, index) => (
               <button
@@ -85,7 +89,7 @@ export const DashboardPage: React.FC = () => {
           </nav>
         </div>
         <div className="p-6 border-t border-border">
-          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">Personal</h2>
+          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">{t.personal}</h2>
           <nav className="space-y-1">
             {sidebarPersonalItems.map((item, index) => (
               <button
@@ -107,7 +111,7 @@ export const DashboardPage: React.FC = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-text-primary truncate">{user.full_name}</p>
-                <p className="text-xs text-text-muted">{user.is_admin ? 'Admin' : 'Member'}</p>
+                <p className="text-xs text-text-muted">{user.is_admin ? translations[language].nav.roleAdmin : t.memberLabel}</p>
               </div>
             </div>
           </div>
@@ -119,8 +123,6 @@ export const DashboardPage: React.FC = () => {
 
         {/* ── Mobile: sticky top bar ── */}
         <div className="lg:hidden sticky top-0 z-30 bg-bg-primary/95 backdrop-blur-xl border-border">
-
-
           {/* Horizontal scrollable nav */}
           <div className="flex gap-2 px-4 p-6 overflow-x-auto scrollbar-hide">
             {menuItems.map((item, index) => (
@@ -147,7 +149,7 @@ export const DashboardPage: React.FC = () => {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-muted" />
               <input
                 type="text"
-                placeholder="Search courses, lessons, resources..."
+                placeholder={t.searchPlaceholder}
                 className="w-full pl-12 pr-4 py-3 bg-surface-secondary border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-accent/50 transition-colors"
               />
             </div>
@@ -160,10 +162,10 @@ export const DashboardPage: React.FC = () => {
             {/* Welcome */}
             <div className="mb-8 reveal-up">
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary mb-2">
-                Welcome back, {user?.full_name.split(' ')[0] || 'there'}!
+                {t.welcomeBack}, {user?.full_name.split(' ')[0] || ''}!
               </h1>
               <p className="text-text-secondary">
-                Continue where you left off and keep up your daily streak.
+                {t.continueStreak}
               </p>
             </div>
 
@@ -174,10 +176,10 @@ export const DashboardPage: React.FC = () => {
                   <div className="p-2 rounded-lg bg-accent/10">
                     <BookOpen className="w-5 h-5 text-accent" />
                   </div>
-                  <span className="text-sm text-text-muted">This Month</span>
+                  <span className="text-sm text-text-muted">{t.thisMonth}</span>
                 </div>
                 <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{totalVideos}</div>
-                <div className="text-sm text-text-secondary">Active Videos</div>
+                <div className="text-sm text-text-secondary">{t.activeVideos}</div>
               </div>
 
               <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border reveal-up delay-2">
@@ -185,10 +187,10 @@ export const DashboardPage: React.FC = () => {
                   <div className="p-2 rounded-lg bg-info/10">
                     <Clock className="w-5 h-5 text-info" />
                   </div>
-                  <span className="text-sm text-text-muted">Weekly Goal</span>
+                  <span className="text-sm text-text-muted">{t.weeklyGoal}</span>
                 </div>
                 <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{totalMinutes}m</div>
-                <div className="text-sm text-text-secondary">Time Spent Learning</div>
+                <div className="text-sm text-text-secondary">{t.timeSpent}</div>
               </div>
 
               <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border reveal-up delay-3">
@@ -196,19 +198,19 @@ export const DashboardPage: React.FC = () => {
                   <div className="p-2 rounded-lg bg-success/10">
                     <Trophy className="w-5 h-5 text-success" />
                   </div>
-                  <span className="text-sm text-text-muted">Total Points</span>
+                  <span className="text-sm text-text-muted">{t.totalPoints}</span>
                 </div>
                 <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{readyVideos * 100}</div>
-                <div className="text-sm text-text-secondary">Videos Completed</div>
+                <div className="text-sm text-text-secondary">{t.videosCompleted}</div>
               </div>
             </div>
 
             {/* Recommended Videos */}
             <div className="mb-8 reveal-up">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl lg:text-2xl font-bold text-text-primary">Recommended for you</h2>
+                <h2 className="text-xl lg:text-2xl font-bold text-text-primary">{t.recommendedFor}</h2>
                 <button className="flex items-center gap-2 text-accent hover:text-accent-dark transition-colors">
-                  <span className="text-sm font-medium">See all</span>
+                  <span className="text-sm font-medium">{t.seeAll}</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -220,13 +222,13 @@ export const DashboardPage: React.FC = () => {
               ) : videos.length === 0 ? (
                 <div className="text-center py-12 bg-surface rounded-xl border border-border">
                   <PlayCircle className="w-16 h-16 text-text-muted mx-auto mb-4" />
-                  <p className="text-text-secondary text-lg mb-2">No videos yet</p>
-                  <p className="text-text-muted text-sm mb-6">Upload your first video to get started!</p>
+                  <p className="text-text-secondary text-lg mb-2">{t.noVideos}</p>
+                  <p className="text-text-muted text-sm mb-6">{t.noVideosDesc}</p>
                   <button
                     onClick={() => navigate('/admin')}
                     className="px-6 py-3 bg-accent hover:bg-accent-dark text-white rounded-lg font-medium transition-all"
                   >
-                    Upload Video
+                    {t.uploadVideo}
                   </button>
                 </div>
               ) : (

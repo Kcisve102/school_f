@@ -1,5 +1,7 @@
 import React from 'react';
 import { FileText } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 interface SummaryPanelProps {
   summaryText: string;
@@ -10,11 +12,14 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({
   summaryText,
   keyPoints,
 }) => {
+  const { language } = useLanguage();
+  const t = translations[language].summary;
+
   return (
     <div className="bg-surface rounded-xl p-6 border border-border">
       <div className="flex items-center mb-4">
         <FileText className="w-5 h-5 text-accent mr-2" />
-        <h3 className="text-lg font-semibold text-text-primary">Summary</h3>
+        <h3 className="text-lg font-semibold text-text-primary">{t.heading}</h3>
       </div>
 
       <div className="mb-6">
@@ -23,7 +28,7 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({
 
       {keyPoints && keyPoints.length > 0 && (
         <div>
-          <h4 className="font-medium text-text-primary mb-3">Key Points</h4>
+          <h4 className="font-medium text-text-primary mb-3">{t.keyPoints}</h4>
           <ul className="space-y-2">
             {keyPoints.map((point, index) => (
               <li key={index} className="flex items-start">

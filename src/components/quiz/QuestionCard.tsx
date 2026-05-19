@@ -1,5 +1,7 @@
 import React from 'react';
 import { Question, QuizResult } from '../../types';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 interface QuestionCardProps {
   question: Question;
@@ -16,24 +18,22 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   showResult = false,
   result,
 }) => {
+  const { language } = useLanguage();
+  const t = translations[language].quiz;
+
   const getOptionClassName = (index: number): string => {
     const baseClasses =
       'p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 mb-3';
 
     if (showResult) {
-      // In results mode
       if (index === question.correctAnswer) {
-        // Correct answer - always show green
         return `${baseClasses} border-success bg-success/10`;
       } else if (index === selectedOption && !result?.isCorrect) {
-        // User's wrong answer - show red
         return `${baseClasses} border-error bg-error/10`;
       } else {
-        // Other options - neutral
         return `${baseClasses} border-border bg-surface-secondary`;
       }
     } else {
-      // In answering mode
       if (selectedOption === index) {
         return `${baseClasses} border-accent bg-accent/10`;
       } else {
@@ -46,13 +46,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
     if (!showResult) return null;
 
     if (index === question.correctAnswer) {
-      return (
-        <span className="text-green-600 font-bold ml-2">✓</span>
-      );
+      return <span className="text-green-600 font-bold ml-2">✓</span>;
     } else if (index === selectedOption && !result?.isCorrect) {
-      return (
-        <span className="text-red-600 font-bold ml-2">✗</span>
-      );
+      return <span className="text-red-600 font-bold ml-2">✗</span>;
     }
     return null;
   };
@@ -93,12 +89,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
       {showResult && result && (
         <div className="mt-4 p-4 bg-info/10 border-l-4 border-info rounded">
           <p className="text-sm font-medium text-info mb-1">
-            {result.isCorrect ? 'Correct!' : 'Incorrect'}
+            {result.isCorrect ? t.correct : t.incorrect}
           </p>
           <p className="text-sm text-text-secondary">{result.explanation}</p>
           {!result.isCorrect && (
             <p className="text-sm text-text-secondary mt-2">
-              <strong>Correct answer:</strong> {result.correctAnswer}
+              <strong>{t.correctAnswer}</strong> {result.correctAnswer}
             </p>
           )}
         </div>

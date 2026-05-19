@@ -5,6 +5,8 @@ import QuizProgress from './QuizProgress';
 import QuestionCard from './QuestionCard';
 import QuizResults from './QuizResults';
 import toast from 'react-hot-toast';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 interface QuizModalProps {
   videoId: number;
@@ -25,6 +27,8 @@ export const QuizModal: React.FC<QuizModalProps> = ({
   const [quizState, setQuizState] = useState<QuizState>('loading');
   const [validationResults, setValidationResults] = useState<ValidationResponse | null>(null);
   const [error, setError] = useState('');
+  const { language } = useLanguage();
+  const t = translations[language].quiz;
 
   // Load quiz on mount
   useEffect(() => {
@@ -44,8 +48,8 @@ export const QuizModal: React.FC<QuizModalProps> = ({
       setValidationResults(null);
       setQuizState('answering');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to generate quiz. Please try again.');
-      toast.error('Failed to generate quiz');
+      setError(err.response?.data?.message || t.failedToGenerate);
+      toast.error(t.failedToGenerate);
       console.error('Quiz generation error:', err);
     }
   };
@@ -73,14 +77,13 @@ export const QuizModal: React.FC<QuizModalProps> = ({
 
   const handleSubmit = async () => {
     if (userAnswers.size !== questions.length) {
-      toast.error('Please answer all questions before submitting');
+      toast.error(t.pleaseAnswerAll);
       return;
     }
 
     try {
       setQuizState('submitting');
 
-      // Convert Map to array of UserAnswer objects
       const answersArray: UserAnswer[] = questions.map((q) => ({
         questionId: q.id,
         selectedOption: userAnswers.get(q.id)!,
@@ -90,8 +93,8 @@ export const QuizModal: React.FC<QuizModalProps> = ({
       setValidationResults(results);
       setQuizState('results');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to validate answers. Please try again.');
-      toast.error('Failed to validate answers');
+      setError(err.response?.data?.message || t.failedToValidate);
+      toast.error(t.failedToValidate);
       console.error('Answer validation error:', err);
       setQuizState('answering');
     }
@@ -103,7 +106,7 @@ export const QuizModal: React.FC<QuizModalProps> = ({
 
   const handleClose = () => {
     if (quizState === 'answering' && userAnswers.size > 0) {
-      if (window.confirm('Are you sure you want to close? Your progress will be lost.')) {
+      if (window.confirm(t.closeWarning)) {
         onClose();
       }
     } else {
@@ -131,23 +134,13 @@ export const QuizModal: React.FC<QuizModalProps> = ({
           {/* Header */}
           <div className="bg-surface px-6 py-4 border-b border-border">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-text-primary">Video Quiz</h2>
+              <h2 className="text-2xl font-bold text-text-primary">{t.title}</h2>
               <button
                 onClick={handleClose}
                 className="text-text-secondary hover:text-text-primary transition-colors"
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
@@ -159,7 +152,7 @@ export const QuizModal: React.FC<QuizModalProps> = ({
             {quizState === 'loading' && (
               <div className="text-center py-12">
                 <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-accent mb-4"></div>
-                <p className="text-text-secondary">Generating your quiz...</p>
+                <p className="text-text-secondary">{t.generating}</p>
               </div>
             )}
 
@@ -167,27 +160,17 @@ export const QuizModal: React.FC<QuizModalProps> = ({
             {error && quizState === 'loading' && (
               <div className="text-center py-12">
                 <div className="text-error mb-4">
-                  <svg
-                    className="w-16 h-16 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
+                  <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <p className="text-text-primary font-medium mb-2">Quiz Generation Failed</p>
+                <p className="text-text-primary font-medium mb-2">{t.generationFailed}</p>
                 <p className="text-text-secondary mb-4">{error}</p>
                 <button
                   onClick={loadQuiz}
                   className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-accent-dark transition-colors"
                 >
-                  Try Again
+                  {t.tryAgain}
                 </button>
               </div>
             )}
@@ -217,7 +200,7 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                         : 'bg-surface-secondary text-text-primary hover:bg-surface-hover'
                     }`}
                   >
-                    Previous
+                    {t.previous}
                   </button>
 
                   {currentQuestionIndex === questions.length - 1 ? (
@@ -230,21 +213,21 @@ export const QuizModal: React.FC<QuizModalProps> = ({
                           : 'bg-surface-secondary text-text-muted cursor-not-allowed'
                       }`}
                     >
-                      Submit Quiz
+                      {t.submitQuiz}
                     </button>
                   ) : (
                     <button
                       onClick={handleNext}
                       className="px-6 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent-dark transition-colors"
                     >
-                      Next
+                      {t.next}
                     </button>
                   )}
                 </div>
 
                 {/* Progress Indicator */}
                 <div className="mt-4 text-center text-sm text-text-muted">
-                  {userAnswers.size} of {questions.length} questions answered
+                  {t.of} {userAnswers.size} / {questions.length} {t.questionsAnswered}
                 </div>
               </div>
             )}
@@ -253,7 +236,7 @@ export const QuizModal: React.FC<QuizModalProps> = ({
             {quizState === 'submitting' && (
               <div className="text-center py-12">
                 <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-accent mb-4"></div>
-                <p className="text-text-secondary">Analyzing your answers...</p>
+                <p className="text-text-secondary">{t.analyzing}</p>
               </div>
             )}
 

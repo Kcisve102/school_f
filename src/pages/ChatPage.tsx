@@ -3,20 +3,12 @@ import { Send, Trash2, ChevronDown } from 'lucide-react';
 import { chatService, ChatMessage } from '../services/chat.service';
 import LogoMark from '../components/common/Logo';
 import toast from 'react-hot-toast';
-
-// ─── Suggested prompts ───────────────────────────────────────────────────────
-const SUGGESTED_PROMPTS = [
-  { label: '流水线操作', text: '请解释流水线操作的基本流程和注意事项' },
-  { label: '安全规范', text: '工厂安全规范有哪些最重要的要点？' },
-  { label: '设备维护', text: '如何正确维护和保养工业机械设备？' },
-  { label: '质量控制', text: '质量控制检查的标准流程是什么？' },
-  { label: '故障排除', text: '当设备出现异常时，应该如何排查故障？' },
-  { label: '个人防护', text: '在工厂环境中需要佩戴哪些个人防护设备？' },
-];
+import { useLanguage } from '../contexts/LanguageContext';
+import { translations } from '../translations';
 
 // ─── Typing indicator ─────────────────────────────────────────────────────────
 const TypingDots: React.FC = () => (
-  <span className="inline-flex items-center gap-1 py-1" aria-label="AI正在输入">
+  <span className="inline-flex items-center gap-1 py-1" aria-label="typing">
     {[0, 1, 2].map((i) => (
       <span
         key={i}
@@ -30,12 +22,15 @@ const TypingDots: React.FC = () => (
 );
 
 // ─── Message renderer ─────────────────────────────────────────────────────────
+type ChatTranslations = typeof translations['en']['chat'] | typeof translations['zh']['chat'];
+
 interface MessageRowProps {
   message: ChatMessage;
   isLast: boolean;
+  t: ChatTranslations;
 }
 
-const MessageRow: React.FC<MessageRowProps> = ({ message, isLast }) => {
+const MessageRow: React.FC<MessageRowProps> = ({ message, isLast, t }) => {
   const isUser = message.role === 'user';
 
   return (
@@ -58,7 +53,7 @@ const MessageRow: React.FC<MessageRowProps> = ({ message, isLast }) => {
       {/* Bubble */}
       <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[75%]`}>
         <span className="text-[10px] font-medium text-text-muted uppercase tracking-widest mb-1 px-1">
-          {isUser ? '您' : 'AI 助手'}
+          {isUser ? t.you : t.aiAssistant}
         </span>
         <div
           className={`rounded-lg px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
@@ -77,9 +72,10 @@ const MessageRow: React.FC<MessageRowProps> = ({ message, isLast }) => {
 // ─── Empty state ──────────────────────────────────────────────────────────────
 interface EmptyStateProps {
   onPrompt: (text: string) => void;
+  t: ChatTranslations;
 }
 
-const EmptyState: React.FC<EmptyStateProps> = ({ onPrompt }) => (
+const EmptyState: React.FC<EmptyStateProps> = ({ onPrompt, t }) => (
   <div className="flex flex-col items-center justify-center h-full px-6 py-12 text-center">
     <div
       className="mb-6"
@@ -88,9 +84,9 @@ const EmptyState: React.FC<EmptyStateProps> = ({ onPrompt }) => (
       <div className="w-14 h-14 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center mx-auto mb-5">
         <LogoMark size={32} />
       </div>
-      <h2 className="text-xl font-semibold text-text-primary mb-1">工厂技能 AI 助手</h2>
+      <h2 className="text-xl font-semibold text-text-primary mb-1">{t.emptyTitle}</h2>
       <p className="text-sm text-text-muted max-w-xs">
-        专注于流水线操作、安全规范与设备技能培训
+        {t.emptyDesc}
       </p>
     </div>
 
@@ -99,9 +95,9 @@ const EmptyState: React.FC<EmptyStateProps> = ({ onPrompt }) => (
       className="w-full max-w-lg"
       style={{ animation: 'fadeUp 0.5s 0.1s cubic-bezier(0.22,1,0.36,1) both' }}
     >
-      <p className="text-xs text-text-muted uppercase tracking-widest mb-3 text-left">常见问题</p>
+      <p className="text-xs text-text-muted uppercase tracking-widest mb-3 text-left">{t.suggestedHeading}</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        {SUGGESTED_PROMPTS.map((p) => (
+        {t.suggestedPrompts.map((p) => (
           <button
             key={p.label}
             onClick={() => onPrompt(p.text)}
@@ -126,6 +122,8 @@ export const ChatPage: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const { language } = useLanguage();
+  const t = translations[language].chat;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -167,10 +165,10 @@ export const ChatPage: React.FC = () => {
       const response = await chatService.sendMessage(text, messages);
       setMessages((prev) => [...prev, { role: 'assistant', content: response.response }]);
     } catch {
-      toast.error('发送消息失败，请重试');
+      toast.error(t.sendFailed);
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: '抱歉，发生了错误，请稍后再试。' },
+        { role: 'assistant', content: t.errorResponse },
       ]);
     } finally {
       setIsLoading(false);
@@ -187,7 +185,7 @@ export const ChatPage: React.FC = () => {
 
   const handleClear = () => {
     setMessages([]);
-    toast.success('对话已清空');
+    toast.success(t.chatCleared);
     setTimeout(() => inputRef.current?.focus(), 50);
   };
 
@@ -226,8 +224,8 @@ export const ChatPage: React.FC = () => {
         <div className="flex-shrink-0 flex items-center justify-between px-5 py-3 border-b border-border bg-surface">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-            <span className="text-sm font-medium text-text-primary">AI 助手在线</span>
-            <span className="hidden sm:inline text-xs text-text-muted">· 由 Google Gemini 驱动</span>
+            <span className="text-sm font-medium text-text-primary">{t.onlineStatus}</span>
+            <span className="hidden sm:inline text-xs text-text-muted">{t.poweredBy}</span>
           </div>
           {messages.length > 0 && (
             <button
@@ -235,7 +233,7 @@ export const ChatPage: React.FC = () => {
               className="flex items-center gap-1.5 text-xs text-text-muted hover:text-error transition-colors px-2 py-1 rounded hover:bg-error/5"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>清空对话</span>
+              <span>{t.clearChat}</span>
             </button>
           )}
         </div>
@@ -247,7 +245,7 @@ export const ChatPage: React.FC = () => {
           className="flex-1 overflow-y-auto scrollbar-thin"
         >
           {messages.length === 0 ? (
-            <EmptyState onPrompt={(text) => handleSendMessage(text)} />
+            <EmptyState onPrompt={(text) => handleSendMessage(text)} t={t} />
           ) : (
             <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
               {messages.map((msg, i) => (
@@ -255,6 +253,7 @@ export const ChatPage: React.FC = () => {
                   key={i}
                   message={msg}
                   isLast={i === messages.length - 1}
+                  t={t}
                 />
               ))}
 
@@ -268,7 +267,7 @@ export const ChatPage: React.FC = () => {
                   </div>
                   <div className="flex flex-col items-start max-w-[75%]">
                     <span className="text-[10px] font-medium text-text-muted uppercase tracking-widest mb-1 px-1">
-                      AI 助手
+                      {t.aiAssistant}
                     </span>
                     <div className="bg-surface border border-border rounded-lg rounded-tl-none px-4 py-3">
                       <TypingDots />
@@ -290,7 +289,7 @@ export const ChatPage: React.FC = () => {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-surface border border-border shadow-md text-text-secondary hover:text-text-primary transition-all"
             >
               <ChevronDown className="w-3.5 h-3.5" />
-              滚动到底部
+              {t.scrollToBottom}
             </button>
           </div>
         )}
@@ -306,7 +305,7 @@ export const ChatPage: React.FC = () => {
                 value={inputValue}
                 onChange={handleInput}
                 onKeyDown={handleKeyDown}
-                placeholder="输入您的问题…（Enter 发送，Shift+Enter 换行）"
+                placeholder={t.sendPlaceholder}
                 className="flex-1 bg-transparent px-4 py-3 text-sm text-text-primary placeholder-text-muted focus:outline-none resize-none leading-relaxed"
                 rows={1}
                 maxLength={charLimit}
@@ -315,7 +314,6 @@ export const ChatPage: React.FC = () => {
               />
 
               <div className="flex items-end gap-1 pr-2 pb-2">
-                {/* char counter — only shows when nearing limit */}
                 {charCount > charLimit * 0.7 && (
                   <span className={`text-[10px] tabular-nums ${charCount >= charLimit ? 'text-error' : 'text-text-muted'}`}>
                     {charCount}/{charLimit}
@@ -324,7 +322,7 @@ export const ChatPage: React.FC = () => {
                 <button
                   onClick={() => handleSendMessage()}
                   disabled={!inputValue.trim() || isLoading}
-                  aria-label="发送"
+                  aria-label={t.sendAriaLabel}
                   className="w-8 h-8 rounded-lg flex items-center justify-center bg-accent text-white disabled:bg-surface-hover disabled:text-text-muted transition-all hover:bg-accent-dark active:scale-95 disabled:scale-100"
                 >
                   <Send className="w-3.5 h-3.5" />
@@ -333,7 +331,7 @@ export const ChatPage: React.FC = () => {
             </div>
 
             <p className="text-[10px] text-text-muted mt-2 text-center">
-              AI 回答仅供参考，请以实际操作手册和主管指导为准
+              {t.disclaimer}
             </p>
           </div>
         </div>

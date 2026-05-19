@@ -6,12 +6,16 @@ import VideoLinkForm from './VideoLinkForm';
 import VideoList from './VideoList';
 import VideoEditModal from '../video/VideoEditModal';
 import Loader from '../common/Loader';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 export const AdminDashboard: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'upload' | 'link'>('upload');
   const [editingVideo, setEditingVideo] = useState<Video | null>(null);
+  const { language } = useLanguage();
+  const t = translations[language].admin;
 
   const fetchVideos = async () => {
     try {
@@ -39,7 +43,7 @@ export const AdminDashboard: React.FC = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Admin Dashboard</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t.dashboard}</h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <div>
@@ -52,7 +56,7 @@ export const AdminDashboard: React.FC = () => {
                 }`}
                 onClick={() => setActiveTab('upload')}
               >
-                Upload File
+                {t.uploadFile}
               </button>
               <button
                 className={`px-4 py-2 font-medium text-sm ${
@@ -62,7 +66,7 @@ export const AdminDashboard: React.FC = () => {
                 }`}
                 onClick={() => setActiveTab('link')}
               >
-                Upload from URL
+                {t.uploadFromUrl}
               </button>
             </div>
 
@@ -74,20 +78,20 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           <div className="card">
-            <h3 className="text-lg font-semibold mb-4">Platform Statistics</h3>
+            <h3 className="text-lg font-semibold mb-4">{t.platformStats}</h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Total Videos:</span>
+                <span className="text-gray-600">{t.totalVideos}</span>
                 <span className="text-2xl font-bold text-primary-600">{videos.length}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Processed:</span>
+                <span className="text-gray-600">{t.processed}</span>
                 <span className="text-2xl font-bold text-green-600">
                   {videos.filter((v) => v.transcription_status === 'completed').length}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Processing:</span>
+                <span className="text-gray-600">{t.processing}</span>
                 <span className="text-2xl font-bold text-blue-600">
                   {videos.filter((v) => v.transcription_status === 'processing').length}
                 </span>
@@ -98,9 +102,9 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       <div>
-        <h3 className="text-xl font-semibold mb-4">Manage Videos</h3>
+        <h3 className="text-xl font-semibold mb-4">{t.manageVideos}</h3>
         {loading ? (
-          <Loader text="Loading videos..." />
+          <Loader text={t.loadingVideos} />
         ) : (
           <VideoList
             videos={videos}

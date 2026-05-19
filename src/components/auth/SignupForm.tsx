@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 export const SignupForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -11,18 +13,20 @@ export const SignupForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const t = translations[language].auth;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t.passwordMismatch);
       return;
     }
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long');
+      setError(t.passwordTooShort);
       return;
     }
 
@@ -41,11 +45,11 @@ export const SignupForm: React.FC = () => {
   return (
     <div className="w-full max-w-md">
       <div className="bg-surface rounded-2xl p-8 border border-border">
-        <h2 className="text-2xl font-bold text-center mb-6 text-text-primary">Create Account</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 text-text-primary">{t.createAccount}</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
-              Full Name
+              {t.fullName}
             </label>
             <input
               type="text"
@@ -59,7 +63,7 @@ export const SignupForm: React.FC = () => {
 
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
-              Email
+              {t.email}
             </label>
             <input
               type="email"
@@ -73,7 +77,7 @@ export const SignupForm: React.FC = () => {
 
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
-              Password
+              {t.password}
             </label>
             <input
               type="password"
@@ -87,7 +91,7 @@ export const SignupForm: React.FC = () => {
 
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
-              Confirm Password
+              {t.confirmPassword}
             </label>
             <input
               type="password"
@@ -107,14 +111,14 @@ export const SignupForm: React.FC = () => {
             disabled={loading}
             className="w-full btn-primary"
           >
-            {loading ? 'Creating Account...' : 'Sign Up'}
+            {loading ? t.creatingAccount : t.signUp}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-text-secondary">
-          Already have an account?{' '}
+          {t.alreadyHaveAccount}{' '}
           <Link to="/login" className="text-accent hover:text-accent-dark font-medium transition-colors">
-            Login
+            {t.login}
           </Link>
         </p>
       </div>

@@ -4,11 +4,16 @@ import { LogOut, LayoutDashboard, Home, MessageSquare, Menu, X, Grid3X3 } from '
 import LogoMark from '../common/Logo';
 import { useAuth } from '../../hooks/useAuth';
 import ThemeToggle from '../common/ThemeToggle';
+import LanguageToggle from '../common/LanguageToggle';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 export const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { language } = useLanguage();
+  const t = translations[language].nav;
 
   const handleLogout = async () => {
     try {
@@ -38,37 +43,38 @@ export const Header: React.FC = () => {
             <div className="hidden sm:flex items-center space-x-6">
               <Link to="/" className="flex items-center space-x-1 text-text-secondary hover:text-accent transition-colors">
                 <Home className="w-5 h-5" />
-                <span className="font-medium">Home</span>
+                <span className="font-medium">{t.home}</span>
               </Link>
               <Link to="/categories" className="flex items-center space-x-1 text-text-secondary hover:text-accent transition-colors">
                 <Grid3X3 className="w-5 h-5" />
-                <span className="font-medium">Categories</span>
+                <span className="font-medium">{t.categories}</span>
               </Link>
               <Link to="/chat" className="flex items-center space-x-1 text-text-secondary hover:text-accent transition-colors">
                 <MessageSquare className="w-5 h-5" />
-                <span className="font-medium">AI Assistant</span>
+                <span className="font-medium">{t.aiAssistant}</span>
               </Link>
               {user.is_admin ? (
                 <Link to="/admin" className="flex items-center space-x-1 text-text-secondary hover:text-accent transition-colors">
                   <LayoutDashboard className="w-5 h-5" />
-                  <span className="font-medium">Admin</span>
+                  <span className="font-medium">{t.admin}</span>
                 </Link>
               ) : (
                 <Link to="/dashboard" className="flex items-center space-x-1 text-text-secondary hover:text-accent transition-colors">
                   <LayoutDashboard className="w-5 h-5" />
-                  <span className="font-medium">Dashboard</span>
+                  <span className="font-medium">{t.dashboard}</span>
                 </Link>
               )}
               <div className="flex items-center space-x-3 pl-6 border-l border-border">
                 <ThemeToggle size="sm" />
+                <LanguageToggle size="sm" />
                 <div className="text-right">
                   <p className="text-sm font-medium text-text-primary">{user.full_name}</p>
-                  <p className="text-xs text-text-muted">{user.is_admin ? 'Admin' : 'User'}</p>
+                  <p className="text-xs text-text-muted">{user.is_admin ? t.roleAdmin : t.roleUser}</p>
                 </div>
                 <button
                   onClick={handleLogout}
                   className="p-2 rounded-lg bg-surface-secondary hover:bg-surface-hover text-text-secondary hover:text-text-primary transition-all cursor-pointer"
-                  title="Logout"
+                  title={t.logout}
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -78,23 +84,24 @@ export const Header: React.FC = () => {
             <div className="hidden sm:flex items-center space-x-6">
               <Link to="/" className="flex items-center space-x-1 text-text-secondary hover:text-accent transition-colors">
                 <Home className="w-5 h-5" />
-                <span className="font-medium">Home</span>
+                <span className="font-medium">{t.home}</span>
               </Link>
               <Link to="/categories" className="flex items-center space-x-1 text-text-secondary hover:text-accent transition-colors">
                 <Grid3X3 className="w-5 h-5" />
-                <span className="font-medium">Categories</span>
+                <span className="font-medium">{t.categories}</span>
               </Link>
               <Link to="/chat" className="flex items-center space-x-1 text-text-secondary hover:text-accent transition-colors">
                 <MessageSquare className="w-5 h-5" />
-                <span className="font-medium">AI Assistant</span>
+                <span className="font-medium">{t.aiAssistant}</span>
               </Link>
               <div className="flex items-center space-x-3 pl-6 border-l border-border">
                 <ThemeToggle size="sm" />
+                <LanguageToggle size="sm" />
                 <Link
                   to="/login"
                   className="px-6 py-2 rounded-lg bg-accent text-white font-medium hover:bg-accent-dark transition-all"
                 >
-                  Login
+                  {t.login}
                 </Link>
               </div>
             </div>
@@ -103,6 +110,7 @@ export const Header: React.FC = () => {
           {/* Mobile hamburger */}
           <div className="sm:hidden flex items-center gap-2">
             <ThemeToggle size="sm" />
+            <LanguageToggle size="sm" />
             <button
               className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-all cursor-pointer"
               onClick={() => setMenuOpen((o) => !o)}
@@ -139,16 +147,16 @@ export const Header: React.FC = () => {
               <div className="flex items-center space-x-3 pb-3 mb-2 border-b border-border/60">
                 <div>
                   <p className="text-sm font-medium text-text-primary">{user.full_name}</p>
-                  <p className="text-xs text-text-muted">{user.is_admin ? 'Admin' : 'User'}</p>
+                  <p className="text-xs text-text-muted">{user.is_admin ? t.roleAdmin : t.roleUser}</p>
                 </div>
               </div>
               {[
-                { to: '/', Icon: Home, label: 'Home' },
-                { to: '/categories', Icon: Grid3X3, label: 'Categories' },
-                { to: '/chat', Icon: MessageSquare, label: 'AI Assistant' },
+                { to: '/', Icon: Home, label: t.home },
+                { to: '/categories', Icon: Grid3X3, label: t.categories },
+                { to: '/chat', Icon: MessageSquare, label: t.aiAssistant },
                 user.is_admin
-                  ? { to: '/admin', Icon: LayoutDashboard, label: 'Admin' }
-                  : { to: '/dashboard', Icon: LayoutDashboard, label: 'Dashboard' },
+                  ? { to: '/admin', Icon: LayoutDashboard, label: t.admin }
+                  : { to: '/dashboard', Icon: LayoutDashboard, label: t.dashboard },
               ].map(({ to, Icon, label }, i) => (
                 <Link
                   key={to}
@@ -166,15 +174,15 @@ export const Header: React.FC = () => {
                 className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-text-secondary hover:text-error hover:bg-error/8 transition-all duration-150 cursor-pointer w-full mt-1"
               >
                 <LogOut className="w-4.5 h-4.5 flex-shrink-0" />
-                <span className="font-medium">Logout</span>
+                <span className="font-medium">{t.logout}</span>
               </button>
             </>
           ) : (
             <>
               {[
-                { to: '/', Icon: Home, label: 'Home' },
-                { to: '/categories', Icon: Grid3X3, label: 'Categories' },
-                { to: '/chat', Icon: MessageSquare, label: 'AI Assistant' },
+                { to: '/', Icon: Home, label: t.home },
+                { to: '/categories', Icon: Grid3X3, label: t.categories },
+                { to: '/chat', Icon: MessageSquare, label: t.aiAssistant },
               ].map(({ to, Icon, label }) => (
                 <Link
                   key={to}
@@ -192,7 +200,7 @@ export const Header: React.FC = () => {
                   onClick={closeMenu}
                   className="block px-6 py-2.5 rounded-lg bg-accent text-white font-medium text-center hover:bg-accent-dark transition-all"
                 >
-                  Login
+                  {t.login}
                 </Link>
               </div>
             </>

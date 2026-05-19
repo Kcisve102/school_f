@@ -1,6 +1,8 @@
 import React from 'react';
 import { TranscriptSegment } from '../../types';
 import { formatDuration } from '../../utils/helpers';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 interface TranscriptDisplayProps {
   segments: TranscriptSegment[];
@@ -13,6 +15,9 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
   currentTime = 0,
   onSeek,
 }) => {
+  const { language } = useLanguage();
+  const t = translations[language].transcript;
+
   const handleSegmentClick = (startTime: number) => {
     if (onSeek) {
       onSeek(startTime);
@@ -21,7 +26,7 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
 
   return (
     <div className="bg-surface rounded-xl p-6 border border-border max-h-96 overflow-y-auto">
-      <h3 className="text-lg font-semibold mb-4 text-text-primary">Transcript</h3>
+      <h3 className="text-lg font-semibold mb-4 text-text-primary">{t.heading}</h3>
       <div className="space-y-3">
         {segments.map((segment) => {
           const isActive =

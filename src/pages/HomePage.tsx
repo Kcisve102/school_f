@@ -4,6 +4,8 @@ import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import VideoGrid from '../components/video/VideoGrid';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { useLanguage } from '../contexts/LanguageContext';
+import { translations } from '../translations';
 import {
   ArrowRight,
   Bot,
@@ -17,32 +19,14 @@ import {
   Search,
 } from 'lucide-react';
 
-// AI capabilities for the new design
-const AI_CAPABILITIES = [
-  {
-    icon: MessageSquare,
-    title: 'Instant Answers',
-    description: 'Ask anything about factory operations, safety procedures, or equipment handling.',
-  },
-  {
-    icon: Search,
-    title: 'Smart Video Discovery',
-    description: 'AI finds the most relevant training videos based on your specific questions.',
-  },
-  {
-    icon: Zap,
-    title: '24/7 Availability',
-    description: 'Get help anytime, whether you\'re on the night shift or preparing for the day.',
-  },
-];
-
-
 export const HomePage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [scrollY, setScrollY] = useState(0);
   const heroRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const t = translations[language].home;
 
   useScrollReveal();
 
@@ -70,12 +54,34 @@ export const HomePage: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const AI_CAPABILITIES = [
+    {
+      icon: MessageSquare,
+      title: t.featureAsk,
+      description: language === 'en'
+        ? 'Ask anything about factory operations, safety procedures, or equipment handling.'
+        : '随时提问工厂操作、安全规程或设备处理方面的任何问题。',
+    },
+    {
+      icon: Search,
+      title: t.smartMatching,
+      description: t.smartMatchingDesc,
+    },
+    {
+      icon: Zap,
+      title: t.featureAlways,
+      description: language === 'en'
+        ? "Get help anytime, whether you're on the night shift or preparing for the day."
+        : '无论是夜班还是白班准备，随时都能获得帮助。',
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-bg-primary">
       {/* Hero Section - Full Background with Centered Content */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image */}
-        <div 
+        <div
           className="absolute inset-0 w-full h-full"
           style={{ transform: `translateY(${scrollY * 0.15}px)` }}
         >
@@ -94,19 +100,18 @@ export const HomePage: React.FC = () => {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-surface/70 backdrop-blur-sm rounded-full px-5 py-2.5 mb-8 border border-border">
               <Bot className="w-4 h-4 text-accent" />
-              <span className="text-sm font-semibold text-text-primary tracking-wide">工厂技能AI助手</span>
+              <span className="text-sm font-semibold text-text-primary tracking-wide">{t.badge}</span>
             </div>
 
             {/* Main Headline */}
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6 leading-tight drop-shadow-sm">
-              Learn Factory Skills
-              <span className="block text-accent mt-2">with AI Guidance</span>
+              {t.headline1}
+              <span className="block text-accent mt-2">{t.headline2}</span>
             </h1>
 
             {/* Subheadline */}
             <p className="text-lg md:text-xl text-text-primary max-w-2xl mx-auto mb-10 leading-relaxed drop-shadow-sm font-medium">
-              Ask questions, get instant answers, and discover relevant training videos. 
-              Your personal AI assistant for factory operations and safety.
+              {t.subheadline}
             </p>
 
             {/* CTA Buttons */}
@@ -115,7 +120,7 @@ export const HomePage: React.FC = () => {
                 onClick={() => navigate('/chat')}
                 className="group inline-flex items-center justify-center gap-3 bg-accent text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-accent-dark transition-all duration-300 shadow-xl shadow-accent/25"
               >
-                Start Chatting
+                {t.ctaChat}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
@@ -123,18 +128,18 @@ export const HomePage: React.FC = () => {
                 className="inline-flex items-center justify-center gap-2 bg-surface/70 backdrop-blur-sm hover:bg-surface text-text-primary px-8 py-4 rounded-xl font-medium text-lg border border-border transition-all duration-300"
               >
                 <Play className="w-5 h-5" />
-                Browse Videos
+                {t.ctaBrowse}
               </button>
             </div>
 
             {/* Feature Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
               {[
-                { icon: MessageSquare, title: 'Ask Anything', desc: 'Get instant answers' },
-                { icon: Play, title: 'Video Learning', desc: 'Watch & learn' },
-                { icon: Zap, title: 'Always Available', desc: '24/7 AI support' },
+                { icon: MessageSquare, title: t.featureAsk, desc: t.featureAskDesc },
+                { icon: Play, title: t.featureVideo, desc: t.featureVideoDesc },
+                { icon: Zap, title: t.featureAlways, desc: t.featureAlwaysDesc },
               ].map((feature, index) => (
-                <div 
+                <div
                   key={index}
                   className="flex flex-col items-center gap-3 p-4 bg-surface/50 backdrop-blur-sm rounded-2xl border border-border"
                 >
@@ -175,13 +180,13 @@ export const HomePage: React.FC = () => {
             <div className="text-center max-w-3xl mx-auto mb-20 reveal-up">
               <div className="inline-flex items-center gap-2 bg-surface-secondary rounded-full px-4 py-2 mb-6 border border-border">
                 <Bot className="w-4 h-4 text-accent" />
-                <span className="text-sm font-medium text-text-secondary">HOW IT WORKS</span>
+                <span className="text-sm font-medium text-text-secondary">{t.howItWorks}</span>
               </div>
               <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
-                Learning Made Simple
+                {t.learningMadeSimple}
               </h2>
               <p className="text-xl text-text-secondary">
-                Just ask. Our AI understands your questions and finds the best way to help you learn.
+                {t.learningDesc}
               </p>
             </div>
 
@@ -227,38 +232,38 @@ export const HomePage: React.FC = () => {
           <div className="max-w-7xl mx-auto">
             {/* Asymmetric Two Column Layout */}
             <div className="grid lg:grid-cols-12 gap-12 items-center">
-              
+
               {/* Left Column - Large Typography */}
               <div className="lg:col-span-7 reveal-left">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-12 h-px bg-info"></div>
-                  <span className="text-sm font-semibold text-info uppercase tracking-widest">Video Learning</span>
+                  <span className="text-sm font-semibold text-info uppercase tracking-widest">{t.videoLearningLabel}</span>
                 </div>
-                
+
                 <h2 className="text-6xl md:text-7xl lg:text-8xl font-bold text-text-primary leading-[0.9] mb-8">
-                  Watch &
-                  <span className="block text-info">Learn</span>
+                  {t.watchAnd}
+                  <span className="block text-info">{t.learn}</span>
                 </h2>
-                
+
                 <p className="text-xl text-text-secondary max-w-lg leading-relaxed mb-10">
-                  Sometimes words aren't enough. Our AI matches your questions with step-by-step video demonstrations from industry experts.
+                  {t.watchDesc}
                 </p>
 
                 {/* Stats Row */}
                 <div className="flex gap-8">
                   <div>
                     <div className="text-4xl font-bold text-text-primary">100+</div>
-                    <div className="text-sm text-text-secondary">Video Tutorials</div>
+                    <div className="text-sm text-text-secondary">{t.stat1Label}</div>
                   </div>
                   <div className="w-px bg-border"></div>
                   <div>
                     <div className="text-4xl font-bold text-text-primary">4K</div>
-                    <div className="text-sm text-text-secondary">Video Quality</div>
+                    <div className="text-sm text-text-secondary">{t.stat2Label}</div>
                   </div>
                   <div className="w-px bg-border"></div>
                   <div>
                     <div className="text-4xl font-bold text-text-primary">5</div>
-                    <div className="text-sm text-text-secondary">Languages</div>
+                    <div className="text-sm text-text-secondary">{t.stat3Label}</div>
                   </div>
                 </div>
               </div>
@@ -266,11 +271,11 @@ export const HomePage: React.FC = () => {
               {/* Right Column - Feature Stack */}
               <div className="lg:col-span-5 space-y-4 reveal-right delay-2">
                 {[
-                  { icon: Search, title: 'Smart Matching', desc: 'AI finds videos based on your specific questions' },
-                  { icon: Play, title: 'Step-by-Step', desc: 'Detailed demonstrations with clear instructions' },
-                  { icon: Shield, title: 'Safety Focused', desc: 'Learn proper protocols and best practices' },
+                  { icon: Search, title: t.smartMatching, desc: t.smartMatchingDesc },
+                  { icon: Play, title: t.stepByStep, desc: t.stepByStepDesc },
+                  { icon: Shield, title: t.safetyFocused, desc: t.safetyFocusedDesc },
                 ].map((feature, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="group bg-surface/80 backdrop-blur-sm border border-border hover:border-info/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1"
                   >
@@ -291,7 +296,7 @@ export const HomePage: React.FC = () => {
                   onClick={() => navigate('/categories')}
                   className="w-full group flex items-center justify-between bg-info text-white rounded-2xl px-6 py-5 hover:bg-info-dark transition-all duration-300"
                 >
-                  <span className="font-semibold">Browse Video Library</span>
+                  <span className="font-semibold">{t.browseLibrary}</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
@@ -308,16 +313,15 @@ export const HomePage: React.FC = () => {
             <div className="mb-16 reveal-up">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-px bg-accent"></div>
-                <span className="text-sm font-medium text-accent uppercase tracking-widest">Browse Topics</span>
+                <span className="text-sm font-medium text-accent uppercase tracking-widest">{t.browseTopics}</span>
               </div>
               <div className="grid md:grid-cols-2 gap-8 items-end">
                 <h2 className="text-5xl md:text-6xl font-bold text-text-primary leading-tight">
-                  Skills for the
-                  <span className="block text-text-muted">modern factory</span>
+                  {t.skillsHeadline}
+                  <span className="block text-text-muted">{t.modernFactory}</span>
                 </h2>
                 <p className="text-lg text-text-secondary md:text-right md:pb-2">
-                  Curated learning paths across essential industrial competencies. 
-                  Each category connects to AI-assisted guidance.
+                  {t.skillsDesc}
                 </p>
               </div>
             </div>
@@ -338,12 +342,12 @@ export const HomePage: React.FC = () => {
                     <span className="text-7xl font-bold text-text-primary/5 group-hover:text-factory/10 transition-colors">01</span>
                   </div>
                   <div>
-                    <h3 className="text-3xl md:text-4xl font-bold text-text-primary mb-3 group-hover:text-factory transition-colors">Factory Skills</h3>
+                    <h3 className="text-3xl md:text-4xl font-bold text-text-primary mb-3 group-hover:text-factory transition-colors">{t.factorySkills}</h3>
                     <p className="text-text-secondary text-lg max-w-md">
-                      Master equipment operation, assembly line workflows, and quality control procedures with AI-guided tutorials.
+                      {t.factorySkillsDesc}
                     </p>
                     <div className="mt-6 flex items-center gap-2 text-factory opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
-                      <span className="text-sm font-medium">Explore skills</span>
+                      <span className="text-sm font-medium">{t.exploreSkills}</span>
                       <ArrowRight className="w-4 h-4" />
                     </div>
                   </div>
@@ -364,12 +368,12 @@ export const HomePage: React.FC = () => {
                     <span className="text-6xl font-bold text-text-primary/5 group-hover:text-safety/10 transition-colors">02</span>
                   </div>
                   <div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-text-primary mb-3 group-hover:text-safety transition-colors">Safety Guide</h3>
+                    <h3 className="text-2xl md:text-3xl font-bold text-text-primary mb-3 group-hover:text-safety transition-colors">{t.safetyGuide}</h3>
                     <p className="text-text-secondary">
-                      Essential protocols, PPE requirements, and emergency procedures for a secure workplace.
+                      {t.safetyGuideDesc}
                     </p>
                     <div className="mt-4 flex items-center gap-2 text-safety opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-sm font-medium">Stay protected</span>
+                      <span className="text-sm font-medium">{t.stayProtected}</span>
                       <ArrowRight className="w-4 h-4" />
                     </div>
                   </div>
@@ -388,12 +392,12 @@ export const HomePage: React.FC = () => {
                   </div>
                   <div className="flex-1">
                     <span className="text-5xl font-bold text-text-primary/5 group-hover:text-language/10 transition-colors absolute top-6 right-6">03</span>
-                    <h3 className="text-2xl font-bold text-text-primary mb-2 group-hover:text-language transition-colors">Language</h3>
+                    <h3 className="text-2xl font-bold text-text-primary mb-2 group-hover:text-language transition-colors">{t.language}</h3>
                     <p className="text-text-secondary text-sm">
-                      Technical terminology and communication skills for diverse factory environments.
+                      {t.languageDesc}
                     </p>
                     <div className="mt-3 flex items-center gap-2 text-language opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-sm font-medium">Learn more</span>
+                      <span className="text-sm font-medium">{t.learnMore}</span>
                       <ArrowRight className="w-4 h-4" />
                     </div>
                   </div>
@@ -414,12 +418,12 @@ export const HomePage: React.FC = () => {
                       </div>
                       <span className="text-5xl font-bold text-text-primary/5 group-hover:text-health/10 transition-colors">04</span>
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-text-primary mb-3 group-hover:text-health transition-colors">Health & Wellness</h3>
+                    <h3 className="text-2xl md:text-3xl font-bold text-text-primary mb-3 group-hover:text-health transition-colors">{t.healthWellness}</h3>
                     <p className="text-text-secondary mb-4">
-                      Ergonomics, mental health, and physical wellbeing practices for demanding industrial roles.
+                      {t.healthDesc}
                     </p>
                     <div className="flex items-center gap-2 text-health opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-sm font-medium">Prioritize health</span>
+                      <span className="text-sm font-medium">{t.prioritizeHealth}</span>
                       <ArrowRight className="w-4 h-4" />
                     </div>
                   </div>
@@ -440,13 +444,13 @@ export const HomePage: React.FC = () => {
             {/* Bottom Note */}
             <div className="mt-12 flex items-center justify-between border-t border-border pt-8">
               <p className="text-text-muted text-sm">
-                Each category is continuously updated with new AI-curated content
+                {t.categoriesNote}
               </p>
               <button
                 onClick={() => navigate('/categories')}
                 className="group inline-flex items-center gap-3 px-6 py-3 bg-surface border border-border rounded-xl hover:border-accent transition-all"
               >
-                <span className="font-medium text-text-primary">View all categories</span>
+                <span className="font-medium text-text-primary">{t.viewAllCategories}</span>
                 <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-colors">
                   <ArrowRight className="w-4 h-4 text-accent group-hover:text-white transition-colors" />
                 </div>
@@ -472,18 +476,18 @@ export const HomePage: React.FC = () => {
             <div className="max-w-2xl reveal-left">
               <div className="inline-flex items-center gap-2 bg-surface-secondary rounded-full px-4 py-2 mb-6 border border-border">
                 <Zap className="w-4 h-4 text-success" />
-                <span className="text-sm font-medium text-text-secondary">ADVANCED LOGISTICS</span>
+                <span className="text-sm font-medium text-text-secondary">{t.advancedLogistics}</span>
               </div>
               <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
-                Master Modern
-                <span className="block text-success">Factory Operations</span>
+                {t.masterModern}
+                <span className="block text-success">{t.factoryOps}</span>
               </h2>
               <p className="text-xl text-text-secondary mb-10 leading-relaxed">
-                From automated assembly lines to quality control systems, learn the skills that power today's smart factories.
+                {t.factoryOpsDesc}
               </p>
               <div className="flex flex-wrap gap-4">
-                {['Automation', 'Quality Control', 'Logistics', 'Prototyping'].map((tag) => (
-                  <span 
+                {t.tags.map((tag) => (
+                  <span
                     key={tag}
                     className="px-4 py-2 bg-surface-secondary border border-border rounded-full text-sm text-text-secondary"
                   >
@@ -513,21 +517,21 @@ export const HomePage: React.FC = () => {
             {/* Section Header with accent line */}
             <div className="flex items-center gap-4 mb-4 reveal-up">
               <div className="w-16 h-px bg-accent"></div>
-              <span className="text-sm font-semibold text-accent uppercase tracking-widest">Video Library</span>
+              <span className="text-sm font-semibold text-accent uppercase tracking-widest">{t.videoLibraryLabel}</span>
             </div>
 
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4 reveal-up delay-1">
               <div>
-                <h2 className="text-5xl md:text-6xl font-bold text-text-primary mb-4">Latest Videos</h2>
+                <h2 className="text-5xl md:text-6xl font-bold text-text-primary mb-4">{t.latestVideos}</h2>
                 <p className="text-xl text-text-secondary max-w-xl">
-                  Fresh training content added regularly. Learn from expert-led tutorials.
+                  {t.latestVideosDesc}
                 </p>
               </div>
               <button
                 onClick={() => navigate('/categories')}
                 className="group inline-flex items-center gap-3 px-6 py-3 bg-surface border border-border rounded-xl hover:border-accent transition-all"
               >
-                <span className="font-medium text-text-primary">View All Videos</span>
+                <span className="font-medium text-text-primary">{t.viewAllVideos}</span>
                 <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-colors">
                   <ArrowRight className="w-4 h-4 text-accent group-hover:text-white transition-colors" />
                 </div>
@@ -544,14 +548,14 @@ export const HomePage: React.FC = () => {
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-warning/10 to-info/10"></div>
         <div className="absolute inset-0 bg-bg-primary/80"></div>
-        
+
         <div className="relative px-6 lg:px-12 xl:px-20">
           <div className="max-w-4xl mx-auto text-center reveal-scale">
             <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
-              Ready to learn smarter?
+              {t.ctaHeadline}
             </h2>
             <p className="text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
-              Start a conversation with our AI assistant and discover a more effective way to master factory skills
+              {t.ctaDesc}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
@@ -559,14 +563,14 @@ export const HomePage: React.FC = () => {
                 className="group inline-flex items-center justify-center gap-3 bg-accent text-white px-10 py-5 rounded-xl font-semibold text-lg hover:bg-accent-dark transition-all duration-300 shadow-xl shadow-accent/25 hover:shadow-accent/35"
               >
                 <Bot className="w-5 h-5" />
-                Start Chatting
+                {t.ctaChat}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
                 onClick={() => navigate('/signup')}
                 className="inline-flex items-center justify-center gap-2 bg-surface-secondary hover:bg-surface-hover text-text-primary px-10 py-5 rounded-xl font-medium text-lg border border-border hover:border-accent/30 transition-all duration-300"
               >
-                Create Account
+                {t.createAccount}
               </button>
             </div>
           </div>

@@ -10,6 +10,8 @@ import QuizModal from '../components/quiz/QuizModal';
 import Loader from '../components/common/Loader';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 import { formatDate } from '../utils/helpers';
+import { useLanguage } from '../contexts/LanguageContext';
+import { translations } from '../translations';
 
 export const VideoDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,6 +23,8 @@ export const VideoDetailPage: React.FC = () => {
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
   const [showQuiz, setShowQuiz] = useState(false);
+  const { language } = useLanguage();
+  const t = translations[language].videoDetail;
 
   useScrollReveal(undefined, [loading]);
 
@@ -60,7 +64,6 @@ export const VideoDetailPage: React.FC = () => {
   }, [id]);
 
   const handleVideoEnded = () => {
-    // Only show quiz if transcript and summary are completed
     if (video?.transcription_status === 'completed' &&
         video?.summary_status === 'completed') {
       setShowQuiz(true);
@@ -74,7 +77,7 @@ export const VideoDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8 min-h-screen">
-        <Loader text="Loading video..." />
+        <Loader text={t.loadingVideo} />
       </div>
     );
   }
@@ -84,13 +87,13 @@ export const VideoDetailPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8 min-h-screen">
         <div className="text-center py-12">
           <AlertCircle className="w-16 h-16 text-error mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-text-primary mb-2">Video Not Found</h2>
-          <p className="text-text-secondary mb-6">{error || 'The video you are looking for does not exist.'}</p>
+          <h2 className="text-2xl font-bold text-text-primary mb-2">{t.videoNotFound}</h2>
+          <p className="text-text-secondary mb-6">{error || t.videoNotFoundDesc}</p>
           <button
             onClick={() => navigate('/')}
             className="px-6 py-3 bg-accent hover:bg-accent-dark text-white rounded-lg font-semibold transition-all"
           >
-            Back to Home
+            {t.backToHome}
           </button>
         </div>
       </div>
@@ -104,7 +107,7 @@ export const VideoDetailPage: React.FC = () => {
         className="mb-6 flex items-center gap-2 px-4 py-2 bg-surface hover:bg-surface-hover border border-border rounded-lg text-text-primary transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back to Videos
+        {t.backToVideos}
       </button>
 
       <div className="space-y-6">
@@ -113,7 +116,7 @@ export const VideoDetailPage: React.FC = () => {
           {video.description && (
             <p className="text-text-secondary mb-4">{video.description}</p>
           )}
-          <p className="text-sm text-text-muted">Uploaded on {formatDate(video.created_at)}</p>
+          <p className="text-sm text-text-muted">{t.uploadedOn} {formatDate(video.created_at)}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -135,7 +138,7 @@ export const VideoDetailPage: React.FC = () => {
               <div className="bg-surface rounded-xl p-6 border border-border">
                 <div className="flex items-center text-info">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-info mr-3"></div>
-                  <p>Transcription in progress...</p>
+                  <p>{t.transcriptionInProgress}</p>
                 </div>
               </div>
             )}
@@ -144,7 +147,7 @@ export const VideoDetailPage: React.FC = () => {
               <div className="bg-error/10 rounded-xl p-6 border border-error/30">
                 <div className="flex items-center text-error">
                   <AlertCircle className="w-5 h-5 mr-2" />
-                  <p>Transcription failed. Please contact support.</p>
+                  <p>{t.transcriptionFailed}</p>
                 </div>
               </div>
             )}
@@ -162,7 +165,7 @@ export const VideoDetailPage: React.FC = () => {
               <div className="bg-surface rounded-xl p-6 border border-border">
                 <div className="flex items-center text-info">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-info mr-3"></div>
-                  <p>Summarization in progress...</p>
+                  <p>{t.summarizationInProgress}</p>
                 </div>
               </div>
             )}
@@ -171,28 +174,28 @@ export const VideoDetailPage: React.FC = () => {
               <div className="bg-error/10 rounded-xl p-6 border border-error/30">
                 <div className="flex items-center text-error">
                   <AlertCircle className="w-5 h-5 mr-2" />
-                  <p>Summarization failed. Please contact support.</p>
+                  <p>{t.summarizationFailed}</p>
                 </div>
               </div>
             )}
 
             <div className="bg-surface rounded-xl p-6 border border-border">
-              <h3 className="font-semibold mb-3 text-text-primary">Video Information</h3>
+              <h3 className="font-semibold mb-3 text-text-primary">{t.videoInformation}</h3>
               <dl className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <dt className="text-text-muted">Upload Type:</dt>
+                  <dt className="text-text-muted">{t.uploadType}</dt>
                   <dd className="font-medium capitalize text-text-primary">{video.upload_type}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-text-muted">Compression:</dt>
+                  <dt className="text-text-muted">{t.compression}</dt>
                   <dd className="font-medium capitalize text-text-primary">{video.compression_status}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-text-muted">Transcription:</dt>
+                  <dt className="text-text-muted">{t.transcription}</dt>
                   <dd className="font-medium capitalize text-text-primary">{video.transcription_status}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-text-muted">Summary:</dt>
+                  <dt className="text-text-muted">{t.summary}</dt>
                   <dd className="font-medium capitalize text-text-primary">{video.summary_status}</dd>
                 </div>
               </dl>

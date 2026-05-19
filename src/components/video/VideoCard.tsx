@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Play, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { Video } from '../../types';
 import { formatDuration, formatDate } from '../../utils/helpers';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { translations } from '../../translations';
 
 interface VideoCardProps {
   video: Video;
@@ -11,13 +13,15 @@ interface VideoCardProps {
 
 export const VideoCard: React.FC<VideoCardProps> = ({ video, compact }) => {
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const t = translations[language].videoCard;
 
   const getStatusBadge = () => {
     if (video.transcription_status === 'completed' && video.summary_status === 'completed') {
       return (
         <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-success bg-success/10 rounded-full border border-success/20">
           <CheckCircle className="w-3 h-3 mr-1" />
-          Ready
+          {t.ready}
         </span>
       );
     }
@@ -28,7 +32,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video, compact }) => {
     ) {
       return (
         <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-info bg-info/10 rounded-full border border-info/20">
-          Processing
+          {t.processing}
         </span>
       );
     }
@@ -40,7 +44,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video, compact }) => {
       return (
         <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-error bg-error/10 rounded-full border border-error/20">
           <AlertCircle className="w-3 h-3 mr-1" />
-          Failed
+          {t.failed}
         </span>
       );
     }
@@ -62,13 +66,12 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video, compact }) => {
           muted
           playsInline
           onError={(e) => {
-            // Fallback to gradient background if video fails to load
             const target = e.target as HTMLVideoElement;
             target.style.display = 'none';
           }}
         />
 
-        {/* Fallback gradient overlay (shown if video fails to load) */}
+        {/* Fallback gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-info/10 pointer-events-none"></div>
 
         {/* Play icon overlay */}
