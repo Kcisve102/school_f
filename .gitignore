@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-dist/
-node_modules
-.env
-.DS_Store
-=======
 # Environment variables
 .env
 .env.local
@@ -37,4 +31,3 @@ coverage/
 
 # Vite
 .vite
->>>>>>> a99de5c (Remove .env from tracking and add comprehensive .gitignore)
