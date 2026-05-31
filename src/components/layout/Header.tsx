@@ -34,7 +34,7 @@ export const Header: React.FC = () => {
           <Link to="/" className="flex items-center gap-2.5" onClick={closeMenu}>
             <LogoMark size={34} />
             <span className="text-xl font-bold text-text-primary tracking-tight">
-              {import.meta.env.VITE_APP_NAME || 'EduVideo'}
+              {import.meta.env.VITE_APP_NAME || 'Knowverd'}
             </span>
           </Link>
 

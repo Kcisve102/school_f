@@ -5,8 +5,6 @@
   export const WS_BASE_URL  = 'http://localhost:8000';
 
 // PRODUCTION:
-  // export const API_BASE_URL = 'https://api.trainflowai.com/api';
-  // export const WS_BASE_URL  = 'https://api.trainflowai.com';
+  // export const API_BASE_URL = 'https://api.knowverd.com/api';
+  // export const WS_BASE_URL  = 'https://api.knowverd.com';
 
-// export const API_BASE_URL = 'https://api.trainflowai.com/api';
-// export const WS_BASE_URL  = 'https://api.trainflowai.com';

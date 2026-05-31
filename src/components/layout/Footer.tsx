@@ -12,7 +12,7 @@ export const Footer: React.FC = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="text-center text-sm text-text-secondary">
           <p>
-            &copy; {currentYear} {import.meta.env.VITE_APP_NAME || 'EduVideo'}. {t.allRightsReserved}
+            &copy; {currentYear} {import.meta.env.VITE_APP_NAME || 'Knowverd'}. {t.allRightsReserved}
           </p>
           <p className="mt-1 text-text-muted">
             {t.poweredBy}

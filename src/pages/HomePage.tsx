@@ -328,7 +328,7 @@ export const HomePage: React.FC = () => {
 
             {/* Asymmetrical Bento Grid */}
             <div className="grid grid-cols-12 gap-4 md:gap-6">
-              {/* Factory Skills - Large Feature Card */}
+              {/* AI Skills - Large Feature Card */}
               <button
                 onClick={() => navigate('/categories')}
                 className="group col-span-12 md:col-span-7 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-factory/30 transition-all duration-500 text-left reveal-up delay-1"

@@ -93,7 +93,7 @@ export const CategoriesPage: React.FC = () => {
   // Get category display name (translated)
   const getCategoryLabel = (cat: string): string => {
     const map: Record<string, string> = {
-      'Factory Skills': tHome.factorySkills,
+      'AI Skills': tHome.factorySkills,
       'Safety Guide': tHome.safetyGuide,
       'Language': tHome.language,
       'Health': tHome.healthWellness,
