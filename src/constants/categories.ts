@@ -1,9 +1,9 @@
 export const CATEGORIES = [
-  'Factory Skills',
-  'Safety Guide',
+  'AI Skills',
+  // 'Safety Guide',
   'Language',
   'Other',
-  'Health',
+  // 'Health',
 ] as const;
 
 export type CategoryType = typeof CATEGORIES[number];

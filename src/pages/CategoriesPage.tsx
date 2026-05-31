@@ -18,16 +18,16 @@ import {
 
 // Category configurations with icons and colors
 const CATEGORY_CONFIG: Record<string, { color: string; bgColor: string; borderColor: string }> = {
-  'Factory Skills': {
+  'AI Skills': {
     color: 'text-factory',
     bgColor: 'bg-factory/10',
     borderColor: 'border-factory/30'
   },
-  'Safety Guide': {
-    color: 'text-safety',
-    bgColor: 'bg-safety/10',
-    borderColor: 'border-safety/30'
-  },
+  // 'Safety Guide': {
+  //   color: 'text-safety',
+  //   bgColor: 'bg-safety/10',
+  //   borderColor: 'border-safety/30'
+  // },
   'Language': {
     color: 'text-language',
     bgColor: 'bg-language/10',
@@ -38,11 +38,11 @@ const CATEGORY_CONFIG: Record<string, { color: string; bgColor: string; borderCo
     bgColor: 'bg-other/10',
     borderColor: 'border-other/30'
   },
-  'Health': {
-    color: 'text-health',
-    bgColor: 'bg-health/10',
-    borderColor: 'border-health/30'
-  },
+  // 'Health': {
+  //   color: 'text-health',
+  //   bgColor: 'bg-health/10',
+  //   borderColor: 'border-health/30'
+  // },
 };
 
 export const CategoriesPage: React.FC = () => {
