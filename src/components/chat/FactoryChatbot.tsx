@@ -34,7 +34,7 @@ export const FactoryChatbot: React.FC = () => {
         {
           role: 'assistant',
           content:
-            '你好！我是工厂技能助手。我可以帮助您了解流水线操作、设备使用、安全规范等工厂相关知识。请问有什么我可以帮助您的吗？',
+            '你好！我是AI学习助手。我可以帮助您了解人工智能、机器学习、大语言模型等AI相关知识。请问有什么我可以帮助您的吗？',
         },
       ]);
     }
@@ -106,13 +106,13 @@ export const FactoryChatbot: React.FC = () => {
         <button
           onClick={() => setIsOpen(true)}
           className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-full p-4 shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-110 group"
-          aria-label="Open factory skills chatbot"
+          aria-label="Open AI learning chatbot"
         >
           <MessageCircle className="w-6 h-6" />
           <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></span>
           {/* Tooltip */}
           <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-            工厂技能助手
+            AI学习助手
           </div>
         </button>
       )}
@@ -128,8 +128,8 @@ export const FactoryChatbot: React.FC = () => {
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-purple-600"></div>
               </div>
               <div>
-                <h3 className="font-bold text-white">工厂技能助手</h3>
-                <p className="text-xs text-purple-100">Factory Skills Assistant</p>
+                <h3 className="font-bold text-white">AI学习助手</h3>
+                <p className="text-xs text-purple-100">AI Learning Assistant</p>
               </div>
             </div>
             <div className="flex items-center gap-2">

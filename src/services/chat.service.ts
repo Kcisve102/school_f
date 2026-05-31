@@ -13,9 +13,9 @@ export interface ChatResponse {
 
 export const chatService = {
   /**
-   * Send a question to the factory skills chatbot
+   * Send a question to the AI learning assistant
    * Responses will be in Chinese
-   * @param question - User's question about factory assembly line skills
+   * @param question - User's question about AI learning topics
    * @param conversationHistory - Optional previous messages for context
    * @returns AI response in Chinese
    */
