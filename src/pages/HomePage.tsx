@@ -86,7 +86,7 @@ export const HomePage: React.FC = () => {
           style={{ transform: `translateY(${scrollY * 0.15}px)` }}
         >
           <img
-            src="/assets/herodv.png"
+            src="/assets/bg2.jpg"
             alt="AI Learning Environment"
             className="w-full h-full object-cover"
           />
