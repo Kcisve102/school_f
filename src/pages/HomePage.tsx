@@ -59,8 +59,8 @@ export const HomePage: React.FC = () => {
       icon: MessageSquare,
       title: t.featureAsk,
       description: language === 'en'
-        ? 'Ask anything about factory operations, safety procedures, or equipment handling.'
-        : '随时提问工厂操作、安全规程或设备处理方面的任何问题。',
+        ? 'Ask anything about machine learning, AI tools, LLMs, or getting started with AI.'
+        : '随时提问机器学习、AI工具、大语言模型或AI入门方面的任何问题。',
     },
     {
       icon: Search,
@@ -71,8 +71,8 @@ export const HomePage: React.FC = () => {
       icon: Zap,
       title: t.featureAlways,
       description: language === 'en'
-        ? "Get help anytime, whether you're on the night shift or preparing for the day."
-        : '无论是夜班还是白班准备，随时都能获得帮助。',
+        ? "Get help anytime — whether you're a beginner or diving deeper into advanced AI topics."
+        : '无论是AI入门还是深入进阶，随时都能获得帮助。',
     },
   ];
 
@@ -87,7 +87,7 @@ export const HomePage: React.FC = () => {
         >
           <img
             src="/assets/herodv.png"
-            alt="Smart Factory Environment"
+            alt="AI Learning Environment"
             className="w-full h-full object-cover"
           />
           {/* Theme-aware overlay for text readability */}
@@ -465,7 +465,7 @@ export const HomePage: React.FC = () => {
         <div className="absolute inset-0">
           <img
             src="/assets/dvb.png"
-            alt="Advanced Factory Technology"
+            alt="AI Technology in Practice"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-bg-primary via-bg-primary/90 to-bg-primary/70"></div>
