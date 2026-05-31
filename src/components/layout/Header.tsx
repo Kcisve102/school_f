@@ -31,11 +31,8 @@ export const Header: React.FC = () => {
       <div className="mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5" onClick={closeMenu}>
-            <LogoMark size={34} />
-            <span className="text-xl font-bold text-text-primary tracking-tight">
-              {import.meta.env.VITE_APP_NAME || 'Knowverd'}
-            </span>
+          <Link to="/" className="flex items-center" onClick={closeMenu}>
+            <LogoMark size={180} />
           </Link>
 
           {/* Desktop nav */}
