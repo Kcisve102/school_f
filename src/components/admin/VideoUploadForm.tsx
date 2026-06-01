@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { videoService } from '../../services/video.service';
+import wsService from '../../services/websocket.service';
 import toast from 'react-hot-toast';
 import { CATEGORIES } from '../../constants/categories';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../translations';
+import { CheckCircle, Loader2, XCircle } from 'lucide-react';
+
+type ProcessingStatus = 'uploading' | 'compressing' | 'transcribing' | 'summarizing' | 'done' | 'failed';
+
+const STEPS: { key: ProcessingStatus; labelEn: string; labelZh: string }[] = [
+  { key: 'compressing',  labelEn: 'Compressing video',  labelZh: '正在压缩视频' },
+  { key: 'transcribing', labelEn: 'Transcribing audio',  labelZh: '正在转录音频' },
+  { key: 'summarizing',  labelEn: 'Generating summary',  labelZh: '正在生成摘要' },
+];
+
+const stepOrder: ProcessingStatus[] = ['compressing', 'transcribing', 'summarizing', 'done'];
 
 interface VideoUploadFormProps {
   onSuccess?: () => void;
@@ -16,8 +28,53 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [category, setCategory] = useState<string>('');
+  const [processingStatus, setProcessingStatus] = useState<ProcessingStatus | null>(null);
+  const [failedError, setFailedError] = useState<string>('');
   const { language } = useLanguage();
   const t = translations[language].admin;
+  const videoIdRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!processingStatus) return;
+    if (processingStatus === 'done' || processingStatus === 'failed') return;
+
+    const socket = wsService.connect();
+
+    const onCompressionProgress = () => setProcessingStatus('compressing');
+    const onTranscriptionProgress = () => setProcessingStatus('transcribing');
+    const onTranscriptionComplete = () => setProcessingStatus('summarizing');
+    const onTranscriptionFailed = ({ error }: { error: string }) => {
+      setFailedError(error || 'Transcription failed');
+      setProcessingStatus('failed');
+    };
+    const onSummaryProgress = () => setProcessingStatus('summarizing');
+    const onSummaryComplete = () => {
+      setProcessingStatus('done');
+      if (onSuccess) onSuccess();
+    };
+    const onSummaryFailed = ({ error }: { error: string }) => {
+      setFailedError(error || 'Summarization failed');
+      setProcessingStatus('failed');
+    };
+
+    socket.on('video:compression:progress', onCompressionProgress);
+    socket.on('video:transcription:progress', onTranscriptionProgress);
+    socket.on('video:transcription:complete', onTranscriptionComplete);
+    socket.on('video:transcription:failed', onTranscriptionFailed);
+    socket.on('video:summary:progress', onSummaryProgress);
+    socket.on('video:summary:complete', onSummaryComplete);
+    socket.on('video:summary:failed', onSummaryFailed);
+
+    return () => {
+      socket.off('video:compression:progress', onCompressionProgress);
+      socket.off('video:transcription:progress', onTranscriptionProgress);
+      socket.off('video:transcription:complete', onTranscriptionComplete);
+      socket.off('video:transcription:failed', onTranscriptionFailed);
+      socket.off('video:summary:progress', onSummaryProgress);
+      socket.off('video:summary:complete', onSummaryComplete);
+      socket.off('video:summary:failed', onSummaryFailed);
+    };
+  }, [processingStatus, onSuccess]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -40,36 +97,41 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
 
     setLoading(true);
     setUploadProgress(0);
+    setProcessingStatus(null);
+    setFailedError('');
 
     try {
       const formData = new FormData();
       formData.append('video', file);
       formData.append('title', title);
-      if (description) {
-        formData.append('description', description);
-      }
-      if (category) {
-        formData.append('category', category);
-      }
+      if (description) formData.append('description', description);
+      if (category) formData.append('category', category);
 
-      await videoService.uploadVideo(formData);
+      const { videoId } = await videoService.uploadVideo(formData, setUploadProgress);
+      videoIdRef.current = videoId;
 
-      toast.success(t.uploadStarted);
-
+      setUploadProgress(100);
       setTitle('');
       setDescription('');
       setFile(null);
-      setUploadProgress(0);
       setCategory('');
-
-      if (onSuccess) {
-        onSuccess();
-      }
+      setProcessingStatus('compressing');
     } catch (error: any) {
       toast.error(error.response?.data?.error || 'Upload failed');
+      setUploadProgress(0);
     } finally {
       setLoading(false);
     }
+  };
+
+  const getStepState = (stepKey: ProcessingStatus): 'done' | 'active' | 'pending' => {
+    if (!processingStatus) return 'pending';
+    if (processingStatus === 'done') return 'done';
+    const currentIdx = stepOrder.indexOf(processingStatus);
+    const stepIdx = stepOrder.indexOf(stepKey);
+    if (stepIdx < currentIdx) return 'done';
+    if (stepIdx === currentIdx) return 'active';
+    return 'pending';
   };
 
   return (
@@ -144,6 +206,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
           )}
         </div>
 
+        {/* File upload progress bar */}
         {uploadProgress > 0 && uploadProgress < 100 && (
           <div>
             <div className="w-full bg-surface-secondary rounded-full h-2">
@@ -158,12 +221,58 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || (processingStatus !== null && processingStatus !== 'done' && processingStatus !== 'failed')}
           className="w-full px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? t.uploading : t.uploadVideo}
         </button>
       </form>
+
+      {/* Backend processing status */}
+      {processingStatus && (
+        <div className="mt-6 p-4 bg-surface-secondary rounded-lg border border-border space-y-3">
+          {STEPS.map(({ key, labelEn, labelZh }) => {
+            const state = getStepState(key);
+            const label = language === 'zh' ? labelZh : labelEn;
+            return (
+              <div key={key} className="flex items-center gap-3">
+                {state === 'done' ? (
+                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                ) : state === 'active' ? (
+                  <Loader2 className="w-5 h-5 text-accent flex-shrink-0 animate-spin" />
+                ) : (
+                  <div className="w-5 h-5 rounded-full border-2 border-border flex-shrink-0" />
+                )}
+                <span className={
+                  state === 'done' ? 'text-sm text-green-500' :
+                  state === 'active' ? 'text-sm text-text-primary font-medium' :
+                  'text-sm text-text-muted'
+                }>
+                  {label}
+                </span>
+              </div>
+            );
+          })}
+
+          {processingStatus === 'done' && (
+            <div className="flex items-center gap-3 pt-1 border-t border-border">
+              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+              <span className="text-sm font-semibold text-green-500">
+                {language === 'zh' ? '视频已就绪！' : 'Video is ready!'}
+              </span>
+            </div>
+          )}
+
+          {processingStatus === 'failed' && (
+            <div className="flex items-center gap-3 pt-1 border-t border-border">
+              <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <span className="text-sm text-red-500">
+                {language === 'zh' ? `处理失败：${failedError}` : `Failed: ${failedError}`}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -22,10 +22,15 @@ export const videoService = {
     return response.data.data!;
   },
 
-  uploadVideo: async (formData: FormData): Promise<{ videoId: number }> => {
+  uploadVideo: async (formData: FormData, onProgress?: (pct: number) => void): Promise<{ videoId: number }> => {
     const response = await api.post<ApiResponse<{ videoId: number }>>('/admin/videos/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (e) => {
+        if (onProgress && e.total) {
+          onProgress(Math.round((e.loaded * 100) / e.total));
+        }
       },
     });
     return response.data.data!;
