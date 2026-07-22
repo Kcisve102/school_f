@@ -60,13 +60,13 @@ export const VideoEditModal: React.FC<VideoEditModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="relative w-full max-w-lg bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl shadow-2xl border border-white/10">
+      <div className="relative w-full max-w-lg bg-surface rounded-xl border border-border">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/10">
-          <h2 className="text-2xl font-bold text-white">Edit Video</h2>
+          <h2 className="text-2xl font-bold text-text-primary">Edit Video</h2>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+            className="p-2 text-text-muted hover:text-text-primary transition-colors rounded-lg hover:bg-white/10"
           >
             <X className="w-5 h-5" />
           </button>
@@ -75,7 +75,7 @@ export const VideoEditModal: React.FC<VideoEditModalProps> = ({
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Title
             </label>
             <input
@@ -84,31 +84,31 @@ export const VideoEditModal: React.FC<VideoEditModalProps> = ({
               onChange={(e) => setTitle(e.target.value)}
               required
               placeholder="Enter video title"
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-text-muted focus:outline-none focus:border-accent/50 transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Description (Optional)
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-text-muted focus:outline-none focus:border-accent/50 transition-colors resize-none"
               rows={4}
               placeholder="Enter video description"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Category (Optional)
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500/50 transition-colors"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-accent/50 transition-colors"
             >
               <option value="">No Category</option>
               {CATEGORIES.map((cat) => (
@@ -121,18 +121,10 @@ export const VideoEditModal: React.FC<VideoEditModalProps> = ({
 
           {/* Actions */}
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-6 py-3 bg-white/5 text-white rounded-lg font-semibold hover:bg-white/10 transition-all border border-white/10"
-            >
+            <button type="button" onClick={onClose} className="flex-1 btn-secondary">
               Cancel
             </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:from-purple-500 hover:to-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <button type="submit" disabled={loading} className="flex-1 btn-primary">
               {loading ? 'Saving...' : 'Save Changes'}
             </button>
           </div>

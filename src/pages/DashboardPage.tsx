@@ -80,7 +80,7 @@ export const DashboardPage: React.FC = () => {
   const sidebarPersonalItems = menuItems.slice(5);
 
   return (
-    <div className="flex min-h-screen bg-bg-primary text-text-primary">
+    <div className="flex min-h-screen bg-page-gradient text-text-primary">
 
       {/* ── Desktop sidebar ── */}
       <aside className="hidden lg:flex w-64 bg-surface border-r border-border flex-col fixed h-full z-30">
@@ -121,7 +121,7 @@ export const DashboardPage: React.FC = () => {
         {user && (
           <div className="mt-auto p-6 border-t border-border">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-info flex items-center justify-center text-white font-semibold text-sm">
+              <div className="w-10 h-10 rounded-full bg-info flex items-center justify-center text-white font-semibold text-sm">
                 {user.full_name.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
@@ -243,7 +243,7 @@ export const DashboardPage: React.FC = () => {
                       <p className="text-text-muted text-sm mb-6">{t.noVideosDesc}</p>
                       <button
                         onClick={() => navigate('/admin')}
-                        className="px-6 py-3 bg-accent hover:bg-accent-dark text-white rounded-lg font-medium transition-all"
+                        className="px-6 py-3 bg-accent hover:bg-accent-dark text-bg-primary rounded-lg font-medium transition-all"
                       >
                         {t.uploadVideo}
                       </button>

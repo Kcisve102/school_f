@@ -148,7 +148,7 @@ export const QuizPage: React.FC = () => {
               <p className="text-text-secondary mb-4">{error}</p>
               <button
                 onClick={loadQuiz}
-                className="px-6 py-2 bg-accent text-white rounded-lg hover:bg-accent-dark transition-colors"
+                className="px-6 py-2 bg-accent text-bg-primary rounded-lg hover:bg-accent-dark transition-colors"
               >
                 {t.tryAgain}
               </button>
@@ -196,7 +196,7 @@ export const QuizPage: React.FC = () => {
                 ) : (
                   <button
                     onClick={handleNext}
-                    className="px-6 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent-dark transition-colors"
+                    className="px-6 py-2 bg-accent text-bg-primary rounded-lg font-medium hover:bg-accent-dark transition-colors"
                   >
                     {t.next}
                   </button>

@@ -65,14 +65,14 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, on
 
   const getStatusBadge = (status: string) => {
     const statusColors: Record<string, string> = {
-      pending: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-      processing: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-      completed: 'bg-green-500/20 text-green-400 border-green-500/30',
-      failed: 'bg-red-500/20 text-red-400 border-red-500/30',
+      pending: 'bg-warning/20 text-warning border-warning/30',
+      processing: 'bg-info/20 text-info border-info/30',
+      completed: 'bg-success/20 text-success border-success/30',
+      failed: 'bg-error/20 text-error border-error/30',
     };
 
     return (
-      <span className={`px-3 py-1 text-xs font-medium rounded-full border ${statusColors[status] || 'bg-gray-500/20 text-gray-400 border-gray-500/30'}`}>
+      <span className={`px-3 py-1 text-xs font-medium rounded-full border font-mono uppercase tracking-wide ${statusColors[status] || 'bg-surface-hover text-text-muted border-border'}`}>
         {status}
       </span>
     );
@@ -162,7 +162,7 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, on
                     <button
                       onClick={() => handleReRender(video.id, video.title)}
                       disabled={reRenderingId === video.id}
-                      className="p-2 rounded-lg bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 rounded-lg bg-warning/10 hover:bg-warning/20 text-warning transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       title={t.reRender}
                     >
                       <RefreshCw className={`w-4 h-4 ${reRenderingId === video.id ? 'animate-spin' : ''}`} />

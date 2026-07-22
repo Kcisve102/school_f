@@ -114,7 +114,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
             <button
               onClick={handleFindJobs}
               disabled={!attemptId}
-              className="px-6 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-accent text-bg-primary rounded-lg font-medium hover:bg-accent-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {t.findRelatedJobs}
             </button>
@@ -149,7 +149,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
       <div className="flex gap-4 mt-8 pt-6 border-t border-border">
         <button
           onClick={onRetake}
-          className="flex-1 px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent-dark transition-colors duration-200"
+          className="flex-1 px-6 py-3 bg-accent text-bg-primary font-semibold rounded-lg hover:bg-accent-dark transition-colors duration-200"
         >
           {t.retake}
         </button>

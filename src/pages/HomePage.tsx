@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import VideoGrid from '../components/video/VideoGrid';
+import GridShimmerBackground from '../components/common/GridShimmerBackground';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
@@ -22,13 +23,11 @@ import {
 export const HomePage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
-  const [scrollY, setScrollY] = useState(0);
-  const heroRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { language } = useLanguage();
   const t = translations[language].home;
 
-  useScrollReveal();
+  useScrollReveal(undefined, [loading]);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -45,14 +44,13 @@ export const HomePage: React.FC = () => {
     fetchVideos();
   }, []);
 
-  // Parallax scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
+  const headline2Words = useMemo(() => {
+    const parts = t.headline2.trim().split(/\s+/);
+    return {
+      dim: parts.slice(0, -1).join(' '),
+      bright: parts[parts.length - 1] ?? '',
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [t.headline2]);
 
   const AI_CAPABILITIES = [
     {
@@ -77,57 +75,40 @@ export const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-bg-primary">
-      {/* Hero Section - Full Background with Centered Content */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 w-full h-full"
-          style={{ transform: `translateY(${scrollY * 0.15}px)` }}
-        >
-          <img
-            src="/assets/bg2.jpg"
-            alt="AI Learning Environment"
-            className="w-full h-full object-cover"
-          />
-          {/* Theme-aware overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/40 to-transparent dark:from-bg-primary dark:via-bg-primary/60 dark:to-transparent"></div>
-        </div>
-
+    <div className="min-h-screen bg-page-gradient">
+      {/* Hero Section - Centered Content, plain dark canvas */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Content - Centered */}
         <div className="relative z-10 w-full px-6 lg:px-12 xl:px-20 py-32 text-center">
           <div className="max-w-4xl mx-auto">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-surface/70 backdrop-blur-sm rounded-full px-5 py-2.5 mb-8 border border-border">
+            <div className="inline-flex items-center gap-2 bg-surface border border-border px-5 py-2.5 mb-8">
               <Bot className="w-4 h-4 text-accent" />
-              <span className="text-sm font-semibold text-text-primary tracking-wide">{t.badge}</span>
+              <span className="text-xs font-mono uppercase tracking-widest text-text-secondary">{t.badge}</span>
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6 leading-tight drop-shadow-sm">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight text-text-primary mb-6 leading-[1.05]">
               {t.headline1}
-              <span className="block text-accent mt-2">{t.headline2}</span>
+              <span className="block mt-2">
+                <span className="text-text-secondary">{headline2Words.dim} </span>
+                <span className="text-text-primary">{headline2Words.bright}</span>
+              </span>
             </h1>
 
             {/* Subheadline */}
-            <p className="text-lg md:text-xl text-text-primary max-w-2xl mx-auto mb-10 leading-relaxed drop-shadow-sm font-medium">
+            <p className="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
               {t.subheadline}
             </p>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <button
-                onClick={() => navigate('/chat')}
-                className="group inline-flex items-center justify-center gap-3 bg-accent text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-accent-dark transition-all duration-300 shadow-xl shadow-accent/25"
-              >
+              <button onClick={() => navigate('/chat')} className="group btn-primary inline-flex items-center gap-3">
                 {t.ctaChat}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button
-                onClick={() => navigate('/categories')}
-                className="inline-flex items-center justify-center gap-2 bg-surface/70 backdrop-blur-sm hover:bg-surface text-text-primary px-8 py-4 rounded-xl font-medium text-lg border border-border transition-all duration-300"
-              >
-                <Play className="w-5 h-5" />
+              <button onClick={() => navigate('/categories')} className="btn-secondary inline-flex items-center gap-2">
+                <Play className="w-4 h-4" />
                 {t.ctaBrowse}
               </button>
             </div>
@@ -141,9 +122,9 @@ export const HomePage: React.FC = () => {
               ].map((feature, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center gap-3 p-4 bg-surface/50 backdrop-blur-sm rounded-2xl border border-border"
+                  className="flex flex-col items-center gap-3 p-4 bg-surface border border-border"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                  <div className="w-12 h-12 bg-accent/10 flex items-center justify-center">
                     <feature.icon className="w-6 h-6 text-accent" />
                   </div>
                   <div className="text-center">
@@ -164,25 +145,15 @@ export const HomePage: React.FC = () => {
 
       {/* AI Capabilities Section */}
       <section className="relative py-32 overflow-hidden">
-        {/* Background Image - dvb.png as subtle backdrop */}
-        <div className="absolute inset-0 opacity-20">
-          <img
-            src="/assets/dvb.png"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-primary/95 to-bg-primary"></div>
-        </div>
-
         <div className="relative px-6 lg:px-12 xl:px-20">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
             <div className="text-center max-w-3xl mx-auto mb-20 reveal-up">
-              <div className="inline-flex items-center gap-2 bg-surface-secondary rounded-full px-4 py-2 mb-6 border border-border">
+              <div className="inline-flex items-center gap-2 bg-surface-secondary px-4 py-2 mb-6 border border-border">
                 <Bot className="w-4 h-4 text-accent" />
-                <span className="text-sm font-medium text-text-secondary">{t.howItWorks}</span>
+                <span className="text-xs font-mono uppercase tracking-widest text-text-secondary">{t.howItWorks}</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+              <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-text-primary mb-6">
                 {t.learningMadeSimple}
               </h2>
               <p className="text-xl text-text-secondary">
@@ -195,11 +166,10 @@ export const HomePage: React.FC = () => {
               {AI_CAPABILITIES.map((capability, index) => (
                 <div
                   key={index}
-                  className={`group relative reveal-up delay-${index + 1}`}
+                  className={`group relative hover-lift reveal-up delay-${index + 1}`}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-b from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
-                  <div className="relative bg-surface border border-border rounded-2xl p-8 hover:border-accent/30 transition-all duration-300">
-                    <div className="w-14 h-14 rounded-xl bg-accent-subtle flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <div className="relative bg-surface border border-border p-8 transition-colors duration-300">
+                    <div className="w-14 h-14 bg-accent-subtle flex items-center justify-center mb-6">
                       <capability.icon className="w-7 h-7 text-accent" />
                     </div>
                     <h3 className="text-xl font-semibold text-text-primary mb-3">
@@ -218,16 +188,6 @@ export const HomePage: React.FC = () => {
 
       {/* Visual Learning Section - Asymmetric Editorial Layout */}
       <section className="relative py-32 overflow-hidden">
-        {/* Full-bleed Background */}
-        <div className="absolute inset-0">
-          <img
-            src="/assets/video_player.png"
-            alt=""
-            className="w-full h-full object-cover opacity-15 dark:opacity-25"
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-bg-primary/95 via-bg-primary/90 to-info/5"></div>
-        </div>
-
         <div className="relative px-6 lg:px-12 xl:px-20">
           <div className="max-w-7xl mx-auto">
             {/* Asymmetric Two Column Layout */}
@@ -236,13 +196,13 @@ export const HomePage: React.FC = () => {
               {/* Left Column - Large Typography */}
               <div className="lg:col-span-7 reveal-left">
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-12 h-px bg-info"></div>
-                  <span className="text-sm font-semibold text-info uppercase tracking-widest">{t.videoLearningLabel}</span>
+                  <div className="w-12 h-px bg-text-muted"></div>
+                  <span className="text-xs font-mono text-text-muted uppercase tracking-widest">{t.videoLearningLabel}</span>
                 </div>
 
-                <h2 className="text-6xl md:text-7xl lg:text-8xl font-bold text-text-primary leading-[0.9] mb-8">
+                <h2 className="text-6xl md:text-7xl lg:text-8xl font-medium tracking-tight text-text-primary leading-[0.9] mb-8">
                   {t.watchAnd}
-                  <span className="block text-info">{t.learn}</span>
+                  <span className="block">{t.learn}</span>
                 </h2>
 
                 <p className="text-xl text-text-secondary max-w-lg leading-relaxed mb-10">
@@ -268,37 +228,34 @@ export const HomePage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Right Column - Feature Stack */}
-              <div className="lg:col-span-5 space-y-4 reveal-right delay-2">
-                {[
-                  { icon: Search, title: t.smartMatching, desc: t.smartMatchingDesc },
-                  { icon: Play, title: t.stepByStep, desc: t.stepByStepDesc },
-                  { icon: Shield, title: t.safetyFocused, desc: t.safetyFocusedDesc },
-                ].map((feature, index) => (
-                  <div
-                    key={index}
-                    className="group bg-surface/80 backdrop-blur-sm border border-border hover:border-info/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center flex-shrink-0 group-hover:bg-info/20 transition-colors">
-                        <feature.icon className="w-6 h-6 text-info" />
-                      </div>
+              {/* Right Column - Flat Feature List */}
+              <div className="lg:col-span-5 reveal-right delay-2">
+                <div className="bg-surface border border-border">
+                  {[
+                    { icon: Search, title: t.smartMatching, desc: t.smartMatchingDesc },
+                    { icon: Play, title: t.stepByStep, desc: t.stepByStepDesc },
+                    { icon: Shield, title: t.safetyFocused, desc: t.safetyFocusedDesc },
+                  ].map((feature, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start gap-4 px-6 py-5 border-b border-border"
+                    >
+                      <feature.icon className="w-4 h-4 text-text-secondary mt-1 flex-shrink-0" />
                       <div>
-                        <h3 className="font-semibold text-text-primary mb-1">{feature.title}</h3>
+                        <h3 className="text-sm font-semibold text-text-primary mb-1">{feature.title}</h3>
                         <p className="text-sm text-text-secondary">{feature.desc}</p>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
 
-                {/* CTA Button */}
-                <button
-                  onClick={() => navigate('/categories')}
-                  className="w-full group flex items-center justify-between bg-info text-white rounded-2xl px-6 py-5 hover:bg-info-dark transition-all duration-300"
-                >
-                  <span className="font-semibold">{t.browseLibrary}</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
+                  <button
+                    onClick={() => navigate('/categories')}
+                    className="w-full flex items-center justify-between px-6 py-5 text-sm font-medium text-text-primary hover:bg-surface-hover transition-colors"
+                  >
+                    {t.browseLibrary}
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -313,10 +270,10 @@ export const HomePage: React.FC = () => {
             <div className="mb-16 reveal-up">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-px bg-accent"></div>
-                <span className="text-sm font-medium text-accent uppercase tracking-widest">{t.browseTopics}</span>
+                <span className="text-xs font-mono text-accent uppercase tracking-widest">{t.browseTopics}</span>
               </div>
               <div className="grid md:grid-cols-2 gap-8 items-end">
-                <h2 className="text-5xl md:text-6xl font-bold text-text-primary leading-tight">
+                <h2 className="text-5xl md:text-6xl font-medium tracking-tight text-text-primary leading-tight">
                   {t.skillsHeadline}
                   <span className="block text-text-muted">{t.modernFactory}</span>
                 </h2>
@@ -452,7 +409,7 @@ export const HomePage: React.FC = () => {
               >
                 <span className="font-medium text-text-primary">{t.viewAllCategories}</span>
                 <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-colors">
-                  <ArrowRight className="w-4 h-4 text-accent group-hover:text-white transition-colors" />
+                  <ArrowRight className="w-4 h-4 text-accent group-hover:text-bg-primary transition-colors" />
                 </div>
               </button>
             </div>
@@ -460,25 +417,17 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* dvb.png Feature Showcase */}
+      {/* Feature Showcase */}
       <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="/assets/dvb.png"
-            alt="AI Technology in Practice"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-bg-primary via-bg-primary/90 to-bg-primary/70"></div>
-        </div>
-
-        <div className="relative px-6 lg:px-12 xl:px-20">
+        <GridShimmerBackground cellSize={120} rows={6} litRows={3} />
+        <div className="relative z-10 px-6 lg:px-12 xl:px-20">
           <div className="max-w-7xl mx-auto">
             <div className="max-w-2xl reveal-left">
-              <div className="inline-flex items-center gap-2 bg-surface-secondary rounded-full px-4 py-2 mb-6 border border-border">
+              <div className="inline-flex items-center gap-2 bg-surface-secondary px-4 py-2 mb-6 border border-border">
                 <Zap className="w-4 h-4 text-success" />
-                <span className="text-sm font-medium text-text-secondary">{t.advancedLogistics}</span>
+                <span className="text-xs font-mono uppercase tracking-widest text-text-secondary">{t.advancedLogistics}</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+              <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-text-primary mb-6">
                 {t.masterModern}
                 <span className="block text-success">{t.factoryOps}</span>
               </h2>
@@ -502,27 +451,17 @@ export const HomePage: React.FC = () => {
 
       {/* Latest Videos Section */}
       <section className="relative py-32 overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src="/assets/dvb.png"
-            alt=""
-            className="w-full h-full object-cover opacity-10 dark:opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-primary/98 to-bg-primary"></div>
-        </div>
-
         <div className="relative px-6 lg:px-12 xl:px-20">
           <div className="max-w-7xl mx-auto">
             {/* Section Header with accent line */}
             <div className="flex items-center gap-4 mb-4 reveal-up">
               <div className="w-16 h-px bg-accent"></div>
-              <span className="text-sm font-semibold text-accent uppercase tracking-widest">{t.videoLibraryLabel}</span>
+              <span className="text-xs font-mono text-accent uppercase tracking-widest">{t.videoLibraryLabel}</span>
             </div>
 
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4 reveal-up delay-1">
               <div>
-                <h2 className="text-5xl md:text-6xl font-bold text-text-primary mb-4">{t.latestVideos}</h2>
+                <h2 className="text-5xl md:text-6xl font-medium tracking-tight text-text-primary mb-4">{t.latestVideos}</h2>
                 <p className="text-xl text-text-secondary max-w-xl">
                   {t.latestVideosDesc}
                 </p>
@@ -533,7 +472,7 @@ export const HomePage: React.FC = () => {
               >
                 <span className="font-medium text-text-primary">{t.viewAllVideos}</span>
                 <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-colors">
-                  <ArrowRight className="w-4 h-4 text-accent group-hover:text-white transition-colors" />
+                  <ArrowRight className="w-4 h-4 text-accent group-hover:text-bg-primary transition-colors" />
                 </div>
               </button>
             </div>
@@ -545,10 +484,6 @@ export const HomePage: React.FC = () => {
 
       {/* CTA Section */}
       <section className="relative py-32 overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-warning/10 to-info/10"></div>
-        <div className="absolute inset-0 bg-bg-primary/80"></div>
-
         <div className="relative px-6 lg:px-12 xl:px-20">
           <div className="max-w-4xl mx-auto text-center reveal-scale">
             <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
@@ -560,7 +495,7 @@ export const HomePage: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => navigate('/chat')}
-                className="group inline-flex items-center justify-center gap-3 bg-accent text-white px-10 py-5 rounded-xl font-semibold text-lg hover:bg-accent-dark transition-all duration-300 shadow-xl shadow-accent/25 hover:shadow-accent/35"
+                className="group inline-flex items-center justify-center gap-3 bg-accent text-bg-primary px-10 py-5 rounded-xl font-semibold text-lg hover:bg-accent-dark transition-all duration-300 shadow-xl shadow-accent/25 hover:shadow-accent/35"
               >
                 <Bot className="w-5 h-5" />
                 {t.ctaChat}

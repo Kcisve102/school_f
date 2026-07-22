@@ -7,6 +7,7 @@ import JobSuggestionCard from '../quiz/JobSuggestionCard';
 import { formatDate } from '../../utils/helpers';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../translations';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { PlayCircle, Trophy, Clock, Briefcase, ChevronDown, ChevronUp } from 'lucide-react';
 
 export const WatchHistorySection: React.FC = () => {
@@ -30,6 +31,8 @@ export const WatchHistorySection: React.FC = () => {
       .catch((err) => console.error('Failed to load history:', err))
       .finally(() => setLoading(false));
   }, []);
+
+  useScrollReveal(undefined, [loading, items.length]);
 
   const toggleAttempt = async (attemptId: number) => {
     if (expandedAttemptId === attemptId) {
@@ -121,7 +124,7 @@ export const WatchHistorySection: React.FC = () => {
                   )}
                   <button
                     onClick={() => navigate(`/video/${video.id}/quiz`)}
-                    className="px-4 py-1.5 bg-accent text-white text-sm rounded-lg font-medium hover:bg-accent-dark transition-colors"
+                    className="px-4 py-1.5 bg-accent text-bg-primary text-sm rounded-lg font-medium hover:bg-accent-dark transition-colors"
                   >
                     {attempts.length === 0 ? t.takeQuiz : t.retakeQuiz}
                   </button>

@@ -15,8 +15,8 @@ export const Loader: React.FC<LoaderProps> = ({ size = 'md', text }) => {
 
   return (
     <div className="flex flex-col items-center justify-center p-8">
-      <Loader2 className={`${sizeClasses[size]} animate-spin text-purple-500`} />
-      {text && <p className="mt-4 text-gray-400">{text}</p>}
+      <Loader2 className={`${sizeClasses[size]} animate-spin text-accent`} />
+      {text && <p className="mt-4 text-text-muted">{text}</p>}
     </div>
   );
 };

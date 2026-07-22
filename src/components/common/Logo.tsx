@@ -3,18 +3,17 @@ import React from 'react';
 interface LogoMarkProps {
   size?: number;
   className?: string;
+  variant?: 'full' | 'mark';
 }
 
-export const LogoMark: React.FC<LogoMarkProps> = ({ size = 32, className = '' }) => {
+export const LogoMark: React.FC<LogoMarkProps> = ({ size = 22, className = '', variant = 'full' }) => {
   return (
-    <img
-      src="/knowverd.png"
-      alt="Knowverd"
-      width={size}
-      height={size}
-      className={className}
-      style={{ objectFit: 'contain' }}
-    />
+    <span
+      className={`font-mono uppercase text-text-primary tracking-tight ${className}`}
+      style={{ fontSize: size }}
+    >
+      {variant === 'mark' ? 'K' : 'knowverd'}
+    </span>
   );
 };
 

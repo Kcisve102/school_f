@@ -58,7 +58,7 @@ const MessageRow: React.FC<MessageRowProps> = ({ message, isLast, t }) => {
         <div
           className={`rounded-lg px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
             isUser
-              ? 'bg-accent text-white rounded-tr-none'
+              ? 'bg-accent text-bg-primary rounded-tr-none'
               : 'bg-surface border border-border text-text-primary rounded-tl-none'
           }`}
         >
@@ -218,7 +218,7 @@ export const ChatPage: React.FC = () => {
         }
       `}</style>
 
-      <div className="flex flex-col bg-bg-primary" style={{ height: 'calc(100vh - 64px)' }}>
+      <div className="flex flex-col bg-page-gradient" style={{ height: 'calc(100vh - 64px)' }}>
 
         {/* ── Top bar ── */}
         <div className="flex-shrink-0 flex items-center justify-between px-5 py-3 border-b border-border bg-surface">
@@ -323,7 +323,7 @@ export const ChatPage: React.FC = () => {
                   onClick={() => handleSendMessage()}
                   disabled={!inputValue.trim() || isLoading}
                   aria-label={t.sendAriaLabel}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-accent text-white disabled:bg-surface-hover disabled:text-text-muted transition-all hover:bg-accent-dark active:scale-95 disabled:scale-100"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-accent text-bg-primary disabled:bg-surface-hover disabled:text-text-muted transition-all hover:bg-accent-dark active:scale-95 disabled:scale-100"
                 >
                   <Send className="w-3.5 h-3.5" />
                 </button>

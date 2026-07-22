@@ -17,8 +17,8 @@ export const VideoGrid: React.FC<VideoGridProps> = ({ videos, loading, mobile2x2
   if (videos.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 text-lg">No videos available</p>
-        <p className="text-gray-400 text-sm mt-2">
+        <p className="text-text-secondary text-lg">No videos available</p>
+        <p className="text-text-muted text-sm mt-2">
           Upload your first video to get started!
         </p>
       </div>

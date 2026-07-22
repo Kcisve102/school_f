@@ -56,7 +56,7 @@ export const CategoriesPage: React.FC = () => {
   const t = translations[language].categories;
   const tHome = translations[language].home;
 
-  useScrollReveal();
+  useScrollReveal(undefined, [loading, selectedCategory]);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -116,7 +116,7 @@ export const CategoriesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-primary text-text-primary">
+    <div className="min-h-screen bg-page-gradient text-text-primary">
       {/* Mobile Header - Fixed at top */}
       <header className="lg:hidden fixed top-16 left-0 right-0 z-40 bg-bg-primary/95 backdrop-blur-xl border-b border-border">
         <div className="flex items-center justify-between px-4 py-3">
@@ -153,7 +153,7 @@ export const CategoriesPage: React.FC = () => {
             onClick={() => handleCategorySelect('all')}
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
               selectedCategory === 'all'
-                ? 'bg-accent text-white'
+                ? 'bg-accent text-bg-primary'
                 : 'bg-surface-secondary text-text-secondary border border-border'
             }`}
           >
@@ -165,7 +165,7 @@ export const CategoriesPage: React.FC = () => {
               onClick={() => handleCategorySelect(category)}
               className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 selectedCategory === category
-                  ? 'bg-accent text-white'
+                  ? 'bg-accent text-bg-primary'
                   : 'bg-surface-secondary text-text-secondary border border-border'
               }`}
             >
@@ -205,7 +205,7 @@ export const CategoriesPage: React.FC = () => {
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                   selectedCategory === 'all' ? 'bg-accent' : 'bg-surface'
                 }`}>
-                  <Grid3X3 className="w-6 h-6 text-white" />
+                  <Grid3X3 className="w-6 h-6 text-bg-primary" />
                 </div>
                 <div className="flex-1 text-left">
                   <div className={`font-semibold ${selectedCategory === 'all' ? 'text-accent' : 'text-text-primary'}`}>
@@ -215,7 +215,7 @@ export const CategoriesPage: React.FC = () => {
                 </div>
                 {selectedCategory === 'all' && (
                   <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center">
-                    <ChevronDown className="w-4 h-4 text-white rotate-180" />
+                    <ChevronDown className="w-4 h-4 text-bg-primary rotate-180" />
                   </div>
                 )}
               </button>

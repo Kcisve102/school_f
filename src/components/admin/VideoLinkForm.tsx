@@ -113,7 +113,7 @@ export const VideoLinkForm: React.FC<VideoLinkFormProps> = ({ onSuccess }) => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-6 py-3 bg-accent text-bg-primary rounded-lg font-semibold hover:bg-accent-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? t.uploading : t.downloadUpload}
         </button>

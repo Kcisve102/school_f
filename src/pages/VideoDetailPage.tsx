@@ -92,7 +92,7 @@ export const VideoDetailPage: React.FC = () => {
           <p className="text-text-secondary mb-6">{error || t.videoNotFoundDesc}</p>
           <button
             onClick={() => navigate('/')}
-            className="px-6 py-3 bg-accent hover:bg-accent-dark text-white rounded-lg font-semibold transition-all"
+            className="px-6 py-3 bg-accent hover:bg-accent-dark text-bg-primary rounded-lg font-semibold transition-all"
           >
             {t.backToHome}
           </button>

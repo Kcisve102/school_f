@@ -4,87 +4,69 @@
 
 @layer base {
   :root {
-    /* Light Theme - Warm Industrial */
-    --color-bg-primary: #faf8f5;
-    --color-bg-secondary: #ffffff;
-    --color-bg-tertiary: #f5f2ed;
-    --color-surface: #ffffff;
-    --color-surface-secondary: #f5f2ed;
-    --color-surface-hover: #ebe7e0;
-    
-    --color-text-primary: #1a1a1a;
-    --color-text-secondary: #4a4a4a;
-    --color-text-tertiary: #6b6b6b;
-    --color-text-muted: #9a9a9a;
-    
-    --color-border: #e5e2dc;
-    --color-border-subtle: #f0ede7;
-    --color-border-hover: #d5d2cc;
-    
-    /* Accent - Amber/Orange for industrial feel */
-    --color-accent: #d97706;
-    --color-accent-light: #f59e0b;
-    --color-accent-dark: #b45309;
-    --color-accent-subtle: rgba(217, 119, 6, 0.1);
-    
-    /* Category Colors */
-    --color-factory: #d97706;
-    --color-safety: #059669;
-    --color-language: #2563eb;
-    --color-health: #e11d48;
-    --color-other: #6b7280;
-    
-    /* Semantic Colors */
-    --color-success: #059669;
-    --color-warning: #d97706;
-    --color-error: #dc2626;
-    --color-info: #2563eb;
-  }
+    /* Single fixed dark theme */
+    --color-bg-primary: #16171b;
+    --color-bg-secondary: #1c1d22;
+    --color-bg-tertiary: #232429;
+    --color-surface: #1c1d22;
+    --color-surface-secondary: #232429;
+    --color-surface-hover: #2a2b31;
 
-  .dark {
-    /* Dark Theme - Deep Industrial */
-    --color-bg-primary: #0a0a0f;
-    --color-bg-secondary: #13131a;
-    --color-bg-tertiary: #1a1a23;
-    --color-surface: #13131a;
-    --color-surface-secondary: #1e1e28;
-    --color-surface-hover: #252532;
-    
-    --color-text-primary: #fafafa;
-    --color-text-secondary: #a1a1aa;
-    --color-text-tertiary: #71717a;
-    --color-text-muted: #52525b;
-    
+    --color-text-primary: #ffffff;
+    --color-text-secondary: rgba(255, 255, 255, 0.7);
+    --color-text-tertiary: rgba(255, 255, 255, 0.5);
+    --color-text-muted: rgba(255, 255, 255, 0.35);
+
     --color-border: rgba(255, 255, 255, 0.1);
-    --color-border-subtle: rgba(255, 255, 255, 0.05);
-    --color-border-hover: rgba(255, 255, 255, 0.15);
-    
-    /* Accent - Amber for warmth */
-    --color-accent: #f59e0b;
-    --color-accent-light: #fbbf24;
-    --color-accent-dark: #d97706;
-    --color-accent-subtle: rgba(245, 158, 11, 0.1);
-    
-    /* Category Colors */
-    --color-factory: #f59e0b;
-    --color-safety: #10b981;
-    --color-language: #3b82f6;
-    --color-health: #f43f5e;
-    --color-other: #9ca3af;
-    
-    /* Semantic Colors */
-    --color-success: #10b981;
-    --color-warning: #f59e0b;
+    --color-border-subtle: rgba(255, 255, 255, 0.06);
+    --color-border-hover: rgba(255, 255, 255, 0.2);
+
+    /* Accent collapsed to white — used only for links/focus, never decoratively */
+    --color-accent: #ffffff;
+    --color-accent-light: #ffffff;
+    --color-accent-dark: rgba(255, 255, 255, 0.85);
+    --color-accent-subtle: rgba(255, 255, 255, 0.08);
+
+    /* Category colors collapsed to white — categories are distinguished by icon + label, not color */
+    --color-factory: #ffffff;
+    --color-safety: #ffffff;
+    --color-language: #ffffff;
+    --color-health: #ffffff;
+    --color-other: #ffffff;
+
+    /* Semantic Colors — kept saturated so they still read as solid badges */
+    --color-success: #22c55e;
+    --color-warning: #eab308;
     --color-error: #ef4444;
-    --color-info: #3b82f6;
+    --color-info: #60a5fa;
+
+    --font-display: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'Roboto Mono', Menlo, monospace;
+    --font-sans: 'Manrope', system-ui, -apple-system, sans-serif;
+
+    /* Fixed-viewport page background: diagonal base + three soft blooms */
+    --gradient-canvas:
+      radial-gradient(ellipse 65% 55% at 12% -8%, rgba(255, 255, 255, 0.14), transparent 62%),
+      radial-gradient(ellipse 60% 50% at 105% 8%, rgba(120, 140, 255, 0.12), transparent 58%),
+      radial-gradient(ellipse 75% 60% at 50% 118%, rgba(255, 255, 255, 0.09), transparent 65%),
+      linear-gradient(155deg, #292b32 0%, #16171b 42%, #08090b 100%);
   }
 
   html {
     @apply antialiased;
+    color-scheme: dark;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 
   body {
-    @apply bg-bg-primary text-text-primary;
+    @apply text-text-primary font-sans;
+    background-color: var(--color-bg-primary);
+    background-image: var(--gradient-canvas);
+    background-attachment: fixed;
+    background-size: 100% 100%;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
@@ -92,69 +74,99 @@
 @layer components {
   /* Surface Cards */
   .surface {
-    @apply bg-surface border border-border rounded-xl;
+    @apply bg-surface border border-border;
   }
 
   /* Buttons */
   .btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200
-           focus:outline-none focus:ring-2 focus:ring-offset-2 
-           focus:ring-offset-bg-primary;
-    --tw-ring-color: var(--color-accent);
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    border-radius: 0;
+    transition: all 200ms;
+  }
+  .btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--color-accent);
   }
 
   .btn-primary {
-    @apply btn text-white;
-    background-color: var(--color-accent);
+    @apply btn;
+    background-color: #ffffff;
+    color: var(--color-bg-primary);
   }
-  
+
   .btn-primary:hover {
-    background-color: var(--color-accent-dark);
+    background-color: rgba(255, 255, 255, 0.85);
   }
-  
+
   .btn-primary:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
   }
 
   .btn-secondary {
     @apply btn;
-    background-color: var(--color-surface-secondary);
+    background-color: transparent;
     color: var(--color-text-primary);
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-border-hover);
   }
-  
+
   .btn-secondary:hover {
-    border-color: var(--color-accent);
     background-color: var(--color-surface-hover);
+    border-color: var(--color-text-primary);
   }
 
   .btn-ghost {
     @apply btn;
+    background-color: transparent;
     color: var(--color-text-secondary);
   }
-  
+
   .btn-ghost:hover {
     color: var(--color-text-primary);
-    background-color: var(--color-surface-secondary);
+    background-color: var(--color-accent-subtle);
+  }
+
+  .btn-danger {
+    @apply btn;
+    background-color: transparent;
+    color: var(--color-error);
+    border: 1px solid var(--color-error);
+  }
+
+  .btn-danger:hover {
+    background-color: rgba(239, 68, 68, 0.1);
   }
 
   /* Inputs */
   .input {
-    @apply w-full px-4 py-2.5 rounded-lg text-text-primary placeholder-text-muted
+    @apply w-full px-4 py-2.5 text-text-primary placeholder-text-muted
            focus:outline-none transition-all duration-200;
     background-color: var(--color-surface-secondary);
     border: 1px solid var(--color-border);
+    border-radius: 0;
   }
-  
+
   .input:focus {
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px var(--color-accent-subtle);
+    box-shadow: 0 0 0 1px var(--color-accent-subtle);
   }
 
   /* Text Utilities */
   .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(to right, var(--color-accent), var(--color-accent-light));
+    color: var(--color-text-primary);
+  }
+
+  /* Outermost page/app wrapper only — never apply to inner cards or tiles.
+     The gradient is fixed to the viewport, so a smaller element would only
+     show a cropped, misaligned slice of it. */
+  .bg-page-gradient {
+    background-color: var(--color-bg-primary);
+    background-image: var(--gradient-canvas);
+    background-attachment: fixed;
+    background-size: 100% 100%;
   }
 
   /* Scrollbar Styling */
@@ -319,14 +331,13 @@
 .stagger-4 { transition-delay: 0.4s; }
 .stagger-5 { transition-delay: 0.5s; }
 
-/* Hover lift effect */
+/* Hover lift effect — border-color brighten only, no motion/shadow */
 .hover-lift {
-  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  transition: border-color 0.2s ease-out;
 }
 
 .hover-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.2);
+  border-color: var(--color-border-hover);
 }
 
 /* Button press effect */
@@ -351,5 +362,15 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* GridShimmerBackground beam sweep */
+@keyframes gridShimmerH {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
   }
 }

@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
-import { useTheme } from './contexts/ThemeContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -18,10 +17,8 @@ import SignupPage from './pages/SignupPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 function AppContent() {
-  const { theme } = useTheme();
-  
   return (
-    <div className="flex flex-col min-h-screen bg-bg-primary">
+    <div className="flex flex-col min-h-screen bg-page-gradient">
       <Header />
 
       <main className="flex-grow">
@@ -67,20 +64,20 @@ function AppContent() {
         toastOptions={{
           duration: 4000,
           style: {
-            background: theme === 'dark' ? '#1e1e28' : '#ffffff',
-            color: theme === 'dark' ? '#fafafa' : '#1a1a1a',
-            border: `1px solid ${theme === 'dark' ? 'rgba(255,255,255,0.1)' : '#e5e2dc'}`,
+            background: '#1c1d22',
+            color: '#ffffff',
+            border: '1px solid rgba(255,255,255,0.1)',
           },
           success: {
             iconTheme: {
-              primary: theme === 'dark' ? '#10b981' : '#059669',
-              secondary: theme === 'dark' ? '#fff' : '#fff',
+              primary: '#22c55e',
+              secondary: '#fff',
             },
           },
           error: {
             iconTheme: {
-              primary: theme === 'dark' ? '#ef4444' : '#dc2626',
-              secondary: theme === 'dark' ? '#fff' : '#fff',
+              primary: '#ef4444',
+              secondary: '#fff',
             },
           },
         }}

@@ -40,6 +40,21 @@ export default {
         'error': 'var(--color-error)',
         'info': 'var(--color-info)',
       },
+      fontFamily: {
+        sans: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Roboto Mono', 'Menlo', 'monospace'],
+        display: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Roboto Mono', 'Menlo', 'monospace'],
+      },
+      borderRadius: {
+        DEFAULT: '0px',
+        sm: '0px',
+        md: '2px',
+        lg: '4px',
+        xl: '4px',
+        '2xl': '4px',
+        '3xl': '4px',
+        full: '9999px',
+      },
       animation: {
         'spin-slow': 'spin 3s linear infinite',
         'fadeIn': 'fadeIn 0.3s ease-in',

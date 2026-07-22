@@ -17,7 +17,6 @@ import {
   Settings,
   Video as VideoIcon,
 } from 'lucide-react';
-import ThemeToggle from '../components/common/ThemeToggle';
 
 export const AdminPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -60,7 +59,7 @@ export const AdminPage: React.FC = () => {
   const sidebarPersonalItems = allNavItems.slice(2);
 
   return (
-    <div className="flex min-h-screen bg-bg-primary text-text-primary">
+    <div className="flex min-h-screen bg-page-gradient text-text-primary">
 
       {/* ── Desktop sidebar ── */}
       <aside className="hidden lg:flex w-64 bg-surface border-r border-border flex-col fixed h-full z-30">
@@ -143,18 +142,13 @@ export const AdminPage: React.FC = () => {
           <div className="max-w-7xl mx-auto">
 
             {/* Welcome */}
-            <div className="flex items-start justify-between mb-8">
-              <div>
-                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary mb-2">
-                  Admin Dashboard
-                </h1>
-                <p className="text-text-secondary">
-                  Manage videos and monitor platform statistics
-                </p>
-              </div>
-              <div className="hidden lg:block">
-                <ThemeToggle />
-              </div>
+            <div className="mb-8">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary mb-2">
+                Admin Dashboard
+              </h1>
+              <p className="text-text-secondary">
+                Manage videos and monitor platform statistics
+              </p>
             </div>
 
             {/* Stats Cards */}

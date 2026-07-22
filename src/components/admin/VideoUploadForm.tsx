@@ -194,7 +194,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
               file:mr-4 file:py-2 file:px-4
               file:rounded-lg file:border-0
               file:text-sm file:font-semibold
-              file:bg-accent file:text-white
+              file:bg-accent file:text-bg-primary
               hover:file:bg-accent-dark
               cursor-pointer"
             required
@@ -222,7 +222,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
         <button
           type="submit"
           disabled={loading || (processingStatus !== null && processingStatus !== 'done' && processingStatus !== 'failed')}
-          className="w-full px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-6 py-3 bg-accent text-bg-primary rounded-lg font-semibold hover:bg-accent-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? t.uploading : t.uploadVideo}
         </button>
