@@ -8,7 +8,7 @@ import { formatDate } from '../../utils/helpers';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../translations';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
-import { PlayCircle, Trophy, Clock, Briefcase, ChevronDown, ChevronUp } from 'lucide-react';
+import { PlayCircle, Trophy, Clock, Briefcase, ChevronDown, ChevronUp, X } from 'lucide-react';
 
 export const WatchHistorySection: React.FC = () => {
   const [items, setItems] = useState<WatchHistoryItem[]>([]);
@@ -19,6 +19,7 @@ export const WatchHistorySection: React.FC = () => {
   const [jobStatuses, setJobStatuses] = useState<Map<number, JobSuggestionWithStatus[]>>(new Map());
   const [checkingJobs, setCheckingJobs] = useState(false);
   const [findingMoreJobsFor, setFindingMoreJobsFor] = useState<number | null>(null);
+  const [jobsDrawerFor, setJobsDrawerFor] = useState<number | null>(null);
   const navigate = useNavigate();
   const { language } = useLanguage();
   const t = translations[language].history;
@@ -168,30 +169,57 @@ export const WatchHistorySection: React.FC = () => {
                             ) : detail ? (
                               <div className="space-y-6">
                                 {jobsToRender.length > 0 && (
-                                  <div>
-                                    <h4 className="text-sm font-bold text-text-primary mb-2">{tq.relatedJobs}</h4>
-                                    {checkingJobs && !statuses && (
-                                      <p className="text-xs text-text-muted mb-2">{tq.jobStatusChecking}</p>
-                                    )}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                                      {jobsToRender.map((job, i) => (
-                                        <JobSuggestionCard key={i} job={job} />
-                                      ))}
-                                    </div>
-                                    <button
-                                      onClick={() => handleFindMoreJobs(a.id)}
-                                      disabled={findingMoreJobsFor === a.id}
-                                      className="px-4 py-1.5 bg-surface text-text-primary text-sm rounded-lg font-medium border border-border hover:bg-surface-hover transition-colors disabled:opacity-50"
-                                    >
-                                      {findingMoreJobsFor === a.id ? tq.findingMoreJobs : tq.findMoreJobs}
-                                    </button>
-                                  </div>
+                                  <button
+                                    onClick={() => setJobsDrawerFor(a.id)}
+                                    className="flex items-center gap-2 px-4 py-1.5 bg-accent text-bg-primary text-sm rounded-lg font-medium hover:bg-accent-dark transition-colors"
+                                  >
+                                    <Briefcase className="w-4 h-4" />
+                                    {tq.relatedJobs}
+                                  </button>
                                 )}
 
                                 <QuizReviewList questions={detail.questions} results={detail.results} />
                               </div>
                             ) : null}
                           </div>
+                        )}
+
+                        {jobsDrawerFor === a.id && (
+                          <>
+                            <div
+                              className="fixed inset-0 bg-black/60 z-50 backdrop-blur-sm animate-fadeIn"
+                              onClick={() => setJobsDrawerFor(null)}
+                            />
+                            <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-surface border-l border-border shadow-xl overflow-y-auto animate-slide-in-right">
+                              <div className="flex items-center justify-between p-4 border-b border-border sticky top-0 bg-surface">
+                                <h3 className="text-lg font-bold text-text-primary">{tq.relatedJobs}</h3>
+                                <button
+                                  onClick={() => setJobsDrawerFor(null)}
+                                  className="p-2 hover:bg-surface-secondary rounded-lg transition-colors"
+                                >
+                                  <X className="w-5 h-5 text-text-muted" />
+                                </button>
+                              </div>
+
+                              <div className="p-4">
+                                {checkingJobs && !statuses && (
+                                  <p className="text-xs text-text-muted mb-3">{tq.jobStatusChecking}</p>
+                                )}
+                                <div className="space-y-3 mb-4">
+                                  {jobsToRender.map((job, i) => (
+                                    <JobSuggestionCard key={i} job={job} />
+                                  ))}
+                                </div>
+                                <button
+                                  onClick={() => handleFindMoreJobs(a.id)}
+                                  disabled={findingMoreJobsFor === a.id}
+                                  className="w-full px-4 py-1.5 bg-surface-secondary text-text-primary text-sm rounded-lg font-medium border border-border hover:bg-surface-hover transition-colors disabled:opacity-50"
+                                >
+                                  {findingMoreJobsFor === a.id ? tq.findingMoreJobs : tq.findMoreJobs}
+                                </button>
+                              </div>
+                            </div>
+                          </>
                         )}
                       </div>
                     );
