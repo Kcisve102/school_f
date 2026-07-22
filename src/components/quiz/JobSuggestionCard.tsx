@@ -20,11 +20,13 @@ export const JobSuggestionCard: React.FC<JobSuggestionCardProps> = ({ job }) => 
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  const openFiverrGigCreation = () => {
+    const url = `https://www.fiverr.com/start_selling?source=${encodeURIComponent(job.keywords)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
-    <button
-      onClick={openIndeedSearch}
-      className="text-left p-4 bg-surface-secondary rounded-lg border border-border hover:border-accent/40 transition-colors w-full"
-    >
+    <div className="text-left p-4 bg-surface-secondary rounded-lg border border-border hover:border-accent/40 transition-colors w-full">
       <div className="flex items-start justify-between gap-2 mb-1">
         <p className="font-semibold text-text-primary">{job.title}</p>
         {hasStatus(job) && (
@@ -40,8 +42,15 @@ export const JobSuggestionCard: React.FC<JobSuggestionCardProps> = ({ job }) => 
         )}
       </div>
       <p className="text-sm text-text-secondary">{job.blurb}</p>
-      <p className="text-xs text-accent mt-2">{t.viewOnIndeed} →</p>
-    </button>
+      <div className="flex items-center gap-4 mt-2">
+        <button onClick={openIndeedSearch} className="text-xs text-accent hover:underline">
+          {t.viewOnIndeed} →
+        </button>
+        <button onClick={openFiverrGigCreation} className="text-xs text-accent hover:underline">
+          {t.startOnFiverr} →
+        </button>
+      </div>
+    </div>
   );
 };
 
