@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-export type Language = 'en' | 'zh';
+export type Language = 'en' | 'zh' | 'bo';
+
+export const LANGUAGES: Language[] = ['en', 'zh', 'bo'];
 
 interface LanguageContextType {
   language: Language;
@@ -13,7 +15,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('language') as Language;
-    if (saved === 'en' || saved === 'zh') return saved;
+    if (LANGUAGES.includes(saved)) return saved;
     return 'en';
   });
 
@@ -23,7 +25,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [language]);
 
   const toggleLanguage = () => {
-    setLanguageState((prev) => (prev === 'en' ? 'zh' : 'en'));
+    setLanguageState((prev) => LANGUAGES[(LANGUAGES.indexOf(prev) + 1) % LANGUAGES.length]);
   };
 
   const setLanguage = (lang: Language) => {

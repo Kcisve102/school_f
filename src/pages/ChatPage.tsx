@@ -22,7 +22,7 @@ const TypingDots: React.FC = () => (
 );
 
 // ─── Message renderer ─────────────────────────────────────────────────────────
-type ChatTranslations = typeof translations['en']['chat'] | typeof translations['zh']['chat'];
+type ChatTranslations = typeof translations['en']['chat'] | typeof translations['zh']['chat'] | typeof translations['bo']['chat'];
 
 interface MessageRowProps {
   message: ChatMessage;
