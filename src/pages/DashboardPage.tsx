@@ -5,6 +5,7 @@ import { videoService } from '../services/video.service';
 import { useAuth } from '../hooks/useAuth';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import VideoCard from '../components/video/VideoCard';
+import WatchHistorySection from '../components/dashboard/WatchHistorySection';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
 import {
@@ -17,17 +18,22 @@ import {
   Bookmark,
   Settings,
   ChevronRight,
+  History,
 } from 'lucide-react';
+
+type DashboardTab = 'dashboard' | 'history';
 
 export const DashboardPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<DashboardTab>('dashboard');
   const { user } = useAuth();
   const navigate = useNavigate();
   const { language } = useLanguage();
   const t = translations[language].dashboard;
+  const th = translations[language].history;
 
-  useScrollReveal(undefined, [loading]);
+  useScrollReveal(undefined, [loading, activeTab]);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -53,16 +59,25 @@ export const DashboardPage: React.FC = () => {
   );
 
   const menuItems = [
-    { icon: LayoutDashboard, label: t.menuDashboard, active: true, path: '/dashboard' },
-    { icon: PlayCircle, label: t.menuMyVideos, active: false, path: '/' },
-    { icon: Search, label: t.menuBrowse, active: false, path: '/categories' },
-    { icon: BookOpen, label: t.menuCategories, active: false, path: '/categories' },
-    { icon: Bookmark, label: t.menuBookmarks, active: false, path: '#' },
-    { icon: Settings, label: t.menuSettings, active: false, path: '#' },
+    { icon: LayoutDashboard, label: t.menuDashboard, tab: 'dashboard' as const, path: '/dashboard' },
+    { icon: PlayCircle, label: t.menuMyVideos, tab: null, path: '/' },
+    { icon: Search, label: t.menuBrowse, tab: null, path: '/categories' },
+    { icon: BookOpen, label: t.menuCategories, tab: null, path: '/categories' },
+    { icon: History, label: th.title, tab: 'history' as const, path: null },
+    { icon: Bookmark, label: t.menuBookmarks, tab: null, path: '#' },
+    { icon: Settings, label: t.menuSettings, tab: null, path: '#' },
   ];
 
-  const sidebarMenuItems = menuItems.slice(0, 4);
-  const sidebarPersonalItems = menuItems.slice(4);
+  const handleMenuItemClick = (item: (typeof menuItems)[number]) => {
+    if (item.tab) {
+      setActiveTab(item.tab);
+    } else if (item.path) {
+      navigate(item.path);
+    }
+  };
+
+  const sidebarMenuItems = menuItems.slice(0, 5);
+  const sidebarPersonalItems = menuItems.slice(5);
 
   return (
     <div className="flex min-h-screen bg-bg-primary text-text-primary">
@@ -75,9 +90,9 @@ export const DashboardPage: React.FC = () => {
             {sidebarMenuItems.map((item, index) => (
               <button
                 key={index}
-                onClick={() => navigate(item.path)}
+                onClick={() => handleMenuItemClick(item)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                  item.active
+                  item.tab && item.tab === activeTab
                     ? 'bg-accent/10 text-accent border border-accent/30'
                     : 'text-text-secondary hover:text-text-primary hover:bg-surface-secondary'
                 }`}
@@ -94,7 +109,7 @@ export const DashboardPage: React.FC = () => {
             {sidebarPersonalItems.map((item, index) => (
               <button
                 key={index}
-                onClick={() => navigate(item.path)}
+                onClick={() => handleMenuItemClick(item)}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-all"
               >
                 <item.icon className="w-5 h-5" />
@@ -128,9 +143,9 @@ export const DashboardPage: React.FC = () => {
             {menuItems.map((item, index) => (
               <button
                 key={index}
-                onClick={() => navigate(item.path)}
+                onClick={() => handleMenuItemClick(item)}
                 className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  item.active
+                  item.tab && item.tab === activeTab
                     ? 'bg-accent/10 text-accent border border-accent/30'
                     : 'text-text-secondary bg-surface-secondary border border-border hover:text-text-primary hover:border-accent/30'
                 }`}
@@ -159,86 +174,92 @@ export const DashboardPage: React.FC = () => {
         <div className="p-4 md:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
 
-            {/* Welcome */}
-            <div className="mb-8 reveal-up">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary mb-2">
-                {t.welcomeBack}, {user?.full_name.split(' ')[0] || ''}!
-              </h1>
-              <p className="text-text-secondary">
-                {t.continueStreak}
-              </p>
-            </div>
+            {activeTab === 'dashboard' ? (
+              <>
+                {/* Welcome */}
+                <div className="mb-8 reveal-up">
+                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary mb-2">
+                    {t.welcomeBack}, {user?.full_name.split(' ')[0] || ''}!
+                  </h1>
+                  <p className="text-text-secondary">
+                    {t.continueStreak}
+                  </p>
+                </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-10 lg:mb-12">
-              <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border reveal-up delay-1">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-accent/10">
-                    <BookOpen className="w-5 h-5 text-accent" />
+                {/* Stats Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-10 lg:mb-12">
+                  <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border reveal-up delay-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 rounded-lg bg-accent/10">
+                        <BookOpen className="w-5 h-5 text-accent" />
+                      </div>
+                      <span className="text-sm text-text-muted">{t.thisMonth}</span>
+                    </div>
+                    <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{totalVideos}</div>
+                    <div className="text-sm text-text-secondary">{t.activeVideos}</div>
                   </div>
-                  <span className="text-sm text-text-muted">{t.thisMonth}</span>
-                </div>
-                <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{totalVideos}</div>
-                <div className="text-sm text-text-secondary">{t.activeVideos}</div>
-              </div>
 
-              <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border reveal-up delay-2">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-info/10">
-                    <Clock className="w-5 h-5 text-info" />
+                  <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border reveal-up delay-2">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 rounded-lg bg-info/10">
+                        <Clock className="w-5 h-5 text-info" />
+                      </div>
+                      <span className="text-sm text-text-muted">{t.weeklyGoal}</span>
+                    </div>
+                    <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{totalMinutes}m</div>
+                    <div className="text-sm text-text-secondary">{t.timeSpent}</div>
                   </div>
-                  <span className="text-sm text-text-muted">{t.weeklyGoal}</span>
-                </div>
-                <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{totalMinutes}m</div>
-                <div className="text-sm text-text-secondary">{t.timeSpent}</div>
-              </div>
 
-              <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border reveal-up delay-3">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-success/10">
-                    <Trophy className="w-5 h-5 text-success" />
+                  <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border reveal-up delay-3">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 rounded-lg bg-success/10">
+                        <Trophy className="w-5 h-5 text-success" />
+                      </div>
+                      <span className="text-sm text-text-muted">{t.totalPoints}</span>
+                    </div>
+                    <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{readyVideos * 100}</div>
+                    <div className="text-sm text-text-secondary">{t.videosCompleted}</div>
                   </div>
-                  <span className="text-sm text-text-muted">{t.totalPoints}</span>
                 </div>
-                <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{readyVideos * 100}</div>
-                <div className="text-sm text-text-secondary">{t.videosCompleted}</div>
-              </div>
-            </div>
 
-            {/* Recommended Videos */}
-            <div className="mb-8 reveal-up">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl lg:text-2xl font-bold text-text-primary">{t.recommendedFor}</h2>
-                <button className="flex items-center gap-2 text-accent hover:text-accent-dark transition-colors">
-                  <span className="text-sm font-medium">{t.seeAll}</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
+                {/* Recommended Videos */}
+                <div className="mb-8 reveal-up">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl lg:text-2xl font-bold text-text-primary">{t.recommendedFor}</h2>
+                    <button className="flex items-center gap-2 text-accent hover:text-accent-dark transition-colors">
+                      <span className="text-sm font-medium">{t.seeAll}</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
 
-              {loading ? (
-                <div className="text-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto"></div>
+                  {loading ? (
+                    <div className="text-center py-12">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto"></div>
+                    </div>
+                  ) : videos.length === 0 ? (
+                    <div className="text-center py-12 bg-surface rounded-xl border border-border">
+                      <PlayCircle className="w-16 h-16 text-text-muted mx-auto mb-4" />
+                      <p className="text-text-secondary text-lg mb-2">{t.noVideos}</p>
+                      <p className="text-text-muted text-sm mb-6">{t.noVideosDesc}</p>
+                      <button
+                        onClick={() => navigate('/admin')}
+                        className="px-6 py-3 bg-accent hover:bg-accent-dark text-white rounded-lg font-medium transition-all"
+                      >
+                        {t.uploadVideo}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+                      {videos.slice(0, 4).map((video) => (
+                        <VideoCard key={video.id} video={video} />
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ) : videos.length === 0 ? (
-                <div className="text-center py-12 bg-surface rounded-xl border border-border">
-                  <PlayCircle className="w-16 h-16 text-text-muted mx-auto mb-4" />
-                  <p className="text-text-secondary text-lg mb-2">{t.noVideos}</p>
-                  <p className="text-text-muted text-sm mb-6">{t.noVideosDesc}</p>
-                  <button
-                    onClick={() => navigate('/admin')}
-                    className="px-6 py-3 bg-accent hover:bg-accent-dark text-white rounded-lg font-medium transition-all"
-                  >
-                    {t.uploadVideo}
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-                  {videos.slice(0, 4).map((video) => (
-                    <VideoCard key={video.id} video={video} />
-                  ))}
-                </div>
-              )}
-            </div>
+              </>
+            ) : (
+              <WatchHistorySection />
+            )}
           </div>
         </div>
       </main>

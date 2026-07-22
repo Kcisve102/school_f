@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Video, Transcription, Summary } from '../types';
 import { videoService } from '../services/video.service';
+import historyService from '../services/history.service';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import VideoPlayer from '../components/video/VideoPlayer';
 import TranscriptDisplay from '../components/video/TranscriptDisplay';
 import SummaryPanel from '../components/video/SummaryPanel';
-import QuizModal from '../components/quiz/QuizModal';
 import Loader from '../components/common/Loader';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 import { formatDate } from '../utils/helpers';
@@ -22,7 +22,6 @@ export const VideoDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
-  const [showQuiz, setShowQuiz] = useState(false);
   const { language } = useLanguage();
   const t = translations[language].videoDetail;
 
@@ -64,14 +63,16 @@ export const VideoDetailPage: React.FC = () => {
   }, [id]);
 
   const handleVideoEnded = () => {
+    if (video) {
+      historyService.recordWatch(video.id).catch((err) => {
+        console.error('Failed to record video watch:', err);
+      });
+    }
+
     if (video?.transcription_status === 'completed' &&
         video?.summary_status === 'completed') {
-      setShowQuiz(true);
+      navigate(`/video/${video.id}/quiz`);
     }
-  };
-
-  const handleCloseQuiz = () => {
-    setShowQuiz(false);
   };
 
   if (loading) {
@@ -203,15 +204,6 @@ export const VideoDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Quiz Modal */}
-      {showQuiz && video && (
-        <QuizModal
-          videoId={video.id}
-          isOpen={showQuiz}
-          onClose={handleCloseQuiz}
-        />
-      )}
     </div>
   );
 };

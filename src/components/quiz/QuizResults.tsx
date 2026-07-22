@@ -1,8 +1,12 @@
-import React from 'react';
-import { ValidationResponse, Question } from '../../types';
-import QuestionCard from './QuestionCard';
+import React, { useState, useEffect } from 'react';
+import { ValidationResponse, Question, JobSuggestion } from '../../types';
+import QuizReviewList from './QuizReviewList';
+import JobSuggestionCard from './JobSuggestionCard';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../translations';
+import historyService from '../../services/history.service';
+
+const JOB_SUGGESTION_THRESHOLD = 0;
 
 interface QuizResultsProps {
   validationResults: ValidationResponse;
@@ -10,6 +14,7 @@ interface QuizResultsProps {
   userAnswers: Map<number, number>;
   onClose: () => void;
   onRetake: () => void;
+  attemptId: number | null;
 }
 
 export const QuizResults: React.FC<QuizResultsProps> = ({
@@ -18,11 +23,52 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
   userAnswers,
   onClose,
   onRetake,
+  attemptId,
 }) => {
   const { score, totalQuestions, percentageScore, results } = validationResults;
   const passed = percentageScore >= 60;
+  const qualifiesForJobs = percentageScore >= JOB_SUGGESTION_THRESHOLD;
   const { language } = useLanguage();
   const t = translations[language].quiz;
+
+  const [jobs, setJobs] = useState<JobSuggestion[] | null>(null);
+  const [loadingJobs, setLoadingJobs] = useState(false);
+  const [jobsError, setJobsError] = useState('');
+  const [loadingMoreJobs, setLoadingMoreJobs] = useState(false);
+
+  const handleFindJobs = async () => {
+    if (!attemptId) return;
+    try {
+      setLoadingJobs(true);
+      setJobsError('');
+      const suggestions = await historyService.getJobSuggestions(attemptId);
+      setJobs(suggestions);
+    } catch (err) {
+      setJobsError(t.jobSuggestionsFailed);
+    } finally {
+      setLoadingJobs(false);
+    }
+  };
+
+  useEffect(() => {
+    if (qualifiesForJobs && attemptId) {
+      handleFindJobs();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attemptId]);
+
+  const handleFindMoreJobs = async () => {
+    if (!attemptId) return;
+    try {
+      setLoadingMoreJobs(true);
+      const allJobs = await historyService.findMoreJobs(attemptId);
+      setJobs(allJobs);
+    } catch (err) {
+      setJobsError(t.jobSuggestionsFailed);
+    } finally {
+      setLoadingMoreJobs(false);
+    }
+  };
 
   return (
     <div className="w-full max-h-[70vh] overflow-y-auto">
@@ -52,38 +98,52 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
         </p>
       </div>
 
-      {/* Questions Review */}
-      <div className="space-y-6">
-        <h3 className="text-xl font-bold text-text-primary mb-4">{t.reviewAnswers}</h3>
-        {questions.map((question, index) => {
-          const result = results.find((r) => r.questionId === question.id);
-          const selectedOption = userAnswers.get(question.id) ?? null;
+      {/* Related Job Opportunities */}
+      {qualifiesForJobs && (
+        <div className="mb-8 p-6 bg-surface rounded-lg border border-border">
+          <h3 className="text-lg font-bold text-text-primary mb-3">{t.relatedJobs}</h3>
 
-          return (
-            <div key={question.id} className="bg-surface p-4 rounded-lg border border-border">
-              <div className="flex items-center gap-2 mb-3">
-                <span
-                  className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-white font-semibold ${
-                    result?.isCorrect ? 'bg-success' : 'bg-error'
-                  }`}
-                >
-                  {result?.isCorrect ? '✓' : '✗'}
-                </span>
-                <span className="text-sm font-medium text-text-secondary">
-                  {t.question} {index + 1}
-                </span>
-              </div>
-              <QuestionCard
-                question={question}
-                selectedOption={selectedOption}
-                onSelectOption={() => {}}
-                showResult={true}
-                result={result}
-              />
+          {loadingJobs && (
+            <div className="text-center py-6">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-accent mb-2"></div>
+              <p className="text-text-secondary text-sm">{t.findingJobs}</p>
             </div>
-          );
-        })}
-      </div>
+          )}
+
+          {!loadingJobs && jobs && jobs.length === 0 && (
+            <button
+              onClick={handleFindJobs}
+              disabled={!attemptId}
+              className="px-6 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {t.findRelatedJobs}
+            </button>
+          )}
+
+          {jobsError && <p className="text-error mt-2">{jobsError}</p>}
+
+          {jobs && jobs.length > 0 && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                {jobs.map((job, i) => (
+                  <JobSuggestionCard key={i} job={job} />
+                ))}
+              </div>
+
+              <button
+                onClick={handleFindMoreJobs}
+                disabled={loadingMoreJobs || !attemptId}
+                className="mt-4 px-6 py-2 bg-surface-secondary text-text-primary rounded-lg font-medium border border-border hover:bg-surface-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loadingMoreJobs ? t.findingMoreJobs : t.findMoreJobs}
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Questions Review */}
+      <QuizReviewList questions={questions} results={results} userAnswers={userAnswers} />
 
       {/* Action Buttons */}
       <div className="flex gap-4 mt-8 pt-6 border-t border-border">

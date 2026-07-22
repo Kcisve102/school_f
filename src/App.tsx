@@ -12,6 +12,7 @@ import AdminPage from './pages/AdminPage';
 import VideoDetailPage from './pages/VideoDetailPage';
 import CategoriesPage from './pages/CategoriesPage';
 import DashboardPage from './pages/DashboardPage';
+import QuizPage from './pages/QuizPage';
 import ChatPage from './pages/ChatPage';
 import SignupPage from './pages/SignupPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -35,6 +36,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <VideoDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/video/:id/quiz"
+            element={
+              <ProtectedRoute>
+                <QuizPage />
               </ProtectedRoute>
             }
           />
