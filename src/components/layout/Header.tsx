@@ -26,75 +26,87 @@ export const Header: React.FC = () => {
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <header className="bg-bg-primary border-b border-border sticky top-0 z-50">
-      <div className="mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
+    <header className="sticky top-0 z-50 bg-bg-primary border-b border-border sm:bg-transparent sm:border-b-0 sm:px-6 sm:pt-4">
+      <div className="sm:mx-auto sm:max-w-5xl sm:rounded-full sm:backdrop-blur-xl sm:backdrop-saturate-150 sm:shadow-lg sm:shadow-black/20 sm:bg-[rgba(22,23,27,0.65)]">
+        <div className="flex items-center justify-between h-16 sm:h-14 px-4 sm:px-0 sm:pl-4 sm:pr-2">
           {/* Logo */}
-          <Link to="/" className="flex items-center" onClick={closeMenu}>
-            <LogoMark size={22} />
+          <Link
+            to="/"
+            className="flex items-center pl-2 pr-4 flex-shrink-0"
+            onClick={closeMenu}
+          >
+            <LogoMark size={16} className="!text-white" />
           </Link>
 
           {/* Desktop nav */}
           {user ? (
-            <div className="hidden sm:flex items-center space-x-6">
-              <Link to="/" className="flex items-center space-x-1 text-text-secondary hover:text-text-muted transition-colors">
+            <div className="hidden sm:flex items-center gap-7">
+              <Link to="/" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
                 <Home className="w-4 h-4" />
                 <span className="text-sm">{t.home}</span>
               </Link>
-              <Link to="/categories" className="flex items-center space-x-1 text-text-secondary hover:text-text-muted transition-colors">
+              <Link to="/categories" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
                 <Grid3X3 className="w-4 h-4" />
                 <span className="text-sm">{t.categories}</span>
               </Link>
-              <Link to="/chat" className="flex items-center space-x-1 text-text-secondary hover:text-text-muted transition-colors">
+              <Link to="/chat" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
                 <MessageSquare className="w-4 h-4" />
                 <span className="text-sm">{t.aiAssistant}</span>
               </Link>
               {user.is_admin ? (
-                <Link to="/admin" className="flex items-center space-x-1 text-text-secondary hover:text-text-muted transition-colors">
+                <Link to="/admin" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
                   <LayoutDashboard className="w-4 h-4" />
                   <span className="text-sm">{t.admin}</span>
                 </Link>
               ) : (
-                <Link to="/dashboard" className="flex items-center space-x-1 text-text-secondary hover:text-text-muted transition-colors">
+                <Link to="/dashboard" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
                   <LayoutDashboard className="w-4 h-4" />
                   <span className="text-sm">{t.dashboard}</span>
                 </Link>
               )}
-              <div className="flex items-center space-x-3 pl-6 border-l border-border">
+              <div className="flex items-center gap-3">
                 <LanguageToggle size="sm" />
-                <div className="text-right">
-                  <p className="text-sm font-medium text-text-primary">{user.full_name}</p>
-                  <p className="text-xs text-text-muted">{user.is_admin ? t.roleAdmin : t.roleUser}</p>
+                <div className="flex items-center gap-2 rounded-full bg-white text-[#16171b] pl-3 pr-1.5 py-1.5">
+                  <div className="text-right leading-tight">
+                    <p className="text-xs font-semibold">{user.full_name}</p>
+                    <p className="text-[10px] text-black/50">{user.is_admin ? t.roleAdmin : t.roleUser}</p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="p-1.5 rounded-full bg-black/5 hover:bg-black/10 transition-all cursor-pointer"
+                    title={t.logout}
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className="p-2 rounded-lg bg-surface-secondary hover:bg-surface-hover text-text-secondary hover:text-text-primary transition-all cursor-pointer"
-                  title={t.logout}
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
               </div>
             </div>
           ) : (
-            <div className="hidden sm:flex items-center space-x-6">
-              <Link to="/" className="flex items-center space-x-1 text-text-secondary hover:text-text-muted transition-colors">
+            <div className="hidden sm:flex items-center gap-7">
+              <Link to="/" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
                 <Home className="w-4 h-4" />
                 <span className="text-sm">{t.home}</span>
               </Link>
-              <Link to="/categories" className="flex items-center space-x-1 text-text-secondary hover:text-text-muted transition-colors">
+              <Link to="/categories" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
                 <Grid3X3 className="w-4 h-4" />
                 <span className="text-sm">{t.categories}</span>
               </Link>
-              <Link to="/chat" className="flex items-center space-x-1 text-text-secondary hover:text-text-muted transition-colors">
+              <Link to="/chat" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
                 <MessageSquare className="w-4 h-4" />
                 <span className="text-sm">{t.aiAssistant}</span>
               </Link>
-              <div className="flex items-center space-x-3 pl-6 border-l border-border">
+              <div className="flex items-center gap-2">
                 <LanguageToggle size="sm" />
-                <Link to="/login" className="btn-ghost">
+                <Link
+                  to="/login"
+                  className="text-sm text-text-secondary hover:text-text-primary transition-colors px-3 py-2"
+                >
                   {t.login}
                 </Link>
-                <Link to="/signup" className="btn-primary">
+                <Link
+                  to="/signup"
+                  className="text-sm font-medium bg-white text-[#16171b] hover:bg-white/85 transition-colors rounded-full px-5 py-2.5"
+                >
                   {t.signUp}
                 </Link>
               </div>
