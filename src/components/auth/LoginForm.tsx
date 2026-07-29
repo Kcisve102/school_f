@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../translations';
@@ -10,6 +10,7 @@ export const LoginForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { language } = useLanguage();
   const t = translations[language].auth;
 
@@ -18,8 +19,9 @@ export const LoginForm: React.FC = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
-      navigate('/admin');
+      const user = await login(email, password);
+      const from = (location.state as { from?: string } | null)?.from;
+      navigate(from || (user.is_admin ? '/admin' : '/'));
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
@@ -73,6 +75,13 @@ export const LoginForm: React.FC = () => {
         </form>
 
         <p className="mt-6 text-center text-sm text-text-secondary">
+          {t.noAccount}{' '}
+          <Link to="/signup" className="text-accent hover:text-accent-dark font-medium transition-colors">
+            {t.signUp}
+          </Link>
+        </p>
+
+        <p className="mt-4 text-center text-sm text-text-secondary">
           <Link to="/" className="text-accent hover:text-accent-dark font-medium transition-colors">
             {t.backToVideos}
           </Link>
