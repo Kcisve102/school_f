@@ -44,6 +44,11 @@ export const HomePage: React.FC = () => {
     fetchVideos();
   }, []);
 
+  const totalVideoMinutes = useMemo(() => {
+    const totalSeconds = videos.reduce((sum, video) => sum + (video.duration ?? 0), 0);
+    return Math.round(totalSeconds / 60);
+  }, [videos]);
+
   const headline2Words = useMemo(() => {
     const parts = t.headline2.trim().split(/\s+/);
     return {
@@ -212,17 +217,17 @@ export const HomePage: React.FC = () => {
                 {/* Stats Row */}
                 <div className="flex gap-8">
                   <div>
-                    <div className="text-4xl font-bold text-text-primary">100+</div>
+                    <div className="text-4xl font-bold text-text-primary">{videos.length}+</div>
                     <div className="text-sm text-text-secondary">{t.stat1Label}</div>
                   </div>
                   <div className="w-px bg-border"></div>
                   <div>
-                    <div className="text-4xl font-bold text-text-primary">4K</div>
+                    <div className="text-4xl font-bold text-text-primary">{totalVideoMinutes}+</div>
                     <div className="text-sm text-text-secondary">{t.stat2Label}</div>
                   </div>
                   <div className="w-px bg-border"></div>
                   <div>
-                    <div className="text-4xl font-bold text-text-primary">5</div>
+                    <div className="text-4xl font-bold text-text-primary">3</div>
                     <div className="text-sm text-text-secondary">{t.stat3Label}</div>
                   </div>
                 </div>
