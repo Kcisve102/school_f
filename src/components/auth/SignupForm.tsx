@@ -121,6 +121,12 @@ export const SignupForm: React.FC = () => {
             {t.login}
           </Link>
         </p>
+
+        <p className="mt-4 text-center text-sm text-text-secondary">
+          <Link to="/" className="text-accent hover:text-accent-dark font-medium transition-colors">
+            {t.backToVideos}
+          </Link>
+        </p>
       </div>
     </div>
   );

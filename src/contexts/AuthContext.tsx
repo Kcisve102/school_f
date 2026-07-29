@@ -38,6 +38,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const userData = await authService.login(email, password);
       setUser(userData);
       toast.success('Logged in successfully!');
+      return userData;
     } catch (error: any) {
       toast.error(error.response?.data?.error || 'Login failed');
       throw error;
