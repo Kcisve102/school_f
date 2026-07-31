@@ -184,6 +184,7 @@ export const translations = {
       videoNotFoundDesc: 'The video you are looking for does not exist.',
       backToHome: 'Back to Home',
       loadingVideo: 'Loading video...',
+      playbackFailed: 'Could not play this video. Please refresh the page.',
     },
     transcript: {
       heading: 'Transcript',
@@ -226,9 +227,6 @@ export const translations = {
       startOnFiverr: 'Offer this on Fiverr',
       findMoreJobs: 'Find 5 More Jobs',
       findingMoreJobs: 'Finding more jobs...',
-      jobStatusChecking: 'Checking...',
-      jobStatusActive: 'Active',
-      jobStatusUnavailable: 'Unavailable',
     },
     history: {
       title: 'Watched History',
@@ -484,6 +482,7 @@ export const translations = {
       videoNotFoundDesc: '您查找的视频不存在。',
       backToHome: '返回首页',
       loadingVideo: '加载视频中...',
+      playbackFailed: '无法播放此视频，请刷新页面。',
     },
     transcript: {
       heading: '转录文本',
@@ -526,9 +525,6 @@ export const translations = {
       startOnFiverr: '在 Fiverr 上提供此服务',
       findMoreJobs: '再找 5 个职位',
       findingMoreJobs: '正在查找更多职位...',
-      jobStatusChecking: '检查中...',
-      jobStatusActive: '有效',
-      jobStatusUnavailable: '不可用',
     },
     history: {
       title: '观看历史',
@@ -784,6 +780,7 @@ export const translations = {
       videoNotFoundDesc: 'ཁྱེད་ཀྱིས་འཚོལ་བའི་བརྙན་འཕྲིན་མེད་པ་རེད།',
       backToHome: 'སྤྱི་མཛོད་ལ་ལོག',
       loadingVideo: 'བརྙན་འཕྲིན་འདེད་སྤྱོད་བྱེད་བཞིན...',
+      playbackFailed: 'བརྙན་འཕྲིན་འདི་གཏོང་མི་ཐུབ། ཤོག་ངོས་བསྐྱར་གསོ་གནང་རོགས།',
     },
     transcript: {
       heading: 'ཡིག་སྒྱུར།',
@@ -826,9 +823,6 @@ export const translations = {
       startOnFiverr: 'Fiverr ཐོག་ཞབས་ཞུ་འདི་སྤྲོད།',
       findMoreJobs: 'ལས་གནས་ ༥ གཞན་འཚོལ།',
       findingMoreJobs: 'ལས་གནས་གཞན་འཚོལ་བཞིན...',
-      jobStatusChecking: 'ཞིབ་བཤེར་བྱེད་བཞིན...',
-      jobStatusActive: 'ད་ལྟ་ཡོད་པ།',
-      jobStatusUnavailable: 'མི་ཐོབ་པ།',
     },
     history: {
       title: 'ལྟ་ཟིན་པའི་ལོ་རྒྱུས།',

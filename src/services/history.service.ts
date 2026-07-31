@@ -1,11 +1,10 @@
 import api from './api';
 import {
   ApiResponse,
-  Question,
-  QuizResult,
+  UserAnswer,
+  ValidationResponse,
   WatchHistoryItem,
   JobSuggestion,
-  JobSuggestionWithStatus,
   AttemptDetail,
 } from '../types';
 
@@ -14,17 +13,18 @@ export const historyService = {
     await api.post<ApiResponse>('/history/watch', { videoId });
   },
 
+  /**
+   * The server re-grades from the stored answer key, so no score is sent —
+   * it returns the authoritative result.
+   */
   recordQuizAttempt: async (
     videoId: number,
-    questions: Question[],
-    results: QuizResult[],
-    score: number,
-    totalQuestions: number,
-    percentageScore: number
-  ): Promise<{ attemptId: number }> => {
-    const response = await api.post<ApiResponse<{ attemptId: number }>>(
+    quizId: number,
+    userAnswers: UserAnswer[]
+  ): Promise<{ attemptId: number } & ValidationResponse> => {
+    const response = await api.post<ApiResponse<{ attemptId: number } & ValidationResponse>>(
       '/history/quiz-attempts',
-      { videoId, questions, results, score, totalQuestions, percentageScore }
+      { videoId, quizId, userAnswers }
     );
     return response.data.data!;
   },
@@ -46,13 +46,6 @@ export const historyService = {
       `/history/quiz-attempts/${attemptId}`
     );
     return response.data.data!;
-  },
-
-  checkJobValidity: async (attemptId: number): Promise<JobSuggestionWithStatus[]> => {
-    const response = await api.post<ApiResponse<{ jobs: JobSuggestionWithStatus[] }>>(
-      `/history/quiz-attempts/${attemptId}/jobs/check`
-    );
-    return response.data.data!.jobs;
   },
 
   findMoreJobs: async (attemptId: number): Promise<JobSuggestion[]> => {

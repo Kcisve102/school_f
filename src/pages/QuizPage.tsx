@@ -18,6 +18,7 @@ export const QuizPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [quizId, setQuizId] = useState<number | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<Map<number, number>>(new Map());
   const [quizState, setQuizState] = useState<QuizState>('loading');
@@ -32,11 +33,13 @@ export const QuizPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId]);
 
-  const loadQuiz = async () => {
+  const loadQuiz = async (regenerate = false) => {
     try {
       setError('');
       setQuizState('loading');
-      const generatedQuestions = await quizService.generateQuiz(videoId);
+      const { quizId: generatedQuizId, questions: generatedQuestions } =
+        await quizService.generateQuiz(videoId, regenerate);
+      setQuizId(generatedQuizId);
       setQuestions(generatedQuestions);
       setUserAnswers(new Map());
       setCurrentQuestionIndex(0);
@@ -80,28 +83,26 @@ export const QuizPage: React.FC = () => {
     try {
       setQuizState('submitting');
 
+      if (quizId === null) {
+        throw new Error('Missing quiz id');
+      }
+
       const answersArray: UserAnswer[] = questions.map((q) => ({
         questionId: q.id,
         selectedOption: userAnswers.get(q.id)!,
       }));
 
-      const results = await quizService.validateAnswers(questions, answersArray);
-      setValidationResults(results);
-      setQuizState('results');
+      // Recording the attempt also grades it server-side and returns the
+      // authoritative result, so a separate /validate call would be redundant.
+      const { attemptId, ...results } = await historyService.recordQuizAttempt(
+        videoId,
+        quizId,
+        answersArray
+      );
 
-      try {
-        const { attemptId } = await historyService.recordQuizAttempt(
-          videoId,
-          questions,
-          results.results,
-          results.score,
-          results.totalQuestions,
-          results.percentageScore
-        );
-        setLastAttemptId(attemptId);
-      } catch (saveErr) {
-        console.error('Failed to save quiz attempt:', saveErr);
-      }
+      setValidationResults(results);
+      setLastAttemptId(attemptId);
+      setQuizState('results');
     } catch (err: any) {
       setError(err.response?.data?.message || t.failedToValidate);
       toast.error(t.failedToValidate);
@@ -147,7 +148,7 @@ export const QuizPage: React.FC = () => {
               <p className="text-text-primary font-medium mb-2">{t.generationFailed}</p>
               <p className="text-text-secondary mb-4">{error}</p>
               <button
-                onClick={loadQuiz}
+                onClick={() => loadQuiz()}
                 className="px-6 py-2 bg-accent text-bg-primary rounded-lg hover:bg-accent-dark transition-colors"
               >
                 {t.tryAgain}

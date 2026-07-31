@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Video, Transcription, Summary } from '../types';
 import { videoService } from '../services/video.service';
 import historyService from '../services/history.service';
 import { useScrollReveal } from '../hooks/useScrollReveal';
-import VideoPlayer from '../components/video/VideoPlayer';
+import VideoPlayer, { VideoPlayerHandle } from '../components/video/VideoPlayer';
 import TranscriptDisplay from '../components/video/TranscriptDisplay';
 import SummaryPanel from '../components/video/SummaryPanel';
 import Loader from '../components/common/Loader';
@@ -22,6 +22,10 @@ export const VideoDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
+  const [refreshingUrl, setRefreshingUrl] = useState(false);
+  // Position to seek back to after a URL refresh; consumed once on ready.
+  const resumeAtRef = useRef<number | null>(null);
+  const playerRef = useRef<VideoPlayerHandle>(null);
   const { language } = useLanguage();
   const t = translations[language].videoDetail;
 
@@ -61,6 +65,36 @@ export const VideoDetailPage: React.FC = () => {
 
     fetchVideoData();
   }, [id]);
+
+  /**
+   * Playback URLs are presigned and eventually expire, at which point S3
+   * returns 403 and the player errors out. Re-fetch the video to get a fresh
+   * signature and resume from where the user was, rather than making them
+   * reload the page.
+   */
+  const handlePlaybackError = async () => {
+    if (!id || refreshingUrl) return;
+
+    try {
+      setRefreshingUrl(true);
+      const resumeAt = currentTime;
+      const videoData = await videoService.getById(parseInt(id));
+      setVideo(videoData);
+      resumeAtRef.current = resumeAt;
+    } catch (err) {
+      console.error('Failed to refresh video URL:', err);
+      setError(t.playbackFailed);
+    } finally {
+      setRefreshingUrl(false);
+    }
+  };
+
+  const handlePlayerReady = () => {
+    if (resumeAtRef.current !== null) {
+      playerRef.current?.seekTo(resumeAtRef.current);
+      resumeAtRef.current = null;
+    }
+  };
 
   const handleVideoEnded = () => {
     if (video) {
@@ -123,9 +157,12 @@ export const VideoDetailPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6 reveal-up delay-1">
             <VideoPlayer
+              ref={playerRef}
               url={video.s3_url}
               onProgress={setCurrentTime}
               onEnded={handleVideoEnded}
+              onError={handlePlaybackError}
+              onReady={handlePlayerReady}
             />
 
             {transcription && transcription.segments && transcription.segments.length > 0 && (

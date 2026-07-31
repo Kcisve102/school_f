@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { WatchHistoryItem, AttemptDetail, JobSuggestionWithStatus } from '../../types';
+import { WatchHistoryItem, AttemptDetail } from '../../types';
 import historyService from '../../services/history.service';
 import QuizReviewList from '../quiz/QuizReviewList';
 import JobSuggestionCard from '../quiz/JobSuggestionCard';
@@ -16,8 +16,6 @@ export const WatchHistorySection: React.FC = () => {
   const [expandedAttemptId, setExpandedAttemptId] = useState<number | null>(null);
   const [detailCache, setDetailCache] = useState<Map<number, AttemptDetail>>(new Map());
   const [detailLoading, setDetailLoading] = useState(false);
-  const [jobStatuses, setJobStatuses] = useState<Map<number, JobSuggestionWithStatus[]>>(new Map());
-  const [checkingJobs, setCheckingJobs] = useState(false);
   const [findingMoreJobsFor, setFindingMoreJobsFor] = useState<number | null>(null);
   const [jobsDrawerFor, setJobsDrawerFor] = useState<number | null>(null);
   const navigate = useNavigate();
@@ -54,16 +52,6 @@ export const WatchHistorySection: React.FC = () => {
         setDetailLoading(false);
       }
     }
-
-    try {
-      setCheckingJobs(true);
-      const checked = await historyService.checkJobValidity(attemptId);
-      setJobStatuses((prev) => new Map(prev).set(attemptId, checked));
-    } catch (err) {
-      console.error('Failed to check job validity:', err);
-    } finally {
-      setCheckingJobs(false);
-    }
   };
 
   const handleFindMoreJobs = async (attemptId: number) => {
@@ -74,12 +62,6 @@ export const WatchHistorySection: React.FC = () => {
         const existing = prev.get(attemptId);
         if (!existing) return prev;
         return new Map(prev).set(attemptId, { ...existing, jobSuggestions: allJobs });
-      });
-      // Newly appended jobs have no validity status yet until re-checked.
-      setJobStatuses((prev) => {
-        const next = new Map(prev);
-        next.delete(attemptId);
-        return next;
       });
     } catch (err) {
       console.error('Failed to find more jobs:', err);
@@ -139,8 +121,7 @@ export const WatchHistorySection: React.FC = () => {
                   {attempts.map((a) => {
                     const isExpanded = expandedAttemptId === a.id;
                     const detail = detailCache.get(a.id);
-                    const statuses = jobStatuses.get(a.id);
-                    const jobsToRender = statuses ?? detail?.jobSuggestions ?? [];
+                    const jobsToRender = detail?.jobSuggestions ?? [];
 
                     return (
                       <div key={a.id} className="bg-surface-secondary rounded-lg overflow-hidden">
@@ -202,9 +183,6 @@ export const WatchHistorySection: React.FC = () => {
                               </div>
 
                               <div className="p-4">
-                                {checkingJobs && !statuses && (
-                                  <p className="text-xs text-text-muted mb-3">{tq.jobStatusChecking}</p>
-                                )}
                                 <div className="space-y-3 mb-4">
                                   {jobsToRender.map((job, i) => (
                                     <JobSuggestionCard key={i} job={job} />

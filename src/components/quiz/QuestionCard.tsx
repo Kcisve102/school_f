@@ -21,12 +21,18 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   const { language } = useLanguage();
   const t = translations[language].quiz;
 
+  // The answer key never reaches the client while answering. In review mode it
+  // arrives on `result.correctAnswer` as the option *text*, so options are
+  // matched by value rather than by index.
+  const isCorrectOption = (index: number): boolean =>
+    !!result && question.options[index] === result.correctAnswer;
+
   const getOptionClassName = (index: number): string => {
     const baseClasses =
       'p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 mb-3';
 
     if (showResult) {
-      if (index === question.correctAnswer) {
+      if (isCorrectOption(index)) {
         return `${baseClasses} border-success bg-success/10`;
       } else if (index === selectedOption && !result?.isCorrect) {
         return `${baseClasses} border-error bg-error/10`;
@@ -45,7 +51,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   const getOptionIcon = (index: number): React.ReactNode => {
     if (!showResult) return null;
 
-    if (index === question.correctAnswer) {
+    if (isCorrectOption(index)) {
       return <span className="text-green-600 font-bold ml-2">✓</span>;
     } else if (index === selectedOption && !result?.isCorrect) {
       return <span className="text-red-600 font-bold ml-2">✗</span>;
