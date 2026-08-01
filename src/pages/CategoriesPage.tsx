@@ -261,9 +261,13 @@ export const CategoriesPage: React.FC = () => {
       <div className="flex min-h-screen pt-32 lg:pt-0">
         {/* Desktop Sidebar */}
         <aside className="hidden lg:block w-72 bg-surface border-r border-border p-6 fixed h-full overflow-y-auto">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-text-primary mb-2">{t.heading}</h2>
-            <p className="text-sm text-text-muted">{t.browseCollections}</p>
+          <div className="mb-10">
+            <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-4">
+              {t.browseCollections}
+            </p>
+            <h2 className="font-display font-medium text-text-primary text-xl tracking-[-0.02em]">
+              {t.heading}
+            </h2>
           </div>
 
           {/* Desktop Search */}
@@ -328,15 +332,18 @@ export const CategoriesPage: React.FC = () => {
         {/* Main Content */}
         <main className="flex-1 lg:ml-72">
           {/* Desktop Header */}
-          <div className="hidden lg:block sticky top-0 z-30 bg-bg-primary/95 backdrop-blur-xl border-b border-border px-8 py-6 reveal-up">
-            <div className="flex items-center justify-between">
+          {/* Offset by the header's height: the desktop nav is a floating pill
+              over a transparent strip, so a sticky bar at top-0 slides beneath
+              it and the heading collides with the nav links. */}
+          <div className="hidden lg:block sticky top-[72px] z-30 bg-bg-primary/95 backdrop-blur-xl border-b border-border px-8 py-6 reveal-up">
+            <div className="flex items-end justify-between gap-6">
               <div>
-                <h1 className="text-3xl font-bold text-text-primary mb-1">
-                  {getCategoryDisplayName()}
-                </h1>
-                <p className="text-text-secondary">
+                <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-4">
                   {getVideoCountText()} {t.available}
                 </p>
+                <h1 className="font-display font-medium text-text-primary text-[clamp(1.5rem,3.5vw,2.75rem)] leading-[1] tracking-[-0.03em]">
+                  {getCategoryDisplayName()}
+                </h1>
               </div>
 
               {/* View Toggle */}

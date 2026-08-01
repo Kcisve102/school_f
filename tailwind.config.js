@@ -47,12 +47,16 @@ export default {
       },
       borderRadius: {
         DEFAULT: '0px',
+        // Radius lock: 0 everywhere. The scale is collapsed here rather than in
+        // each component so `rounded-lg`/`rounded-xl` left in existing markup
+        // become no-ops instead of needing 60+ individual edits.
+        // `full` survives for genuinely circular elements — avatars, spinners.
         sm: '0px',
-        md: '2px',
-        lg: '4px',
-        xl: '4px',
-        '2xl': '4px',
-        '3xl': '4px',
+        md: '0px',
+        lg: '0px',
+        xl: '0px',
+        '2xl': '0px',
+        '3xl': '0px',
         full: '9999px',
       },
       animation: {

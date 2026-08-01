@@ -10,12 +10,9 @@ import VideoEditModal from '../components/video/VideoEditModal';
 import {
   LayoutDashboard,
   Upload,
-  CheckCircle,
-  Clock,
   BookOpen,
   Bookmark,
   Settings,
-  Video as VideoIcon,
 } from 'lucide-react';
 
 export const AdminPage: React.FC = () => {
@@ -100,7 +97,7 @@ export const AdminPage: React.FC = () => {
         {user && (
           <div className="mt-auto p-6 border-t border-border">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-info flex items-center justify-center text-white font-semibold">
+              <div className="w-10 h-10 rounded-full bg-surface-hover border border-border flex items-center justify-center text-text-primary font-display text-sm">
                 {user.full_name.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
@@ -142,49 +139,31 @@ export const AdminPage: React.FC = () => {
           <div className="max-w-7xl mx-auto">
 
             {/* Welcome */}
-            <div className="mb-8">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary mb-2">
-                Admin Dashboard
-              </h1>
-              <p className="text-text-secondary">
+            <div className="mb-10 sm:mb-16">
+              <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-6">
                 Manage videos and monitor platform statistics
               </p>
+              <h1 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4.5vw,3.5rem)] leading-[1] tracking-[-0.03em]">
+                Admin
+              </h1>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-10 lg:mb-12">
-              <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-accent/10">
-                    <VideoIcon className="w-5 h-5 text-accent" />
-                  </div>
-                  <span className="text-sm text-text-secondary">Total Videos</span>
+            {/* Stats — divided band, matching the dashboard. */}
+            <div className="grid grid-cols-3 divide-x divide-border-subtle border-y border-border-subtle mb-12 lg:mb-20">
+              {[
+                { value: String(totalVideos).padStart(2, '0'), label: 'Total videos' },
+                { value: String(processedVideos).padStart(2, '0'), label: 'Processed' },
+                { value: String(processingVideos).padStart(2, '0'), label: 'In queue' },
+              ].map((s, i) => (
+                <div key={s.label} className={`py-6 sm:py-10 px-4 sm:px-8 ${i === 0 ? 'pl-0' : ''}`}>
+                  <p className="font-display text-text-primary text-[clamp(1.5rem,4vw,3rem)] leading-none tracking-[-0.03em] tabular-nums">
+                    {s.value}
+                  </p>
+                  <p className="font-display text-[0.6875rem] uppercase tracking-[0.2em] text-text-muted mt-3">
+                    {s.label}
+                  </p>
                 </div>
-                <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{totalVideos}</div>
-                <div className="text-sm text-text-muted">All uploaded videos</div>
-              </div>
-
-              <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-success/10">
-                    <CheckCircle className="w-5 h-5 text-success" />
-                  </div>
-                  <span className="text-sm text-text-secondary">Processed</span>
-                </div>
-                <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{processedVideos}</div>
-                <div className="text-sm text-text-muted">Ready for learning</div>
-              </div>
-
-              <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-info/10">
-                    <Clock className="w-5 h-5 text-info" />
-                  </div>
-                  <span className="text-sm text-text-secondary">Processing</span>
-                </div>
-                <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{processingVideos}</div>
-                <div className="text-sm text-text-muted">In queue</div>
-              </div>
+              ))}
             </div>
 
             {/* Upload Section */}

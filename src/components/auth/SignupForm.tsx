@@ -43,9 +43,11 @@ export const SignupForm: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-md">
-      <div className="bg-surface rounded-2xl p-8 border border-border">
-        <h2 className="text-2xl font-bold text-center mb-6 text-text-primary">{t.createAccount}</h2>
+    <div className="w-full">
+      <div>
+        <h2 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4.5vw,3.5rem)] leading-[1] tracking-[-0.03em] mb-10 sm:mb-14">
+          {t.createAccount}
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
@@ -115,14 +117,14 @@ export const SignupForm: React.FC = () => {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-text-secondary">
+        <p className="mt-6 text-sm text-text-secondary">
           {t.alreadyHaveAccount}{' '}
           <Link to="/login" className="text-accent hover:text-accent-dark font-medium transition-colors">
             {t.login}
           </Link>
         </p>
 
-        <p className="mt-4 text-center text-sm text-text-secondary">
+        <p className="mt-4 text-sm text-text-secondary">
           <Link to="/" className="text-accent hover:text-accent-dark font-medium transition-colors">
             {t.backToVideos}
           </Link>

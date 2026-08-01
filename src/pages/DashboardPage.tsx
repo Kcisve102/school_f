@@ -12,8 +12,6 @@ import {
   LayoutDashboard,
   PlayCircle,
   Search,
-  Clock,
-  Trophy,
   BookOpen,
   Bookmark,
   Settings,
@@ -177,58 +175,44 @@ export const DashboardPage: React.FC = () => {
             {activeTab === 'dashboard' ? (
               <>
                 {/* Welcome */}
-                <div className="mb-8 reveal-up">
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-text-primary mb-2">
-                    {t.welcomeBack}, {user?.full_name.split(' ')[0] || ''}!
-                  </h1>
-                  <p className="text-text-secondary">
+                <div className="mb-10 sm:mb-16 reveal-up">
+                  <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-6">
                     {t.continueStreak}
                   </p>
+                  <h1 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4.5vw,3.5rem)] leading-[1] tracking-[-0.03em]">
+                    {t.welcomeBack}, {user?.full_name.split(' ')[0] || ''}
+                  </h1>
                 </div>
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-10 lg:mb-12">
-                  <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border reveal-up delay-1">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 rounded-lg bg-accent/10">
-                        <BookOpen className="w-5 h-5 text-accent" />
-                      </div>
-                      <span className="text-sm text-text-muted">{t.thisMonth}</span>
+                {/* Stats — a divided band rather than three equal cards. Same
+                    data, but the shared rules read as one instrument panel
+                    instead of three competing objects. */}
+                <div className="grid grid-cols-3 divide-x divide-border-subtle border-y border-border-subtle mb-12 lg:mb-20 reveal-up delay-1">
+                  {[
+                    { value: String(totalVideos).padStart(2, '0'), label: t.activeVideos },
+                    { value: `${totalMinutes}`, label: t.timeSpent },
+                    { value: String(readyVideos * 100), label: t.videosCompleted },
+                  ].map((s, i) => (
+                    <div key={s.label} className={`py-6 sm:py-10 px-4 sm:px-8 ${i === 0 ? 'pl-0' : ''}`}>
+                      <p className="font-display text-text-primary text-[clamp(1.5rem,4vw,3rem)] leading-none tracking-[-0.03em] tabular-nums">
+                        {s.value}
+                      </p>
+                      <p className="font-display text-[0.6875rem] uppercase tracking-[0.2em] text-text-muted mt-3">
+                        {s.label}
+                      </p>
                     </div>
-                    <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{totalVideos}</div>
-                    <div className="text-sm text-text-secondary">{t.activeVideos}</div>
-                  </div>
-
-                  <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border reveal-up delay-2">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 rounded-lg bg-info/10">
-                        <Clock className="w-5 h-5 text-info" />
-                      </div>
-                      <span className="text-sm text-text-muted">{t.weeklyGoal}</span>
-                    </div>
-                    <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{totalMinutes}m</div>
-                    <div className="text-sm text-text-secondary">{t.timeSpent}</div>
-                  </div>
-
-                  <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border reveal-up delay-3">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 rounded-lg bg-success/10">
-                        <Trophy className="w-5 h-5 text-success" />
-                      </div>
-                      <span className="text-sm text-text-muted">{t.totalPoints}</span>
-                    </div>
-                    <div className="text-3xl lg:text-4xl font-bold text-text-primary mb-1">{readyVideos * 100}</div>
-                    <div className="text-sm text-text-secondary">{t.videosCompleted}</div>
-                  </div>
+                  ))}
                 </div>
 
                 {/* Recommended Videos */}
                 <div className="mb-8 reveal-up">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl lg:text-2xl font-bold text-text-primary">{t.recommendedFor}</h2>
-                    <button className="flex items-center gap-2 text-accent hover:text-accent-dark transition-colors">
-                      <span className="text-sm font-medium">{t.seeAll}</span>
-                      <ChevronRight className="w-4 h-4" />
+                  <div className="flex items-end justify-between mb-8 gap-4">
+                    <h2 className="font-display font-medium text-text-primary text-[clamp(1.25rem,3vw,2rem)] leading-[1] tracking-[-0.03em]">
+                      {t.recommendedFor}
+                    </h2>
+                    <button className="group inline-flex items-center gap-3 border-b border-border-hover pb-2 font-display text-xs uppercase tracking-[0.15em] text-text-primary transition-colors hover:border-text-primary">
+                      {t.seeAll}
+                      <ChevronRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
                     </button>
                   </div>
 
