@@ -111,8 +111,15 @@ export const QuizPage: React.FC = () => {
     }
   };
 
+  // Retake replays the cached quiz — free, but the review screen has just shown
+  // every answer. New questions asks Gemini for a fresh set, so it is a separate
+  // opt-in action rather than the default.
   const handleRetake = () => {
     loadQuiz();
+  };
+
+  const handleNewQuestions = () => {
+    loadQuiz(true);
   };
 
   const handleClose = () => {
@@ -224,6 +231,7 @@ export const QuizPage: React.FC = () => {
               userAnswers={userAnswers}
               onClose={handleClose}
               onRetake={handleRetake}
+              onNewQuestions={handleNewQuestions}
               attemptId={lastAttemptId}
             />
           )}

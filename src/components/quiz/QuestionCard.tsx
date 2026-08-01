@@ -54,7 +54,11 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
     if (isCorrectOption(index)) {
       return <span className="text-green-600 font-bold ml-2">✓</span>;
     } else if (index === selectedOption && !result?.isCorrect) {
-      return <span className="text-red-600 font-bold ml-2">✗</span>;
+      return (
+        <span className="text-red-600 font-bold ml-2 whitespace-nowrap">
+          ✗ {t.yourAnswer}
+        </span>
+      );
     }
     return null;
   };

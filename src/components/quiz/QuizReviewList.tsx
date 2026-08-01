@@ -23,7 +23,14 @@ export const QuizReviewList: React.FC<QuizReviewListProps> = ({
       <h3 className="text-xl font-bold text-text-primary mb-4">{t.reviewAnswers}</h3>
       {questions.map((question, index) => {
         const result = results.find((r) => r.questionId === question.id);
-        const selectedOption = userAnswers?.get(question.id) ?? null;
+        // Straight after submitting we still hold the answers in memory; when
+        // reviewing from history we don't, so fall back to the option persisted
+        // on the result. -1 means the question was skipped, and older attempts
+        // predate the field entirely — both render as "nothing selected".
+        const persisted = result?.selectedOption;
+        const selectedOption =
+          userAnswers?.get(question.id) ??
+          (persisted !== undefined && persisted >= 0 ? persisted : null);
 
         return (
           <div key={question.id} className="bg-surface p-4 rounded-lg border border-border">

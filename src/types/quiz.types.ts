@@ -30,6 +30,8 @@ export interface QuizResult {
   isCorrect: boolean;
   explanation: string;
   correctAnswer: string;
+  /** Index the learner picked, or -1 if skipped. Absent on pre-existing attempts. */
+  selectedOption?: number;
 }
 
 export interface ValidationResponse {

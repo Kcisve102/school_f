@@ -14,6 +14,9 @@ interface QuizResultsProps {
   userAnswers: Map<number, number>;
   onClose: () => void;
   onRetake: () => void;
+  /** Generates a brand new set of questions — costs a Gemini call, so it is a
+   *  deliberate second action rather than the default retake. */
+  onNewQuestions: () => void;
   attemptId: number | null;
 }
 
@@ -23,6 +26,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
   userAnswers,
   onClose,
   onRetake,
+  onNewQuestions,
   attemptId,
 }) => {
   const { score, totalQuestions, percentageScore, results } = validationResults;
@@ -146,12 +150,19 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
       <QuizReviewList questions={questions} results={results} userAnswers={userAnswers} />
 
       {/* Action Buttons */}
-      <div className="flex gap-4 mt-8 pt-6 border-t border-border">
+      <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-border">
         <button
           onClick={onRetake}
           className="flex-1 px-6 py-3 bg-accent text-bg-primary font-semibold rounded-lg hover:bg-accent-dark transition-colors duration-200"
         >
           {t.retake}
+        </button>
+        <button
+          onClick={onNewQuestions}
+          title={t.newQuestionsHint}
+          className="flex-1 px-6 py-3 bg-surface-secondary text-text-primary font-semibold rounded-lg border border-border hover:bg-surface-hover transition-colors duration-200"
+        >
+          {t.newQuestions}
         </button>
         <button
           onClick={onClose}
