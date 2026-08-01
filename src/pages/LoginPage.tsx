@@ -3,15 +3,19 @@ import LoginForm from '../components/auth/LoginForm';
 
 export const LoginPage: React.FC = () => {
   return (
-    <div className="min-h-[calc(100vh-64px)]">
-      <div className="px-6 lg:px-12 xl:px-20 py-16 sm:py-28">
-        {/* Form sits on the page's hard left edge rather than dead-centre. The
-            empty right column is the point — it holds the same emptiness the
-            rest of the site opens with. */}
-        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12">
-          <div className="lg:col-span-6 xl:col-span-5">
-            <LoginForm />
-          </div>
+    <div className="min-h-[calc(100vh-64px)] flex items-center">
+      <div className="w-full px-6 py-16 sm:py-24">
+        {/*
+          Centred, unlike every other page in the app. The hard left edge earns
+          its keep where there is other content to align with — headings, stats,
+          tables, cards. An auth form has none of that, so a left edge here just
+          leaves two thirds of the screen empty with nothing to hold it.
+
+          The text stays left-aligned inside the column; only the column is
+          centred.
+        */}
+        <div className="w-full max-w-md mx-auto">
+          <LoginForm />
         </div>
       </div>
     </div>

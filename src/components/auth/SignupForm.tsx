@@ -45,7 +45,7 @@ export const SignupForm: React.FC = () => {
   return (
     <div className="w-full">
       <div>
-        <h2 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4.5vw,3.5rem)] leading-[1] tracking-[-0.03em] mb-10 sm:mb-14">
+        <h2 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4vw,2.5rem)] leading-[1] tracking-[-0.03em] mb-10 sm:mb-14">
           {t.createAccount}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">

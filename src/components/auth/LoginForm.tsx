@@ -37,7 +37,7 @@ export const LoginForm: React.FC = () => {
         <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-6">
           {t.loginSubtitle}
         </p>
-        <h2 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4.5vw,3.5rem)] leading-[1] tracking-[-0.03em] mb-10 sm:mb-14">
+        <h2 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4vw,2.5rem)] leading-[1] tracking-[-0.03em] mb-10 sm:mb-14">
           {t.adminLogin}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
