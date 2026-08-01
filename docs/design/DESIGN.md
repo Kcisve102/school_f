@@ -40,6 +40,38 @@ emptiness, not from layout tricks or color.
 
 ---
 
+## Per-page layout contract
+
+`DESIGN_VARIANCE: asymmetric` is a **per-page** instruction, not a per-section one.
+Applying one heading treatment to every page and stacking the rest vertically
+satisfies the tokens and fails the dial — the pages end up interchangeable.
+
+Each page's structure is derived from what it actually holds. The shape follows
+the content's natural aspect and volume, not a shared template.
+
+| Page | Layout | Why the content demands it |
+|---|---|---|
+| **Home** | Full-bleed editorial | One idea per viewport; hero carries the page |
+| **VideoDetail** | Sticky player + dual rail | `seekTo` is called from transcript *and* chapters *and* chat — the player must stay on screen while the rails are read. Transcript wants full height, not 384px |
+| **Admin** | Full-bleed table + drawer form | The 7-column table is the only wide dense object in the app; it wants max width. The form is a narrow column and belongs off to the side, not above in a half-empty grid |
+| **Dashboard** | Editorial split | Content-poor (heading, 3 numbers, 4 cards). Sparse vertical stacking makes it read as empty; an asymmetric split gives the few elements presence |
+| **Categories** | Filter bar + wide grid | 3 categories do not justify a 288px rail. Horizontal filters return that width to the content |
+| **Chat** | Wide stream | Everything clamps to `max-w-3xl`; all space past 768px is unused |
+| **Quiz** | Question canvas → results grid | Four states with wildly different volumes. Answering wants a calm reading measure; results wants a grid — score, jobs and review list must not share one narrow column with a nested scroller |
+
+**Rules that follow from this**
+
+- No two adjacent pages may share a column structure.
+- A block's container must match its natural aspect: fixed-ratio objects (16:9
+  player) size by width; tall lists get height, not a 384px cap; wide tables get
+  full bleed.
+- Nested scroll containers inside a scrolling page are a layout failure. Either
+  the block owns the viewport height or it flows with the page.
+- Sticky is a layout decision, not a polish one: if block A drives block B,
+  A stays visible while B is used.
+
+---
+
 ## Tokens
 
 Inherited from `src/index.css`. Unchanged by this override — the thesis is amplified

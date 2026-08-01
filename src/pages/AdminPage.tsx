@@ -136,7 +136,7 @@ export const AdminPage: React.FC = () => {
         </div>
 
         <div className="p-4 md:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-[1800px]">
 
             {/* Welcome */}
             <div className="mb-10 sm:mb-16">
@@ -166,58 +166,65 @@ export const AdminPage: React.FC = () => {
               ))}
             </div>
 
-            {/* Upload Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10 lg:mb-12">
-              <div className="bg-surface rounded-xl p-5 lg:p-6 border border-border">
-                <h3 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-2">
-                  <Upload className="w-5 h-5 text-accent" />
-                  Upload Video
+            {/*
+              Table-first. The video table is the only wide, dense object in the
+              app — 7 columns that want every pixel — while the upload form is a
+              narrow column of four fields. Previously the form sat above it in a
+              two-column grid holding a single child, so half the width was empty
+              and the table was pushed below the fold.
+
+              The form now occupies a fixed side rail and the table takes the rest.
+            */}
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 xl:gap-12 items-start">
+              <div className="xl:col-span-8 2xl:col-span-9 order-2 xl:order-1">
+                <h3 className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-6">
+                  Manage videos
                 </h3>
-                <div className="flex border-b border-border mb-6">
-                  <button
-                    className={`px-4 py-2 font-medium text-sm transition-colors ${
-                      activeTab === 'upload'
-                        ? 'border-b-2 border-accent text-accent'
-                        : 'text-text-secondary hover:text-text-primary'
-                    }`}
-                    onClick={() => setActiveTab('upload')}
-                  >
-                    Upload File
-                  </button>
-                  <button
-                    className={`px-4 py-2 font-medium text-sm transition-colors ${
-                      activeTab === 'link'
-                        ? 'border-b-2 border-accent text-accent'
-                        : 'text-text-secondary hover:text-text-primary'
-                    }`}
-                    onClick={() => setActiveTab('link')}
-                  >
-                    Upload from URL
-                  </button>
-                </div>
-                {activeTab === 'upload' ? (
-                  <VideoUploadForm onSuccess={handleUploadSuccess} />
+                {loading ? (
+                  <div className="py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+                    <p className="text-text-secondary mt-4 text-sm">Loading videos...</p>
+                  </div>
                 ) : (
-                  <VideoLinkForm onSuccess={handleUploadSuccess} />
+                  <VideoList
+                    videos={videos}
+                    onVideoDeleted={fetchVideos}
+                    onVideoEdit={setEditingVideo}
+                  />
                 )}
               </div>
-            </div>
 
-            {/* Video List */}
-            <div>
-              <h3 className="text-xl lg:text-2xl font-bold text-text-primary mb-6">Manage Videos</h3>
-              {loading ? (
-                <div className="text-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto"></div>
-                  <p className="text-text-secondary mt-4">Loading videos...</p>
+              <div className="xl:col-span-4 2xl:col-span-3 order-1 xl:order-2 xl:sticky xl:top-24 border border-border">
+                <h3 className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted px-5 py-4 border-b border-border-subtle flex items-center gap-2">
+                  <Upload className="w-3.5 h-3.5" />
+                  Upload video
+                </h3>
+                <div className="flex border-b border-border-subtle">
+                  {([
+                    ['upload', 'File'],
+                    ['link', 'URL'],
+                  ] as const).map(([tab, label]) => (
+                    <button
+                      key={tab}
+                      className={`flex-1 px-4 py-3 font-display text-xs uppercase tracking-[0.15em] transition-colors ${
+                        activeTab === tab
+                          ? 'bg-surface-hover text-text-primary'
+                          : 'text-text-muted hover:text-text-primary'
+                      }`}
+                      onClick={() => setActiveTab(tab)}
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
-              ) : (
-                <VideoList
-                  videos={videos}
-                  onVideoDeleted={fetchVideos}
-                  onVideoEdit={setEditingVideo}
-                />
-              )}
+                <div className="p-5">
+                  {activeTab === 'upload' ? (
+                    <VideoUploadForm onSuccess={handleUploadSuccess} />
+                  ) : (
+                    <VideoLinkForm onSuccess={handleUploadSuccess} />
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

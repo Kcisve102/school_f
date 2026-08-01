@@ -25,9 +25,14 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
   };
 
   return (
-    <div className="bg-surface rounded-xl p-6 border border-border max-h-96 overflow-y-auto">
-      <h3 className="text-lg font-semibold mb-4 text-text-primary">{t.heading}</h3>
-      <div className="space-y-3">
+    // A 200-segment transcript was previously capped at 384px, so it read as a
+    // small scrolling box regardless of how much room the page had. It now takes
+    // viewport-relative height and its heading stays put while the body scrolls.
+    <div className="border border-border flex flex-col max-h-[70vh]">
+      <h3 className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted px-5 py-4 border-b border-border-subtle flex-shrink-0">
+        {t.heading}
+      </h3>
+      <div className="space-y-3 overflow-y-auto scrollbar-thin px-5 py-4">
         {segments.map((segment) => {
           const isActive =
             currentTime >= segment.start && currentTime < segment.end;

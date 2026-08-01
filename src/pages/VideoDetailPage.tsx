@@ -296,30 +296,64 @@ export const VideoDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen">
-      <button
-        onClick={() => navigate('/')}
-        className="mb-6 flex items-center gap-2 px-4 py-2 bg-surface hover:bg-surface-hover border border-border rounded-lg text-text-primary transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        {t.backToVideos}
-      </button>
+    <div className="min-h-screen">
+      {/*
+        Sticky player + dual rail.
 
-      <div className="space-y-6">
-        <div className="reveal-up">
-          <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-4">
-            {t.uploadedOn} {formatDate(video.created_at)}
-          </p>
-          <h1 className="font-display font-medium text-text-primary text-[clamp(1.5rem,3.5vw,2.75rem)] leading-[1.05] tracking-[-0.03em]">
-            {video.title}
-          </h1>
-          {video.description && (
-            <p className="text-text-secondary leading-relaxed max-w-[60ch] mt-5">{video.description}</p>
-          )}
+        The player drives everything else on this page — transcript rows, chapter
+        buttons and cited timestamps in the lesson chat all call `seekTo`. In the
+        previous stacked layout the player scrolled away the moment you started
+        reading, so every seek meant scrolling back up. It is now pinned for the
+        length of the rails.
+
+        Full-bleed rather than `container mx-auto`: the transcript wants real
+        height and the summary wants a reading measure, and a centred 1280px box
+        gave neither enough room.
+      */}
+      <div className="px-6 lg:px-10 xl:px-14 pt-8 pb-6 border-b border-border-subtle">
+        <button
+          onClick={() => navigate('/')}
+          className="group inline-flex items-center gap-3 font-display text-[0.6875rem] uppercase tracking-[0.2em] text-text-muted hover:text-text-primary transition-colors mb-8"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1" />
+          {t.backToVideos}
+        </button>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-end">
+          <div className="lg:col-span-8">
+            <p className="font-display text-[0.625rem] uppercase tracking-[0.3em] text-text-muted mb-4">
+              {t.uploadedOn} {formatDate(video.created_at)}
+            </p>
+            <h1 className="font-display font-medium text-text-primary text-[clamp(1.5rem,3.2vw,2.5rem)] leading-[1.05] tracking-[-0.03em]">
+              {video.title}
+            </h1>
+            {video.description && (
+              <p className="text-text-secondary leading-relaxed max-w-[64ch] mt-4">{video.description}</p>
+            )}
+          </div>
+
+          {/* Status metadata as a compact row on the masthead rather than a card
+              stranded at the bottom of the right rail. */}
+          <dl className="lg:col-span-4 grid grid-cols-2 gap-x-6 gap-y-3 lg:justify-items-end">
+            {[
+              { k: t.uploadType, v: video.upload_type },
+              { k: t.compression, v: video.compression_status },
+              { k: t.transcription, v: video.transcription_status },
+              { k: t.summary, v: video.summary_status },
+            ].map((row) => (
+              <div key={row.k}>
+                <dt className="font-display text-[0.625rem] uppercase tracking-[0.2em] text-text-muted">{row.k}</dt>
+                <dd className="font-display text-sm capitalize text-text-primary mt-1">{row.v}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6 reveal-up delay-1">
+      <div className="px-6 lg:px-10 xl:px-14 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12 items-start">
+          {/* Left rail — the player pins here; the transcript scrolls past it. */}
+          <div className="lg:col-span-7 xl:col-span-8 lg:sticky lg:top-24 space-y-5">
             <VideoPlayer
               ref={playerRef}
               url={video.s3_url}
@@ -329,34 +363,37 @@ export const VideoDetailPage: React.FC = () => {
               onReady={handlePlayerReady}
             />
 
-            {transcription && transcription.segments && transcription.segments.length > 0 && (
-              <TranscriptDisplay
-                segments={transcription.segments}
-                currentTime={currentTime}
-                onSeek={handleSeek}
-              />
-            )}
-
             {video.transcription_status === 'processing' && (
-              <div className="bg-surface rounded-xl p-6 border border-border">
-                <div className="flex items-center text-info">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-info mr-3"></div>
-                  <p>{t.transcriptionInProgress}</p>
-                </div>
+              <div className="flex items-center gap-3 border border-border px-5 py-4 text-info">
+                <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-info" />
+                <p className="text-sm">{t.transcriptionInProgress}</p>
               </div>
             )}
 
             {video.transcription_status === 'failed' && (
-              <div className="bg-error/10 rounded-xl p-6 border border-error/30">
-                <div className="flex items-center text-error">
-                  <AlertCircle className="w-5 h-5 mr-2" />
-                  <p>{t.transcriptionFailed}</p>
-                </div>
+              <div className="flex items-center gap-3 border border-error/30 bg-error/10 px-5 py-4 text-error">
+                <AlertCircle className="w-4 h-4" />
+                <p className="text-sm">{t.transcriptionFailed}</p>
+              </div>
+            )}
+
+            {video.summary_status === 'processing' && (
+              <div className="flex items-center gap-3 border border-border px-5 py-4 text-info">
+                <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-info" />
+                <p className="text-sm">{t.summarizationInProgress}</p>
+              </div>
+            )}
+
+            {video.summary_status === 'failed' && (
+              <div className="flex items-center gap-3 border border-error/30 bg-error/10 px-5 py-4 text-error">
+                <AlertCircle className="w-4 h-4" />
+                <p className="text-sm">{t.summarizationFailed}</p>
               </div>
             )}
           </div>
 
-          <div className="space-y-6 reveal-up delay-2">
+          {/* Right rail — everything that is read while the video plays. */}
+          <div className="lg:col-span-5 xl:col-span-4 space-y-8">
             {summary && (
               <SummaryPanel
                 summaryText={summary.summary_text}
@@ -367,50 +404,18 @@ export const VideoDetailPage: React.FC = () => {
               />
             )}
 
+            {transcription && transcription.segments && transcription.segments.length > 0 && (
+              <TranscriptDisplay
+                segments={transcription.segments}
+                currentTime={currentTime}
+                onSeek={handleSeek}
+              />
+            )}
+
             {/* Grounded in the transcript, so only offered once there is one. */}
             {video.transcription_status === 'completed' && (
               <LessonChatPanel videoId={video.id} onSeek={handleSeek} />
             )}
-
-            {video.summary_status === 'processing' && (
-              <div className="bg-surface rounded-xl p-6 border border-border">
-                <div className="flex items-center text-info">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-info mr-3"></div>
-                  <p>{t.summarizationInProgress}</p>
-                </div>
-              </div>
-            )}
-
-            {video.summary_status === 'failed' && (
-              <div className="bg-error/10 rounded-xl p-6 border border-error/30">
-                <div className="flex items-center text-error">
-                  <AlertCircle className="w-5 h-5 mr-2" />
-                  <p>{t.summarizationFailed}</p>
-                </div>
-              </div>
-            )}
-
-            <div className="bg-surface rounded-xl p-6 border border-border">
-              <h3 className="font-semibold mb-3 text-text-primary">{t.videoInformation}</h3>
-              <dl className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <dt className="text-text-muted">{t.uploadType}</dt>
-                  <dd className="font-medium capitalize text-text-primary">{video.upload_type}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-text-muted">{t.compression}</dt>
-                  <dd className="font-medium capitalize text-text-primary">{video.compression_status}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-text-muted">{t.transcription}</dt>
-                  <dd className="font-medium capitalize text-text-primary">{video.transcription_status}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-text-muted">{t.summary}</dt>
-                  <dd className="font-medium capitalize text-text-primary">{video.summary_status}</dd>
-                </div>
-              </dl>
-            </div>
           </div>
         </div>
       </div>
