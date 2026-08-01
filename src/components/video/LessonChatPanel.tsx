@@ -110,13 +110,17 @@ export const LessonChatPanel: React.FC<LessonChatPanelProps> = ({
   };
 
   return (
-    <div className="bg-surface rounded-xl p-6 border border-border">
-      <div className="flex items-center mb-4">
-        <MessageCircleQuestion className="w-5 h-5 text-accent mr-2" />
-        <h3 className="text-lg font-semibold text-text-primary">{t.heading}</h3>
+    /* Owns its height rather than capping at a fixed 320px: the panel sits in
+       the video page's right rail, so it can size to the viewport the way the
+       transcript does. scrollRef still points at the scrolling element, which
+       is what the auto-scroll depends on. */
+    <div className="border border-border flex flex-col max-h-[60vh]">
+      <div className="flex items-center gap-2 px-5 py-4 border-b border-border-subtle flex-shrink-0">
+        <MessageCircleQuestion className="w-3.5 h-3.5 text-text-muted" />
+        <h3 className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted">{t.heading}</h3>
       </div>
 
-      <div ref={scrollRef} className="max-h-80 overflow-y-auto space-y-3 mb-4">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-thin space-y-3 px-5 py-4">
         {messages.length === 0 && !sending && (
           <p className="text-sm text-text-muted">{t.emptyState}</p>
         )}
@@ -126,7 +130,7 @@ export const LessonChatPanel: React.FC<LessonChatPanelProps> = ({
             key={index}
             className={`p-3 rounded-lg text-sm whitespace-pre-wrap ${
               message.role === 'user'
-                ? 'bg-accent/10 border border-accent/30 text-text-primary'
+                ? 'bg-surface-secondary border border-border-hover text-text-primary'
                 : 'bg-surface-secondary text-text-secondary'
             }`}
           >
@@ -140,15 +144,16 @@ export const LessonChatPanel: React.FC<LessonChatPanelProps> = ({
 
         {sending && (
           <div className="flex items-center gap-2 text-sm text-text-muted p-3">
-            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-accent" />
+            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-text-muted" />
             {t.thinking}
           </div>
         )}
       </div>
 
-      {error && <p className="text-sm text-error mb-2">{error}</p>}
+      {error && <p className="text-sm text-error px-5 pb-2 flex-shrink-0">{error}</p>}
 
-      <div className="flex gap-2">
+      {/* Docked: the message well above scrolls, this row stays put. */}
+      <div className="flex gap-2 px-5 py-4 border-t border-border-subtle flex-shrink-0">
         <input
           type="text"
           value={input}

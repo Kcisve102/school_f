@@ -55,7 +55,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video, compact }) => {
   return (
     <div
       onClick={() => navigate(`/video/${video.id}`)}
-      className={`h-full flex flex-col bg-surface rounded-xl border border-border cursor-pointer hover:bg-surface-secondary hover:border-accent/30 transition-all duration-300 hover:shadow-lg ${compact ? 'p-2 md:p-5' : 'p-5'}`}
+      className={`h-full flex flex-col bg-surface rounded-xl border border-border cursor-pointer hover:bg-surface-secondary hover:border-border-hover transition-all duration-300 hover:shadow-lg ${compact ? 'p-2 md:p-5' : 'p-5'}`}
     >
       <div className={`relative bg-surface-secondary rounded-lg aspect-video flex items-center justify-center overflow-hidden group ${compact ? 'mb-2 md:mb-4' : 'mb-4'}`}>
         {/* Video thumbnail - shows first frame */}
@@ -71,8 +71,10 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video, compact }) => {
           }}
         />
 
-        {/* Fallback gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-info/10 pointer-events-none"></div>
+        {/* Sits behind the thumbnail so a video that fails to load leaves a flat
+            surface rather than a hole. Was an accent-to-info gradient, which used
+            the accent decoratively. */}
+        <div className="absolute inset-0 -z-10 bg-surface-secondary pointer-events-none"></div>
 
         {/* Play icon overlay */}
         <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">

@@ -42,7 +42,7 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
               key={segment.id}
               className={`p-3 rounded-lg transition-colors ${
                 isActive
-                  ? 'bg-accent/20 border-l-4 border-accent'
+                  ? 'bg-surface-hover border-l-2 border-text-primary'
                   : 'bg-surface-secondary hover:bg-surface-hover'
               } ${onSeek ? 'cursor-pointer' : ''}`}
               onClick={() => handleSegmentClick(segment.start)}

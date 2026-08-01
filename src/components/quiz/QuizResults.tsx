@@ -133,11 +133,11 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
       {/* Related Job Opportunities */}
       {qualifiesForJobs && (
         <div className="mb-8 p-6 bg-surface rounded-lg border border-border">
-          <h3 className="text-lg font-bold text-text-primary mb-3">{t.relatedJobs}</h3>
+          <h3 className="font-display font-medium text-text-primary text-base tracking-[-0.02em] mb-3">{t.relatedJobs}</h3>
 
           {loadingJobs && (
             <div className="text-center py-6">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-accent mb-2"></div>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-text-muted mb-2"></div>
               <p className="text-text-secondary text-sm">{t.findingJobs}</p>
             </div>
           )}

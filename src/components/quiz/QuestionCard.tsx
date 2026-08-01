@@ -41,9 +41,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
       }
     } else {
       if (selectedOption === index) {
-        return `${baseClasses} border-accent bg-accent/10`;
+        return `${baseClasses} border-text-primary bg-surface-hover`;
       } else {
-        return `${baseClasses} border-border hover:border-accent/50 hover:bg-surface-secondary`;
+        return `${baseClasses} border-border hover:border-text-primary hover:bg-surface-secondary`;
       }
     }
   };
@@ -52,10 +52,10 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
     if (!showResult) return null;
 
     if (isCorrectOption(index)) {
-      return <span className="text-green-600 font-bold ml-2">✓</span>;
+      return <span className="text-success font-bold ml-2">✓</span>;
     } else if (index === selectedOption && !result?.isCorrect) {
       return (
-        <span className="text-red-600 font-bold ml-2 whitespace-nowrap">
+        <span className="text-error font-bold ml-2 whitespace-nowrap">
           ✗ {t.yourAnswer}
         </span>
       );
@@ -65,7 +65,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 
   return (
     <div className="w-full">
-      <h3 className="text-lg font-semibold text-text-primary mb-4">
+      <h3 className="font-display font-medium text-text-primary text-base tracking-[-0.02em] mb-4">
         {question.question}
       </h3>
 

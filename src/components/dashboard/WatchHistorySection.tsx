@@ -73,14 +73,14 @@ export const WatchHistorySection: React.FC = () => {
   if (loading) {
     return (
       <div className="text-center py-12">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-text-muted"></div>
       </div>
     );
   }
 
   return (
     <div className="mb-8 reveal-up">
-      <h2 className="text-xl lg:text-2xl font-bold text-text-primary mb-6">{t.title}</h2>
+      <h2 className="font-display font-medium text-text-primary text-lg tracking-[-0.02em] mb-6">{t.title}</h2>
 
       {items.length === 0 ? (
         <div className="text-center py-12 bg-surface rounded-xl border border-border">
@@ -94,7 +94,7 @@ export const WatchHistorySection: React.FC = () => {
               <div className="flex items-center justify-between mb-3 gap-4 flex-wrap">
                 <button
                   onClick={() => navigate(`/video/${video.id}`)}
-                  className="text-lg font-semibold text-text-primary hover:text-accent transition-colors text-left"
+                  className="font-display font-medium text-text-primary text-base tracking-[-0.02em] hover:text-accent transition-colors text-left"
                 >
                   {video.title}
                 </button>
@@ -144,7 +144,7 @@ export const WatchHistorySection: React.FC = () => {
                           <div className="px-3 pb-4 pt-2 border-t border-border">
                             {detailLoading && !detail ? (
                               <div className="text-center py-6">
-                                <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-accent mb-2"></div>
+                                <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-text-muted mb-2"></div>
                                 <p className="text-text-secondary text-sm">{t.loadingDetail}</p>
                               </div>
                             ) : detail ? (
@@ -173,7 +173,7 @@ export const WatchHistorySection: React.FC = () => {
                             />
                             <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-surface border-l border-border shadow-xl overflow-y-auto animate-slide-in-right">
                               <div className="flex items-center justify-between p-4 border-b border-border sticky top-0 bg-surface">
-                                <h3 className="text-lg font-bold text-text-primary">{tq.relatedJobs}</h3>
+                                <h3 className="font-display font-medium text-text-primary text-base tracking-[-0.02em]">{tq.relatedJobs}</h3>
                                 <button
                                   onClick={() => setJobsDrawerFor(null)}
                                   className="p-2 hover:bg-surface-secondary rounded-lg transition-colors"

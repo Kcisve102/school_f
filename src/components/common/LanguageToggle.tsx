@@ -61,12 +61,10 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
           transition-all duration-300
           bg-surface-secondary
           border border-border
-          hover:border-accent/50
-          hover:scale-105
-          active:scale-95
-          font-bold
+          hover:border-text-primary
+          font-display
           text-text-secondary
-          hover:text-accent
+          hover:text-text-primary
           min-w-[2.5rem]
         `}
         aria-label="Change language"
@@ -80,7 +78,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
       {isOpen && (
         <div
           role="listbox"
-          className="absolute right-0 mt-2 py-1 min-w-[8rem] bg-surface border border-border rounded-xl shadow-xl z-50"
+          className="absolute right-0 mt-2 py-1 min-w-[8rem] bg-surface border border-border-hover z-50"
         >
           {LANGUAGES.map((lang) => (
             <button
@@ -95,7 +93,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
                 w-full px-4 py-2 text-left text-sm
                 flex items-center justify-between gap-3
                 transition-colors
-                ${language === lang ? 'text-accent font-semibold' : 'text-text-secondary hover:text-text-primary'}
+                ${language === lang ? 'text-text-primary font-medium' : 'text-text-secondary hover:text-text-primary'}
                 hover:bg-surface-secondary
               `}
             >

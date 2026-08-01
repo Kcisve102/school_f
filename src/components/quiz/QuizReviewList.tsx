@@ -20,7 +20,7 @@ export const QuizReviewList: React.FC<QuizReviewListProps> = ({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-xl font-bold text-text-primary mb-4">{t.reviewAnswers}</h3>
+      <h3 className="font-display font-medium text-text-primary text-lg tracking-[-0.02em] mb-4">{t.reviewAnswers}</h3>
       {questions.map((question, index) => {
         const result = results.find((r) => r.questionId === question.id);
         // Straight after submitting we still hold the answers in memory; when

@@ -63,7 +63,7 @@ export const VideoEditModal: React.FC<VideoEditModalProps> = ({
       <div className="relative w-full max-w-lg bg-surface rounded-xl border border-border">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/10">
-          <h2 className="text-2xl font-bold text-text-primary">Edit Video</h2>
+          <h2 className="font-display font-medium text-text-primary text-xl tracking-[-0.02em]">Edit Video</h2>
           <button
             onClick={onClose}
             className="p-2 text-text-muted hover:text-text-primary transition-colors rounded-lg hover:bg-white/10"

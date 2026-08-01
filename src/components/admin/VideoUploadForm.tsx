@@ -237,14 +237,14 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
             return (
               <div key={key} className="flex items-center gap-3">
                 {state === 'done' ? (
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
                 ) : state === 'active' ? (
                   <Loader2 className="w-5 h-5 text-accent flex-shrink-0 animate-spin" />
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-border flex-shrink-0" />
                 )}
                 <span className={
-                  state === 'done' ? 'text-sm text-green-500' :
+                  state === 'done' ? 'text-sm text-success' :
                   state === 'active' ? 'text-sm text-text-primary font-medium' :
                   'text-sm text-text-muted'
                 }>
@@ -256,8 +256,8 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
 
           {processingStatus === 'done' && (
             <div className="flex items-center gap-3 pt-1 border-t border-border">
-              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-              <span className="text-sm font-semibold text-green-500">
+              <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
+              <span className="text-sm font-semibold text-success">
                 {language === 'zh' ? '视频已就绪！' : 'Video is ready!'}
               </span>
             </div>
@@ -265,8 +265,8 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onSuccess }) =
 
           {processingStatus === 'failed' && (
             <div className="flex items-center gap-3 pt-1 border-t border-border">
-              <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-              <span className="text-sm text-red-500">
+              <XCircle className="w-5 h-5 text-error flex-shrink-0" />
+              <span className="text-sm text-error">
                 {language === 'zh' ? `处理失败：${failedError}` : `Failed: ${failedError}`}
               </span>
             </div>

@@ -35,8 +35,8 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({
   return (
     <div className="bg-surface rounded-xl p-6 border border-border">
       <div className="flex items-center mb-4">
-        <FileText className="w-5 h-5 text-accent mr-2" />
-        <h3 className="text-lg font-semibold text-text-primary">{t.heading}</h3>
+        <FileText className="w-4 h-4 text-text-muted mr-2" />
+        <h3 className="font-display font-medium text-text-primary text-base tracking-[-0.02em]">{t.heading}</h3>
       </div>
 
       <div className="mb-6">
@@ -79,10 +79,14 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({
         <div>
           <h4 className="font-medium text-text-primary mb-3">{t.keyPoints}</h4>
           <ul className="space-y-2">
+            {/* Numbered rather than dotted: the ban list prohibits decorative
+                status dots, and an index is useful here anyway. */}
             {keyPoints.map((point, index) => (
-              <li key={index} className="flex items-start">
-                <span className="inline-block w-2 h-2 bg-accent rounded-full mt-2 mr-3 flex-shrink-0" />
-                <span className="text-text-secondary">{point}</span>
+              <li key={index} className="grid grid-cols-[1.75rem_1fr] items-baseline">
+                <span className="font-display text-[0.6875rem] text-text-muted tabular-nums">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span className="text-text-secondary leading-relaxed">{point}</span>
               </li>
             ))}
           </ul>

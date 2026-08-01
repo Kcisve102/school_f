@@ -22,7 +22,7 @@ export const JobSuggestionCard: React.FC<JobSuggestionCardProps> = ({ job }) => 
   };
 
   return (
-    <div className="text-left p-4 bg-surface-secondary rounded-lg border border-border hover:border-accent/40 transition-colors w-full">
+    <div className="text-left p-4 bg-surface-secondary rounded-lg border border-border hover:border-border-hover transition-colors w-full">
       <div className="flex items-start justify-between gap-2 mb-1">
         <p className="font-semibold text-text-primary">{job.title}</p>
       </div>

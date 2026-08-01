@@ -154,7 +154,7 @@ export const VideoList: React.FC<VideoListProps> = ({ videos, onVideoDeleted, on
                     </button>
                     <button
                       onClick={() => onVideoEdit?.(video)}
-                      className="p-2 rounded-lg bg-accent/10 hover:bg-accent/20 text-accent transition-all"
+                      className="p-2 rounded-lg bg-surface-secondary hover:bg-surface-hover text-text-primary transition-all"
                       title="Edit"
                     >
                       <Edit className="w-4 h-4" />
