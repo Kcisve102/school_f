@@ -307,11 +307,15 @@ export const VideoDetailPage: React.FC = () => {
 
       <div className="space-y-6">
         <div className="reveal-up">
-          <h1 className="text-3xl font-bold text-text-primary mb-2">{video.title}</h1>
+          <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-4">
+            {t.uploadedOn} {formatDate(video.created_at)}
+          </p>
+          <h1 className="font-display font-medium text-text-primary text-[clamp(1.5rem,3.5vw,2.75rem)] leading-[1.05] tracking-[-0.03em]">
+            {video.title}
+          </h1>
           {video.description && (
-            <p className="text-text-secondary mb-4">{video.description}</p>
+            <p className="text-text-secondary leading-relaxed max-w-[60ch] mt-5">{video.description}</p>
           )}
-          <p className="text-sm text-text-muted">{t.uploadedOn} {formatDate(video.created_at)}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

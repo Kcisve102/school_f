@@ -76,37 +76,40 @@ interface EmptyStateProps {
 }
 
 const EmptyState: React.FC<EmptyStateProps> = ({ onPrompt, t }) => (
-  <div className="flex flex-col items-center justify-center h-full px-6 py-12 text-center">
-    <div
-      className="mb-6"
-      style={{ animation: 'fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both' }}
-    >
-      <div className="w-14 h-14 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center mx-auto mb-5">
-        <LogoMark size={32} />
+  <div className="h-full flex flex-col justify-center px-6 sm:px-10 py-12">
+    <div className="w-full max-w-3xl">
+      <div style={{ animation: 'fadeUp 0.4s cubic-bezier(0.2,0,0,1) both' }}>
+        <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-6">
+          {t.emptyDesc}
+        </p>
+        <h2 className="font-display font-medium text-text-primary text-[clamp(1.5rem,4vw,2.75rem)] leading-[1] tracking-[-0.03em]">
+          {t.emptyTitle}
+        </h2>
       </div>
-      <h2 className="text-xl font-semibold text-text-primary mb-1">{t.emptyTitle}</h2>
-      <p className="text-sm text-text-muted max-w-xs">
-        {t.emptyDesc}
-      </p>
-    </div>
 
-    {/* Suggested prompts */}
-    <div
-      className="w-full max-w-lg"
-      style={{ animation: 'fadeUp 0.5s 0.1s cubic-bezier(0.22,1,0.36,1) both' }}
-    >
-      <p className="text-xs text-text-muted uppercase tracking-widest mb-3 text-left">{t.suggestedHeading}</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        {t.suggestedPrompts.map((p) => (
+      {/* Prompts as a numbered list rather than a card grid — the rows share
+          one left edge with the heading, and each prompt's text can run to its
+          natural length instead of being clamped to a uniform cell. */}
+      <div
+        className="mt-10 sm:mt-14 border-t border-border-subtle"
+        style={{ animation: 'fadeUp 0.4s 0.08s cubic-bezier(0.2,0,0,1) both' }}
+      >
+        <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted py-5">
+          {t.suggestedHeading}
+        </p>
+        {t.suggestedPrompts.map((p, i) => (
           <button
             key={p.label}
             onClick={() => onPrompt(p.text)}
-            className="group text-left px-4 py-3 rounded-lg border border-border bg-surface hover:border-accent/40 hover:bg-surface-secondary transition-all duration-150"
+            className="group w-full text-left grid grid-cols-[2rem_1fr] sm:grid-cols-[3rem_10rem_1fr] gap-x-4 gap-y-1 items-baseline border-t border-border-subtle py-5 transition-colors hover:bg-surface/40 focus:outline-none focus-visible:ring-1 focus-visible:ring-white"
           >
-            <span className="block text-xs font-semibold text-accent mb-0.5 group-hover:text-accent-dark transition-colors">
+            <span className="font-display text-xs text-text-muted tabular-nums">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span className="font-display text-sm text-text-primary tracking-[-0.01em]">
               {p.label}
             </span>
-            <span className="block text-xs text-text-secondary line-clamp-2 leading-relaxed">
+            <span className="col-start-2 sm:col-start-3 text-sm text-text-secondary leading-relaxed">
               {p.text}
             </span>
           </button>
@@ -269,7 +272,7 @@ export const ChatPage: React.FC = () => {
           {messages.length === 0 ? (
             <EmptyState onPrompt={(text) => handleSendMessage(text)} t={t} />
           ) : (
-            <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
+            <div className="max-w-3xl mx-auto px-4 py-6 space-y-5">
               {messages.map((msg, i) => (
                 <MessageRow
                   key={i}
@@ -318,7 +321,7 @@ export const ChatPage: React.FC = () => {
 
         {/* ── Input dock ── */}
         <div className="flex-shrink-0 border-t border-border bg-surface px-4 py-3">
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-3xl mx-auto">
             <div className={`flex gap-2 items-end rounded-xl border transition-colors ${
               inputValue ? 'border-accent/40 bg-surface-secondary' : 'border-border bg-surface-secondary'
             } focus-within:border-accent/60`}>

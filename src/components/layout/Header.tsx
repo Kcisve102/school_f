@@ -77,7 +77,9 @@ export const Header: React.FC = () => {
                 <div className="flex items-center gap-2 rounded-full bg-white text-[#16171b] pl-3 pr-1.5 py-1.5">
                   <div className="text-right leading-tight">
                     <p className="text-xs font-semibold">{user.full_name}</p>
-                    <p className="text-[10px] text-black/50">{user.is_admin ? t.roleAdmin : t.roleUser}</p>
+                    {/* /50 rendered at 3.98:1 on the white pill, under the 4.5:1
+                        floor for text this size. */}
+                    <p className="text-[10px] text-black/65">{user.is_admin ? t.roleAdmin : t.roleUser}</p>
                   </div>
                   <button
                     onClick={handleLogout}

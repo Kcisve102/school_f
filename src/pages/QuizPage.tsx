@@ -131,22 +131,26 @@ export const QuizPage: React.FC = () => {
   const allQuestionsAnswered = userAnswers.size === questions.length;
 
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen">
-      <div className="max-w-2xl mx-auto bg-bg-primary rounded-lg border border-border overflow-hidden">
-        <div className="bg-surface px-6 py-4 border-b border-border">
-          <h1 className="text-2xl font-bold text-text-primary">{t.title}</h1>
+    <div className="min-h-screen px-6 lg:px-12 xl:px-20 py-12 sm:py-20">
+      {/* Un-boxed: the quiz reads as a column on the page rather than a card
+          floating in the middle of it, which keeps the shared left edge. */}
+      <div className="max-w-3xl">
+        <div className="border-b border-border-subtle pb-6 mb-8">
+          <h1 className="font-display font-medium text-text-primary text-[clamp(1.5rem,3.5vw,2.5rem)] leading-[1] tracking-[-0.03em]">
+            {t.title}
+          </h1>
         </div>
 
-        <div className="px-6 py-6">
+        <div>
           {quizState === 'loading' && (
-            <div className="text-center py-12">
+            <div className="py-12">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-accent mb-4"></div>
               <p className="text-text-secondary">{t.generating}</p>
             </div>
           )}
 
           {error && quizState === 'loading' && (
-            <div className="text-center py-12">
+            <div className="py-12">
               <div className="text-error mb-4">
                 <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -211,14 +215,14 @@ export const QuizPage: React.FC = () => {
                 )}
               </div>
 
-              <div className="mt-4 text-center text-sm text-text-muted">
+              <div className="mt-4 font-display text-xs uppercase tracking-[0.15em] text-text-muted">
                 {t.of} {userAnswers.size} / {questions.length} {t.questionsAnswered}
               </div>
             </div>
           )}
 
           {quizState === 'submitting' && (
-            <div className="text-center py-12">
+            <div className="py-12">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-accent mb-4"></div>
               <p className="text-text-secondary">{t.analyzing}</p>
             </div>
