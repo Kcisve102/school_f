@@ -127,7 +127,7 @@ export const Header: React.FC = () => {
           <div className="sm:hidden flex items-center gap-2">
             <LanguageToggle size="sm" />
             <button
-              className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-all cursor-pointer"
+              className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-all cursor-pointer"
               onClick={() => setMenuOpen((o) => !o)}
               aria-label="Toggle menu"
             >

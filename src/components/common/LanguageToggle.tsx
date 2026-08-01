@@ -37,9 +37,11 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
     };
   }, []);
 
+  // Floors at 44px: below that the control fails the minimum touch target on
+  // mobile, where this sits next to the hamburger.
   const sizeClasses = {
-    sm: 'h-8 px-2',
-    md: 'h-10 px-3',
+    sm: 'h-11 px-3',
+    md: 'h-11 px-3',
     lg: 'h-12 px-4',
   };
 

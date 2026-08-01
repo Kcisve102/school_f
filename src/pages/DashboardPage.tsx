@@ -78,7 +78,7 @@ export const DashboardPage: React.FC = () => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`relative pb-4 font-display text-xs uppercase tracking-[0.15em] transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-white ${
+                  className={`relative pt-2 pb-4 min-h-[44px] font-display text-xs uppercase tracking-[0.15em] transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-white ${
                     activeTab === tab
                       ? 'text-text-primary after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-text-primary'
                       : 'text-text-muted hover:text-text-secondary'
@@ -123,7 +123,7 @@ export const DashboardPage: React.FC = () => {
                     <h2 className="font-display font-medium text-text-primary text-[clamp(1.25rem,3vw,2rem)] leading-[1] tracking-[-0.03em]">
                       {t.recommendedFor}
                     </h2>
-                    <button className="group inline-flex items-center gap-3 border-b border-border-hover pb-2 font-display text-xs uppercase tracking-[0.15em] text-text-primary transition-colors hover:border-text-primary">
+                    <button className="group inline-flex items-center gap-3 border-b border-border-hover pt-3 pb-2 min-h-[44px] font-display text-xs uppercase tracking-[0.15em] text-text-primary transition-colors hover:border-text-primary">
                       {t.seeAll}
                       <ChevronRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
                     </button>

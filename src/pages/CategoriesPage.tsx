@@ -107,7 +107,7 @@ export const CategoriesPage: React.FC = () => {
               <button
                 key={tab.key}
                 onClick={() => handleCategorySelect(tab.key)}
-                className={`relative pb-4 font-display text-xs uppercase tracking-[0.15em] transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-white ${
+                className={`relative pt-2 pb-4 min-h-[44px] font-display text-xs uppercase tracking-[0.15em] transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-white ${
                   selectedCategory === tab.key
                     ? 'text-text-primary after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-text-primary'
                     : 'text-text-muted hover:text-text-secondary'
@@ -145,7 +145,7 @@ export const CategoriesPage: React.FC = () => {
                   key={mode}
                   onClick={() => setViewMode(mode)}
                   aria-label={mode === 'grid' ? 'Grid view' : 'List view'}
-                  className={`p-2.5 transition-colors ${
+                  className={`p-3 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors ${
                     viewMode === mode
                       ? 'bg-surface-hover text-text-primary'
                       : 'text-text-muted hover:text-text-primary'
