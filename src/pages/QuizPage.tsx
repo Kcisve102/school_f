@@ -132,10 +132,16 @@ export const QuizPage: React.FC = () => {
 
   return (
     <div className="min-h-screen px-6 lg:px-12 xl:px-20 py-12 sm:py-20">
-      {/* Un-boxed: the quiz reads as a column on the page rather than a card
-          floating in the middle of it, which keeps the shared left edge. */}
-      <div className="max-w-3xl">
+      {/* The width follows the state. Answering wants a reading measure — a
+          question and four options are harder to scan stretched wide — while
+          results is a two-column grid and needs the room. */}
+      <div className={quizState === 'results' ? 'max-w-[1600px]' : 'max-w-3xl'}>
         <div className="border-b border-border-subtle pb-6 mb-8">
+          <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-4">
+            {quizState === 'results'
+              ? t.reviewAnswers
+              : `${t.question} ${currentQuestionIndex + 1} / ${questions.length || '—'}`}
+          </p>
           <h1 className="font-display font-medium text-text-primary text-[clamp(1.5rem,3.5vw,2.5rem)] leading-[1] tracking-[-0.03em]">
             {t.title}
           </h1>

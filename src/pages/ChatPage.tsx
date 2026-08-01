@@ -51,7 +51,7 @@ const MessageRow: React.FC<MessageRowProps> = ({ message, isLast, t }) => {
       )}
 
       {/* Bubble */}
-      <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[75%]`}>
+      <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[68ch]`}>
         <span className="text-[10px] font-medium text-text-muted uppercase tracking-widest mb-1 px-1">
           {isUser ? t.you : t.aiAssistant}
         </span>
@@ -77,7 +77,7 @@ interface EmptyStateProps {
 
 const EmptyState: React.FC<EmptyStateProps> = ({ onPrompt, t }) => (
   <div className="h-full flex flex-col justify-center px-6 sm:px-10 py-12">
-    <div className="w-full max-w-3xl">
+    <div className="w-full max-w-[1100px]">
       <div style={{ animation: 'fadeUp 0.4s cubic-bezier(0.2,0,0,1) both' }}>
         <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-6">
           {t.emptyDesc}
@@ -272,7 +272,7 @@ export const ChatPage: React.FC = () => {
           {messages.length === 0 ? (
             <EmptyState onPrompt={(text) => handleSendMessage(text)} t={t} />
           ) : (
-            <div className="max-w-3xl mx-auto px-4 py-6 space-y-5">
+            <div className="max-w-[1100px] mx-auto px-6 lg:px-10 py-8 space-y-6">
               {messages.map((msg, i) => (
                 <MessageRow
                   key={i}
@@ -290,7 +290,7 @@ export const ChatPage: React.FC = () => {
                   <div className="flex-shrink-0 w-7 h-7 rounded-sm bg-accent/10 border border-accent/30 flex items-center justify-center mt-5">
                     <LogoMark size={16} />
                   </div>
-                  <div className="flex flex-col items-start max-w-[75%]">
+                  <div className="flex flex-col items-start max-w-[68ch]">
                     <span className="text-[10px] font-medium text-text-muted uppercase tracking-widest mb-1 px-1">
                       {t.aiAssistant}
                     </span>
@@ -321,7 +321,7 @@ export const ChatPage: React.FC = () => {
 
         {/* ── Input dock ── */}
         <div className="flex-shrink-0 border-t border-border bg-surface px-4 py-3">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-[1100px] mx-auto px-6 lg:px-10">
             <div className={`flex gap-2 items-end rounded-xl border transition-colors ${
               inputValue ? 'border-accent/40 bg-surface-secondary' : 'border-border bg-surface-secondary'
             } focus-within:border-accent/60`}>

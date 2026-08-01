@@ -75,32 +75,60 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
   };
 
   return (
-    <div className="w-full max-h-[70vh] overflow-y-auto">
-      {/* Score Display */}
-      <div className="text-center mb-8">
-        <div className="inline-block p-8 bg-accent/10 rounded-lg border border-accent/20">
-          <h2 className="text-4xl font-bold text-text-primary mb-2">
-            {score}/{totalQuestions}
-          </h2>
-          <p className="text-2xl font-semibold text-text-secondary mb-4">
-            {Math.round(percentageScore)}%
+    /*
+      Results is three different shapes pretending to be one column: a score
+      that wants to be a hero, a job list that sits happily two-up, and a review
+      list several screens tall. Previously all three shared one narrow column
+      inside a 70vh scroller nested in the page scroller — two scrollbars, and
+      the score scrolled away the moment you began reading the review.
+
+      The score and actions now hold a sticky rail; the review gets the width.
+    */
+    <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 xl:gap-16 items-start">
+      <div className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24">
+        <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-5">
+          {passed ? t.passed : t.keepLearning}
+        </p>
+
+        {/* The score is the one display object in the quiz flow, so it is set at
+            display scale rather than boxed in a tinted panel. */}
+        <p className="font-display font-medium text-text-primary text-[clamp(3rem,9vw,6rem)] leading-[0.85] tracking-[-0.04em] tabular-nums">
+          {score}<span className="text-text-muted">/{totalQuestions}</span>
+        </p>
+        <p className="font-display text-text-secondary text-2xl tracking-[-0.02em] tabular-nums mt-4">
+          {Math.round(percentageScore)}%
+        </p>
+
+        <div className={`mt-6 border-l-2 pl-4 ${passed ? 'border-success' : 'border-warning'}`}>
+          <p className={`text-sm leading-relaxed ${passed ? 'text-success' : 'text-warning'}`}>
+            {passed ? t.passMessage : t.failMessage}
           </p>
-          <div
-            className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${
-              passed ? 'bg-success' : 'bg-warning'
-            }`}
+        </div>
+
+        <div className="flex flex-col gap-px mt-8">
+          <button
+            onClick={onRetake}
+            className="w-full bg-white text-[#16171b] px-6 py-4 font-display text-xs uppercase tracking-[0.15em] transition-colors hover:bg-white/85 focus:outline-none focus-visible:ring-1 focus-visible:ring-white"
           >
-            {passed ? t.passed : t.keepLearning}
-          </div>
+            {t.retake}
+          </button>
+          <button
+            onClick={onNewQuestions}
+            title={t.newQuestionsHint}
+            className="w-full border border-border-hover px-6 py-4 font-display text-xs uppercase tracking-[0.15em] text-text-primary transition-colors hover:bg-surface-hover hover:border-text-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-white"
+          >
+            {t.newQuestions}
+          </button>
+          <button
+            onClick={onClose}
+            className="w-full border border-border-subtle px-6 py-4 font-display text-xs uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-text-primary hover:border-border-hover focus:outline-none focus-visible:ring-1 focus-visible:ring-white"
+          >
+            {t.close}
+          </button>
         </div>
       </div>
 
-      {/* Pass/Fail Message */}
-      <div className={`p-4 mb-6 rounded-lg border ${passed ? 'bg-success/10 border-success/30' : 'bg-warning/10 border-warning/30'}`}>
-        <p className={`text-center font-medium ${passed ? 'text-success' : 'text-warning'}`}>
-          {passed ? t.passMessage : t.failMessage}
-        </p>
-      </div>
+      <div className="lg:col-span-8 xl:col-span-9 min-w-0">
 
       {/* Related Job Opportunities */}
       {qualifiesForJobs && (
@@ -146,30 +174,8 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
         </div>
       )}
 
-      {/* Questions Review */}
-      <QuizReviewList questions={questions} results={results} userAnswers={userAnswers} />
-
-      {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-border">
-        <button
-          onClick={onRetake}
-          className="flex-1 px-6 py-3 bg-accent text-bg-primary font-semibold rounded-lg hover:bg-accent-dark transition-colors duration-200"
-        >
-          {t.retake}
-        </button>
-        <button
-          onClick={onNewQuestions}
-          title={t.newQuestionsHint}
-          className="flex-1 px-6 py-3 bg-surface-secondary text-text-primary font-semibold rounded-lg border border-border hover:bg-surface-hover transition-colors duration-200"
-        >
-          {t.newQuestions}
-        </button>
-        <button
-          onClick={onClose}
-          className="flex-1 px-6 py-3 bg-surface-secondary text-text-primary font-semibold rounded-lg hover:bg-surface-hover transition-colors duration-200"
-        >
-          {t.close}
-        </button>
+        {/* Questions Review */}
+        <QuizReviewList questions={questions} results={results} userAnswers={userAnswers} />
       </div>
     </div>
   );
