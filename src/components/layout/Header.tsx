@@ -27,6 +27,14 @@ export const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-bg-primary border-b border-border sm:bg-transparent sm:border-b-0 sm:px-6 sm:pt-4">
+      {/* The desktop header is transparent so the pill reads as floating, which
+          left section headings scrolling visibly through it. This scrim fades
+          the strip the header occupies so passing content dims out instead of
+          colliding with the nav links. Mobile keeps its solid bar. */}
+      <div
+        aria-hidden="true"
+        className="hidden sm:block pointer-events-none absolute inset-x-0 top-0 h-24 -z-10 bg-gradient-to-b from-bg-primary via-bg-primary/85 to-transparent"
+      />
       <div className="sm:mx-auto sm:max-w-5xl sm:rounded-full sm:backdrop-blur-xl sm:backdrop-saturate-150 sm:shadow-lg sm:shadow-black/20 sm:bg-[rgba(22,23,27,0.65)]">
         <div className="flex items-center justify-between h-16 sm:h-14 px-4 sm:px-0 sm:pl-4 sm:pr-2">
           {/* Logo */}

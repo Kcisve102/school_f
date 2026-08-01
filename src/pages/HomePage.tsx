@@ -3,23 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import VideoGrid from '../components/video/VideoGrid';
-import GridShimmerBackground from '../components/common/GridShimmerBackground';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
-import {
-  ArrowRight,
-  Bot,
-  MessageSquare,
-  Play,
-  Wrench,
-  Shield,
-  Languages,
-  Heart,
-  Zap,
-  Search,
-} from 'lucide-react';
+import { ArrowRight, MessageSquare, Play, Search, Zap } from 'lucide-react';
 
+/**
+ * Home — generated under docs/design/DESIGN.md.
+ *
+ * Thesis: a technical instrument, not a brochure. The page carries one idea per
+ * screen, and the display-to-body scale gap (~8:1 at desktop) does the work that
+ * color and ornament would do elsewhere.
+ *
+ * Three rules this file follows that the previous version did not:
+ *   - radius 0 everywhere (the lock); no rounded-xl, no pill CTAs
+ *   - accent (#fff) is interactive-only — no glow, no tinted shadow, no fills
+ *   - density alternates deliberately; a uniform section rhythm is the failure
+ *     mode this thesis exists to avoid
+ */
 export const HomePage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,141 +50,142 @@ export const HomePage: React.FC = () => {
     return Math.round(totalSeconds / 60);
   }, [videos]);
 
-  const headline2Words = useMemo(() => {
-    const parts = t.headline2.trim().split(/\s+/);
-    return {
-      dim: parts.slice(0, -1).join(' '),
-      bright: parts[parts.length - 1] ?? '',
-    };
-  }, [t.headline2]);
-
-  const AI_CAPABILITIES = [
+  const capabilities = [
     {
       icon: MessageSquare,
       title: t.featureAsk,
-      description: language === 'en'
-        ? 'Ask anything about machine learning, AI tools, LLMs, or getting started with AI.'
-        : '随时提问机器学习、AI工具、大语言模型或AI入门方面的任何问题。',
+      description:
+        language === 'en'
+          ? 'Ask anything about machine learning, AI tools, LLMs, or getting started with AI.'
+          : '随时提问机器学习、AI工具、大语言模型或AI入门方面的任何问题。',
     },
-    {
-      icon: Search,
-      title: t.smartMatching,
-      description: t.smartMatchingDesc,
-    },
+    { icon: Search, title: t.smartMatching, description: t.smartMatchingDesc },
     {
       icon: Zap,
       title: t.featureAlways,
-      description: language === 'en'
-        ? "Get help anytime — whether you're a beginner or diving deeper into advanced AI topics."
-        : '无论是AI入门还是深入进阶，随时都能获得帮助。',
+      description:
+        language === 'en'
+          ? "Get help anytime — whether you're a beginner or diving deeper into advanced AI topics."
+          : '无论是AI入门还是深入进阶，随时都能获得帮助。',
     },
+  ];
+
+  const stats = [
+    { value: String(videos.length).padStart(2, '0'), label: t.stat1Label },
+    { value: String(totalVideoMinutes), label: t.stat2Label },
+    { value: '03', label: t.stat3Label },
   ];
 
   return (
     <div className="min-h-screen bg-page-gradient">
-      {/* Hero Section - Centered Content, plain dark canvas */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Content - Centered */}
-        <div className="relative z-10 w-full px-6 lg:px-12 xl:px-20 py-32 text-center">
-          <div className="max-w-4xl mx-auto">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-surface border border-border px-5 py-2.5 mb-8">
-              <Bot className="w-4 h-4 text-accent" />
-              <span className="text-xs font-mono uppercase tracking-widest text-text-secondary">{t.badge}</span>
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight text-text-primary mb-6 leading-[1.05]">
-              {t.headline1}
-              <span className="block mt-2">
-                <span className="text-text-secondary">{headline2Words.dim} </span>
-                <span className="text-text-primary">{headline2Words.bright}</span>
-              </span>
-            </h1>
-
-            {/* Subheadline */}
-            <p className="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
-              {t.subheadline}
+      {/*
+        HERO — the signature moment.
+        Hard left edge, oversized mono, wrapping where the viewport dictates.
+        Everything below is quiet so this one thing carries the page.
+      */}
+      <section className="relative border-b border-border-subtle">
+        <div className="px-6 lg:px-12 xl:px-20 pt-24 pb-16 sm:pt-40 sm:pb-28">
+          <div className="max-w-[1600px] mx-auto">
+            <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-10 sm:mb-16">
+              {t.badge}
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <button onClick={() => navigate('/chat')} className="group btn-primary inline-flex items-center gap-3">
-                {t.ctaChat}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-              <button onClick={() => navigate('/categories')} className="btn-secondary inline-flex items-center gap-2">
-                <Play className="w-4 h-4" />
-                {t.ctaBrowse}
-              </button>
-            </div>
+            <h1 className="font-display font-medium text-text-primary text-[clamp(2.5rem,11vw,9rem)] leading-[0.92] tracking-[-0.04em] max-w-[18ch]">
+              {t.headline1}
+            </h1>
 
-            {/* Feature Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
-              {[
-                { icon: MessageSquare, title: t.featureAsk, desc: t.featureAskDesc },
-                { icon: Play, title: t.featureVideo, desc: t.featureVideoDesc },
-                { icon: Zap, title: t.featureAlways, desc: t.featureAlwaysDesc },
-              ].map((feature, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-center gap-3 p-4 bg-surface border border-border"
+            {/* The second line sits deliberately out of the headline's optical
+                block — a grid break rather than a centered continuation. */}
+            <p className="font-display text-text-secondary text-[clamp(1rem,2.6vw,2rem)] leading-tight tracking-[-0.02em] mt-6 sm:mt-10 sm:ml-[8vw] max-w-[24ch]">
+              {t.headline2}
+            </p>
+
+            <div className="mt-12 sm:mt-20 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-end">
+              <p className="lg:col-span-5 text-base sm:text-lg text-text-secondary leading-relaxed max-w-[46ch]">
+                {t.subheadline}
+              </p>
+
+              <div className="lg:col-span-7 flex flex-col sm:flex-row gap-0 sm:gap-px lg:justify-end">
+                <button
+                  onClick={() => navigate('/chat')}
+                  className="group flex items-center justify-between sm:justify-center gap-6 bg-white text-[#16171b] px-8 py-5 font-display text-sm uppercase tracking-[0.09em] transition-colors hover:bg-white/85 focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#16171b]"
                 >
-                  <div className="w-12 h-12 bg-accent/10 flex items-center justify-center">
-                    <feature.icon className="w-6 h-6 text-accent" />
-                  </div>
-                  <div className="text-center">
-                    <div className="font-semibold text-text-primary">{feature.title}</div>
-                    <div className="text-sm text-text-secondary">{feature.desc}</div>
-                  </div>
-                </div>
-              ))}
+                  {t.ctaChat}
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </button>
+                <button
+                  onClick={() => navigate('/categories')}
+                  className="group flex items-center justify-between sm:justify-center gap-6 border border-border-hover px-8 py-5 font-display text-sm uppercase tracking-[0.09em] text-text-primary transition-colors hover:bg-surface-hover hover:border-text-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#16171b]"
+                >
+                  {t.ctaBrowse}
+                  <Play className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <div className="w-px h-12 bg-gradient-to-b from-accent to-transparent"></div>
+      {/*
+        STATS — the dense band. Deliberately tight against the hero's emptiness;
+        this contrast is the VISUAL_DENSITY: varied dial doing its job.
+      */}
+      <section className="border-b border-border-subtle">
+        <div className="px-6 lg:px-12 xl:px-20">
+          <div className="max-w-[1600px] mx-auto grid grid-cols-3 divide-x divide-border-subtle">
+            {stats.map((s) => (
+              <div key={s.label} className="py-8 sm:py-12 first:pl-0 px-4 sm:px-8">
+                <p className="font-display text-text-primary text-[clamp(1.75rem,5vw,3.5rem)] leading-none tracking-[-0.03em]">
+                  {s.value}
+                </p>
+                <p className="font-display text-[0.6875rem] uppercase tracking-[0.2em] text-text-muted mt-3">
+                  {s.label}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* AI Capabilities Section */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="relative px-6 lg:px-12 xl:px-20">
-          <div className="max-w-7xl mx-auto">
-            {/* Section Header */}
-            <div className="text-center max-w-3xl mx-auto mb-20 reveal-up">
-              <div className="inline-flex items-center gap-2 bg-surface-secondary px-4 py-2 mb-6 border border-border">
-                <Bot className="w-4 h-4 text-accent" />
-                <span className="text-xs font-mono uppercase tracking-widest text-text-secondary">{t.howItWorks}</span>
-              </div>
-              <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-text-primary mb-6">
+      {/*
+        CAPABILITIES — a numbered spec list, not a card grid.
+        Rows rather than three equal cards: the ban list prohibits the latter, and
+        rows also let each item's copy run to its natural length.
+      */}
+      <section className="border-b border-border-subtle">
+        <div className="px-6 lg:px-12 xl:px-20 py-20 sm:py-32">
+          <div className="max-w-[1600px] mx-auto">
+            {/* Eyebrow sits in the left margin; the heading holds the same hard
+                left edge as the hero. A col-span-9 heading with a max-width
+                floats mid-canvas and reads as centered, which breaks the
+                single-left-edge rhythm this thesis depends on. */}
+            <div className="mb-12 sm:mb-20 reveal-up">
+              <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-6">
+                {t.howItWorks}
+              </p>
+              <h2 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4.5vw,3.5rem)] leading-[1] tracking-[-0.03em] max-w-[20ch]">
                 {t.learningMadeSimple}
               </h2>
-              <p className="text-xl text-text-secondary">
-                {t.learningDesc}
-              </p>
             </div>
 
-            {/* Capabilities Grid */}
-            <div className="grid md:grid-cols-3 gap-8">
-              {AI_CAPABILITIES.map((capability, index) => (
+            <div className="border-t border-border-subtle">
+              {capabilities.map((c, i) => (
                 <div
-                  key={index}
-                  className={`group relative hover-lift reveal-up delay-${index + 1}`}
+                  key={c.title}
+                  className={`group grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-baseline border-b border-border-subtle py-8 sm:py-12 transition-colors hover:bg-surface/40 reveal-up ${['delay-1', 'delay-2', 'delay-3'][i] ?? ''}`}
                 >
-                  <div className="relative bg-surface border border-border p-8 transition-colors duration-300">
-                    <div className="w-14 h-14 bg-accent-subtle flex items-center justify-center mb-6">
-                      <capability.icon className="w-7 h-7 text-accent" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-text-primary mb-3">
-                      {capability.title}
-                    </h3>
-                    <p className="text-text-secondary leading-relaxed">
-                      {capability.description}
-                    </p>
+                  <p className="lg:col-span-1 font-display text-sm text-text-muted tabular-nums">
+                    {String(i + 1).padStart(2, '0')}
+                  </p>
+                  <div className="lg:col-span-1">
+                    <c.icon className="w-5 h-5 text-text-primary" strokeWidth={1.5} />
                   </div>
+                  <h3 className="lg:col-span-4 font-display text-text-primary text-xl sm:text-2xl tracking-[-0.02em]">
+                    {c.title}
+                  </h3>
+                  <p className="lg:col-span-6 text-text-secondary leading-relaxed max-w-[52ch]">
+                    {c.description}
+                  </p>
                 </div>
               ))}
             </div>
@@ -191,294 +193,28 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Visual Learning Section - Asymmetric Editorial Layout */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="relative px-6 lg:px-12 xl:px-20">
-          <div className="max-w-7xl mx-auto">
-            {/* Asymmetric Two Column Layout */}
-            <div className="grid lg:grid-cols-12 gap-12 items-center">
-
-              {/* Left Column - Large Typography */}
-              <div className="lg:col-span-7 reveal-left">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-12 h-px bg-text-muted"></div>
-                  <span className="text-xs font-mono text-text-muted uppercase tracking-widest">{t.videoLearningLabel}</span>
-                </div>
-
-                <h2 className="text-6xl md:text-7xl lg:text-8xl font-medium tracking-tight text-text-primary leading-[0.9] mb-8">
-                  {t.watchAnd}
-                  <span className="block">{t.learn}</span>
-                </h2>
-
-                <p className="text-xl text-text-secondary max-w-lg leading-relaxed mb-10">
-                  {t.watchDesc}
-                </p>
-
-                {/* Stats Row */}
-                <div className="flex gap-8">
-                  <div>
-                    <div className="text-4xl font-bold text-text-primary">{videos.length}+</div>
-                    <div className="text-sm text-text-secondary">{t.stat1Label}</div>
-                  </div>
-                  <div className="w-px bg-border"></div>
-                  <div>
-                    <div className="text-4xl font-bold text-text-primary">{totalVideoMinutes}+</div>
-                    <div className="text-sm text-text-secondary">{t.stat2Label}</div>
-                  </div>
-                  <div className="w-px bg-border"></div>
-                  <div>
-                    <div className="text-4xl font-bold text-text-primary">3</div>
-                    <div className="text-sm text-text-secondary">{t.stat3Label}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column - Flat Feature List */}
-              <div className="lg:col-span-5 reveal-right delay-2">
-                <div className="bg-surface border border-border">
-                  {[
-                    { icon: Search, title: t.smartMatching, desc: t.smartMatchingDesc },
-                    { icon: Play, title: t.stepByStep, desc: t.stepByStepDesc },
-                    { icon: Shield, title: t.safetyFocused, desc: t.safetyFocusedDesc },
-                  ].map((feature, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-4 px-6 py-5 border-b border-border"
-                    >
-                      <feature.icon className="w-4 h-4 text-text-secondary mt-1 flex-shrink-0" />
-                      <div>
-                        <h3 className="text-sm font-semibold text-text-primary mb-1">{feature.title}</h3>
-                        <p className="text-sm text-text-secondary">{feature.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-
-                  <button
-                    onClick={() => navigate('/categories')}
-                    className="w-full flex items-center justify-between px-6 py-5 text-sm font-medium text-text-primary hover:bg-surface-hover transition-colors"
-                  >
-                    {t.browseLibrary}
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Categories Section - Distinctive Bento Layout */}
-      <section className="relative py-32">
-        <div className="relative px-6 lg:px-12 xl:px-20">
-          <div className="max-w-7xl mx-auto">
-            {/* Section Header - Left aligned, editorial style */}
-            <div className="mb-16 reveal-up">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-px bg-accent"></div>
-                <span className="text-xs font-mono text-accent uppercase tracking-widest">{t.browseTopics}</span>
-              </div>
-              <div className="grid md:grid-cols-2 gap-8 items-end">
-                <h2 className="text-5xl md:text-6xl font-medium tracking-tight text-text-primary leading-tight">
-                  {t.skillsHeadline}
-                  <span className="block text-text-muted">{t.modernFactory}</span>
-                </h2>
-                <p className="text-lg text-text-secondary md:text-right md:pb-2">
-                  {t.skillsDesc}
-                </p>
-              </div>
-            </div>
-
-            {/* Asymmetrical Bento Grid */}
-            <div className="grid grid-cols-12 gap-4 md:gap-6">
-              {/* AI Skills - Large Feature Card */}
-              <button
-                onClick={() => navigate('/categories')}
-                className="group col-span-12 md:col-span-7 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-factory/30 transition-all duration-500 text-left reveal-up delay-1"
-              >
-                <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-factory/10 to-warning/5 rounded-full filter blur-3xl group-hover:blur-2xl transition-all duration-700 translate-x-1/2 -translate-y-1/2"></div>
-                <div className="relative p-8 md:p-12 min-h-[320px] flex flex-col justify-between">
-                  <div className="flex items-start justify-between">
-                    <div className="w-16 h-16 rounded-2xl bg-factory/10 border border-factory/20 flex items-center justify-center group-hover:bg-factory/20 transition-colors">
-                      <Wrench className="w-8 h-8 text-factory" />
-                    </div>
-                    <span className="text-7xl font-bold text-text-primary/5 group-hover:text-factory/10 transition-colors">01</span>
-                  </div>
-                  <div>
-                    <h3 className="text-3xl md:text-4xl font-bold text-text-primary mb-3 group-hover:text-factory transition-colors">{t.factorySkills}</h3>
-                    <p className="text-text-secondary text-lg max-w-md">
-                      {t.factorySkillsDesc}
-                    </p>
-                    <div className="mt-6 flex items-center gap-2 text-factory opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
-                      <span className="text-sm font-medium">{t.exploreSkills}</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              </button>
-
-              {/* Safety Guide - Tall Card */}
-              <button
-                onClick={() => navigate('/categories')}
-                className="group col-span-12 md:col-span-5 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-safety/30 transition-all duration-500 text-left reveal-up delay-2"
-              >
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-safety/10 to-success/5 rounded-full filter blur-3xl group-hover:blur-2xl transition-all duration-700 -translate-x-1/2 translate-y-1/2"></div>
-                <div className="relative p-8 md:p-10 min-h-[320px] flex flex-col justify-between">
-                  <div className="flex items-start justify-between">
-                    <div className="w-14 h-14 rounded-xl bg-safety/10 border border-safety/20 flex items-center justify-center group-hover:bg-safety/20 transition-colors">
-                      <Shield className="w-7 h-7 text-safety" />
-                    </div>
-                    <span className="text-6xl font-bold text-text-primary/5 group-hover:text-safety/10 transition-colors">02</span>
-                  </div>
-                  <div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-text-primary mb-3 group-hover:text-safety transition-colors">{t.safetyGuide}</h3>
-                    <p className="text-text-secondary">
-                      {t.safetyGuideDesc}
-                    </p>
-                    <div className="mt-4 flex items-center gap-2 text-safety opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-sm font-medium">{t.stayProtected}</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              </button>
-
-              {/* Language - Horizontal Card */}
-              <button
-                onClick={() => navigate('/categories')}
-                className="group col-span-12 md:col-span-5 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-language/30 transition-all duration-500 text-left reveal-up delay-3"
-              >
-                <div className="absolute top-1/2 right-0 w-48 h-48 bg-gradient-to-l from-language/10 to-info/5 rounded-full filter blur-3xl group-hover:blur-2xl transition-all duration-700 translate-x-1/2 -translate-y-1/2"></div>
-                <div className="relative p-8 md:p-10 min-h-[260px] flex flex-col md:flex-row gap-6 items-start md:items-center">
-                  <div className="w-14 h-14 rounded-xl bg-language/10 border border-language/20 flex items-center justify-center group-hover:bg-language/20 transition-colors flex-shrink-0">
-                    <Languages className="w-7 h-7 text-language" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-5xl font-bold text-text-primary/5 group-hover:text-language/10 transition-colors absolute top-6 right-6">03</span>
-                    <h3 className="text-2xl font-bold text-text-primary mb-2 group-hover:text-language transition-colors">{t.language}</h3>
-                    <p className="text-text-secondary text-sm">
-                      {t.languageDesc}
-                    </p>
-                    <div className="mt-3 flex items-center gap-2 text-language opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-sm font-medium">{t.learnMore}</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              </button>
-
-              {/* Health - Feature Card with Image Space */}
-              <button
-                onClick={() => navigate('/categories')}
-                className="group col-span-12 md:col-span-7 relative overflow-hidden rounded-3xl bg-surface border border-border hover:border-health/30 transition-all duration-500 text-left reveal-up delay-4"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-health/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative p-8 md:p-10 min-h-[260px] flex flex-col md:flex-row gap-8">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 rounded-xl bg-health/10 border border-health/20 flex items-center justify-center group-hover:bg-health/20 transition-colors">
-                        <Heart className="w-6 h-6 text-health" />
-                      </div>
-                      <span className="text-5xl font-bold text-text-primary/5 group-hover:text-health/10 transition-colors">04</span>
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-text-primary mb-3 group-hover:text-health transition-colors">{t.healthWellness}</h3>
-                    <p className="text-text-secondary mb-4">
-                      {t.healthDesc}
-                    </p>
-                    <div className="flex items-center gap-2 text-health opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-sm font-medium">{t.prioritizeHealth}</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  </div>
-                  {/* Decorative geometric element */}
-                  <div className="hidden md:flex w-32 h-32 items-center justify-center">
-                    <div className="relative w-full h-full">
-                      <div className="absolute inset-0 border-2 border-health/20 rounded-full group-hover:scale-110 group-hover:border-health/40 transition-all duration-500"></div>
-                      <div className="absolute inset-4 border border-health/10 rounded-full group-hover:scale-95 transition-all duration-500"></div>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Heart className="w-8 h-8 text-health/40 group-hover:text-health/60 transition-colors" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            </div>
-
-            {/* Bottom Note */}
-            <div className="mt-12 flex items-center justify-between border-t border-border pt-8">
-              <p className="text-text-muted text-sm">
-                {t.categoriesNote}
-              </p>
-              <button
-                onClick={() => navigate('/categories')}
-                className="group inline-flex items-center gap-3 px-6 py-3 bg-surface border border-border rounded-xl hover:border-accent transition-all"
-              >
-                <span className="font-medium text-text-primary">{t.viewAllCategories}</span>
-                <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-colors">
-                  <ArrowRight className="w-4 h-4 text-accent group-hover:text-bg-primary transition-colors" />
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Showcase */}
-      <section className="relative py-32 overflow-hidden">
-        <GridShimmerBackground cellSize={120} rows={6} litRows={3} />
-        <div className="relative z-10 px-6 lg:px-12 xl:px-20">
-          <div className="max-w-7xl mx-auto">
-            <div className="max-w-2xl reveal-left">
-              <div className="inline-flex items-center gap-2 bg-surface-secondary px-4 py-2 mb-6 border border-border">
-                <Zap className="w-4 h-4 text-success" />
-                <span className="text-xs font-mono uppercase tracking-widest text-text-secondary">{t.advancedLogistics}</span>
-              </div>
-              <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-text-primary mb-6">
-                {t.masterModern}
-                <span className="block text-success">{t.factoryOps}</span>
-              </h2>
-              <p className="text-xl text-text-secondary mb-10 leading-relaxed">
-                {t.factoryOpsDesc}
-              </p>
-              <div className="flex flex-wrap gap-4">
-                {t.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-4 py-2 bg-surface-secondary border border-border rounded-full text-sm text-text-secondary"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Latest Videos Section */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="relative px-6 lg:px-12 xl:px-20">
-          <div className="max-w-7xl mx-auto">
-            {/* Section Header with accent line */}
-            <div className="flex items-center gap-4 mb-4 reveal-up">
-              <div className="w-16 h-px bg-accent"></div>
-              <span className="text-xs font-mono text-accent uppercase tracking-widest">{t.videoLibraryLabel}</span>
-            </div>
-
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4 reveal-up delay-1">
+      {/*
+        LIBRARY — asymmetric header, then the existing grid untouched.
+        VideoGrid is out of scope for this override.
+      */}
+      <section className="border-b border-border-subtle">
+        <div className="px-6 lg:px-12 xl:px-20 py-20 sm:py-32">
+          <div className="max-w-[1600px] mx-auto">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 sm:mb-16 reveal-up">
               <div>
-                <h2 className="text-5xl md:text-6xl font-medium tracking-tight text-text-primary mb-4">{t.latestVideos}</h2>
-                <p className="text-xl text-text-secondary max-w-xl">
-                  {t.latestVideosDesc}
+                <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-6">
+                  {t.videoLibraryLabel}
                 </p>
+                <h2 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4.5vw,3.5rem)] leading-[1] tracking-[-0.03em]">
+                  {t.latestVideos}
+                </h2>
               </div>
               <button
                 onClick={() => navigate('/categories')}
-                className="group inline-flex items-center gap-3 px-6 py-3 bg-surface border border-border rounded-xl hover:border-accent transition-all"
+                className="group inline-flex items-center gap-4 self-start sm:self-auto border-b border-border-hover pb-2 font-display text-xs uppercase tracking-[0.15em] text-text-primary transition-colors hover:border-text-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-white"
               >
-                <span className="font-medium text-text-primary">{t.viewAllVideos}</span>
-                <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-colors">
-                  <ArrowRight className="w-4 h-4 text-accent group-hover:text-bg-primary transition-colors" />
-                </div>
+                {t.viewAllVideos}
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
               </button>
             </div>
 
@@ -487,28 +223,27 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="relative px-6 lg:px-12 xl:px-20">
-          <div className="max-w-4xl mx-auto text-center reveal-scale">
-            <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+      {/*
+        CLOSE — near-empty by design. The page ends on the same emptiness it
+        opened with, so the dense middle reads as deliberate rather than uneven.
+      */}
+      <section>
+        <div className="px-6 lg:px-12 xl:px-20 py-24 sm:py-40">
+          <div className="max-w-[1600px] mx-auto">
+            <h2 className="font-display font-medium text-text-primary text-[clamp(1.75rem,6vw,4.5rem)] leading-[0.95] tracking-[-0.03em] max-w-[16ch] reveal-up">
               {t.ctaHeadline}
             </h2>
-            <p className="text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
-              {t.ctaDesc}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="mt-10 sm:mt-16 flex flex-col sm:flex-row gap-0 sm:gap-px reveal-up delay-1">
               <button
                 onClick={() => navigate('/chat')}
-                className="group inline-flex items-center justify-center gap-3 bg-accent text-bg-primary px-10 py-5 rounded-xl font-semibold text-lg hover:bg-accent-dark transition-all duration-300 shadow-xl shadow-accent/25 hover:shadow-accent/35"
+                className="group flex items-center justify-between sm:justify-center gap-6 bg-white text-[#16171b] px-8 py-5 font-display text-sm uppercase tracking-[0.09em] transition-colors hover:bg-white/85 focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#16171b]"
               >
-                <Bot className="w-5 h-5" />
                 {t.ctaChat}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
               </button>
               <button
                 onClick={() => navigate('/signup')}
-                className="inline-flex items-center justify-center gap-2 bg-surface-secondary hover:bg-surface-hover text-text-primary px-10 py-5 rounded-xl font-medium text-lg border border-border hover:border-accent/30 transition-all duration-300"
+                className="flex items-center justify-between sm:justify-center gap-6 border border-border-hover px-8 py-5 font-display text-sm uppercase tracking-[0.09em] text-text-primary transition-colors hover:bg-surface-hover hover:border-text-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#16171b]"
               >
                 {t.createAccount}
               </button>
