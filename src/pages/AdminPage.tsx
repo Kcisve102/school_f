@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import { useAuth } from '../hooks/useAuth';
-import VideoUploadForm from '../components/admin/VideoUploadForm';
-import VideoLinkForm from '../components/admin/VideoLinkForm';
 import VideoList from '../components/admin/VideoList';
 import VideoEditModal from '../components/video/VideoEditModal';
 import {
@@ -18,7 +16,6 @@ import {
 export const AdminPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'upload' | 'link'>('upload');
   const [editingVideo, setEditingVideo] = useState<Video | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -38,7 +35,6 @@ export const AdminPage: React.FC = () => {
     fetchVideos();
   }, []);
 
-  const handleUploadSuccess = () => fetchVideos();
   const handleEditSuccess = () => fetchVideos();
 
   const totalVideos = videos.length;
@@ -166,65 +162,34 @@ export const AdminPage: React.FC = () => {
               ))}
             </div>
 
-            {/*
-              Table-first. The video table is the only wide, dense object in the
-              app — 7 columns that want every pixel — while the upload form is a
-              narrow column of four fields. Previously the form sat above it in a
-              two-column grid holding a single child, so half the width was empty
-              and the table was pushed below the fold.
-
-              The form now occupies a fixed side rail and the table takes the rest.
-            */}
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 xl:gap-12 items-start">
-              <div className="xl:col-span-8 2xl:col-span-9 order-2 xl:order-1">
-                <h3 className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-6">
+            {/* Upload moved to /admin/upload. It is a distinct task with its own
+                processing feedback, and it was competing with the table for width
+                on a page whose job is managing what already exists. */}
+            <div>
+              <div className="flex items-end justify-between gap-6 mb-6">
+                <h3 className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted">
                   Manage videos
                 </h3>
-                {loading ? (
-                  <div className="py-12">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
-                    <p className="text-text-secondary mt-4 text-sm">Loading videos...</p>
-                  </div>
-                ) : (
-                  <VideoList
-                    videos={videos}
-                    onVideoDeleted={fetchVideos}
-                    onVideoEdit={setEditingVideo}
-                  />
-                )}
-              </div>
-
-              <div className="xl:col-span-4 2xl:col-span-3 order-1 xl:order-2 xl:sticky xl:top-24 border border-border">
-                <h3 className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted px-5 py-4 border-b border-border-subtle flex items-center gap-2">
+                <button
+                  onClick={() => navigate('/admin/upload')}
+                  className="group inline-flex items-center gap-3 bg-white text-[#16171b] px-6 py-3 font-display text-xs uppercase tracking-[0.15em] transition-colors hover:bg-white/85 focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#16171b]"
+                >
                   <Upload className="w-3.5 h-3.5" />
                   Upload video
-                </h3>
-                <div className="flex border-b border-border-subtle">
-                  {([
-                    ['upload', 'File'],
-                    ['link', 'URL'],
-                  ] as const).map(([tab, label]) => (
-                    <button
-                      key={tab}
-                      className={`flex-1 px-4 py-3 font-display text-xs uppercase tracking-[0.15em] transition-colors ${
-                        activeTab === tab
-                          ? 'bg-surface-hover text-text-primary'
-                          : 'text-text-muted hover:text-text-primary'
-                      }`}
-                      onClick={() => setActiveTab(tab)}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-                <div className="p-5">
-                  {activeTab === 'upload' ? (
-                    <VideoUploadForm onSuccess={handleUploadSuccess} />
-                  ) : (
-                    <VideoLinkForm onSuccess={handleUploadSuccess} />
-                  )}
-                </div>
+                </button>
               </div>
+              {loading ? (
+                <div className="py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+                  <p className="text-text-secondary mt-4 text-sm">Loading videos...</p>
+                </div>
+              ) : (
+                <VideoList
+                  videos={videos}
+                  onVideoDeleted={fetchVideos}
+                  onVideoEdit={setEditingVideo}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@ import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import AdminPage from './pages/AdminPage';
+import UploadPage from './pages/UploadPage';
 import VideoDetailPage from './pages/VideoDetailPage';
 import CategoriesPage from './pages/CategoriesPage';
 import DashboardPage from './pages/DashboardPage';
@@ -64,6 +65,14 @@ function AppContent() {
             element={
               <ProtectedRoute requireAdmin={true}>
                 <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/upload"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <UploadPage />
               </ProtectedRoute>
             }
           />
