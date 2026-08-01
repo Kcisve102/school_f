@@ -173,9 +173,9 @@ export const CategoriesPage: React.FC = () => {
               </p>
             </div>
           ) : viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6">
-              {filteredVideos.map((video) => (
-                <VideoCard key={video.id} video={video} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-5 gap-y-8 lg:gap-x-6 lg:gap-y-12">
+              {filteredVideos.map((video, i) => (
+                <VideoCard key={video.id} video={video} index={i} />
               ))}
             </div>
           ) : (
@@ -193,6 +193,12 @@ export const CategoriesPage: React.FC = () => {
                       className="w-full h-full object-cover"
                       muted
                       playsInline
+                      onLoadedMetadata={(e) => {
+                        const el = e.target as HTMLVideoElement;
+                        if (el.duration && isFinite(el.duration)) {
+                          el.currentTime = Math.min(1, el.duration * 0.1);
+                        }
+                      }}
                       onError={(e) => {
                         const target = e.target as HTMLVideoElement;
                         target.style.display = 'none';

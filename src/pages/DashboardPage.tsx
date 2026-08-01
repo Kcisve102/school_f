@@ -146,9 +146,9 @@ export const DashboardPage: React.FC = () => {
                       </button>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-                      {videos.slice(0, 4).map((video) => (
-                        <VideoCard key={video.id} video={video} />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-8 lg:gap-x-6 lg:gap-y-10">
+                      {videos.slice(0, 4).map((video, i) => (
+                        <VideoCard key={video.id} video={video} index={i} />
                       ))}
                     </div>
                   )}

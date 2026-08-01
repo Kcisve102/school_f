@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { Play, AlertCircle } from 'lucide-react';
 import { Video } from '../../types';
 import { formatDuration, formatDate } from '../../utils/helpers';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -9,103 +9,127 @@ import { translations } from '../../translations';
 interface VideoCardProps {
   video: Video;
   compact?: boolean;
+  /** Position in the grid. Renders as a hairline ordinal in the meta row. */
+  index?: number;
 }
 
-export const VideoCard: React.FC<VideoCardProps> = ({ video, compact }) => {
+/**
+ * The card is not a panel. The thumbnail is the object; the text sits under it
+ * on the page surface with no border, fill, or padding box of its own. A grid of
+ * bordered, filled rectangles reads as a template regardless of what is inside
+ * them, and the thumbnails already supply every edge the layout needs.
+ *
+ * Status appears only when it is not `ready`. When every item in a library
+ * carries the same green pill, the pill has stopped being information and is
+ * just noise repeated once per card.
+ */
+export const VideoCard: React.FC<VideoCardProps> = ({ video, compact, index }) => {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const t = translations[language].videoCard;
 
-  const getStatusBadge = () => {
-    if (video.transcription_status === 'completed' && video.summary_status === 'completed') {
-      return (
-        <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-success bg-success/10 rounded-full border border-success/20">
-          <CheckCircle className="w-3 h-3 mr-1" />
-          {t.ready}
-        </span>
-      );
-    }
-
-    if (
-      video.transcription_status === 'processing' ||
-      video.summary_status === 'processing'
-    ) {
-      return (
-        <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-info bg-info/10 rounded-full border border-info/20">
-          {t.processing}
-        </span>
-      );
-    }
-
-    if (
-      video.transcription_status === 'failed' ||
-      video.summary_status === 'failed'
-    ) {
-      return (
-        <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-error bg-error/10 rounded-full border border-error/20">
-          <AlertCircle className="w-3 h-3 mr-1" />
-          {t.failed}
-        </span>
-      );
-    }
-
-    return null;
-  };
+  const isProcessing =
+    video.transcription_status === 'processing' || video.summary_status === 'processing';
+  const isFailed =
+    video.transcription_status === 'failed' || video.summary_status === 'failed';
 
   return (
-    <div
+    <button
+      type="button"
       onClick={() => navigate(`/video/${video.id}`)}
-      className={`h-full flex flex-col bg-surface rounded-xl border border-border cursor-pointer hover:bg-surface-secondary hover:border-border-hover transition-all duration-300 hover:shadow-lg ${compact ? 'p-2 md:p-5' : 'p-5'}`}
+      className="group w-full text-left flex flex-col focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#16171b]"
     >
-      <div className={`relative bg-surface-secondary rounded-lg aspect-video flex items-center justify-center overflow-hidden group ${compact ? 'mb-2 md:mb-4' : 'mb-4'}`}>
-        {/* Video thumbnail - shows first frame */}
+      {/* Thumbnail — the only filled surface in the card, and the only thing that
+          moves on hover. A 1px lift rather than a scale, so the grid's baseline
+          stays legible while a card is being pointed at. */}
+      <div className="relative aspect-video w-full overflow-hidden bg-surface-secondary transition-transform duration-300 ease-out group-hover:-translate-y-1">
+        {/* Seeked a little past the start once metadata lands. Most of these
+            videos open on a fade from black, so frame 0 is an empty rectangle —
+            a second in, there is actually something to look at. */}
         <video
           src={video.s3_url}
           preload="metadata"
           className="w-full h-full object-cover"
           muted
           playsInline
+          onLoadedMetadata={(e) => {
+            const el = e.target as HTMLVideoElement;
+            if (el.duration && isFinite(el.duration)) {
+              el.currentTime = Math.min(1, el.duration * 0.1);
+            }
+          }}
           onError={(e) => {
-            const target = e.target as HTMLVideoElement;
-            target.style.display = 'none';
+            (e.target as HTMLVideoElement).style.display = 'none';
           }}
         />
 
-        {/* Sits behind the thumbnail so a video that fails to load leaves a flat
-            surface rather than a hole. Was an accent-to-info gradient, which used
-            the accent decoratively. */}
-        <div className="absolute inset-0 -z-10 bg-surface-secondary pointer-events-none"></div>
+        {/* Drawn as an overlay so it sits above the video rather than being
+            painted over by object-cover. */}
+        <div className="absolute inset-0 border border-border-subtle pointer-events-none transition-colors duration-300 group-hover:border-white/25" />
 
-        {/* Play icon overlay */}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">
-          <Play className={`text-white opacity-90 group-hover:scale-110 transition-transform ${compact ? 'w-7 h-7 md:w-12 md:h-12' : 'w-12 h-12'}`} />
+        {/* Dimmed until hover — twenty simultaneous white triangles competed with
+            the thumbnails they were sitting on. */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          <Play
+            className={`text-white ${compact ? 'w-6 h-6 md:w-8 md:h-8' : 'w-8 h-8'}`}
+            strokeWidth={1.25}
+          />
         </div>
 
         {video.duration && (
-          <span className="absolute bottom-2 right-2 bg-black/75 text-white text-xs px-2 py-1 rounded z-10">
+          <span className="absolute bottom-0 right-0 bg-black/80 text-white font-display text-[0.6875rem] tabular-nums tracking-[0.05em] px-2 py-1">
             {formatDuration(video.duration)}
           </span>
         )}
+
+        {/* Non-ready states cover the frame rather than perching on it — an item
+            still processing is not yet a watchable item. */}
+        {(isProcessing || isFailed) && (
+          <div className="absolute inset-0 bg-[#16171b]/75 flex items-end p-3">
+            <span
+              className={`inline-flex items-center gap-1.5 font-display text-[0.6875rem] uppercase tracking-[0.15em] ${
+                isFailed ? 'text-error' : 'text-text-secondary'
+              }`}
+            >
+              {isFailed && <AlertCircle className="w-3 h-3" strokeWidth={1.5} />}
+              {isFailed ? t.failed : t.processing}
+              {isProcessing && (
+                <span className="ml-1 inline-block w-1 h-1 bg-text-secondary animate-pulse" />
+              )}
+            </span>
+          </div>
+        )}
       </div>
 
-      <div className={`flex items-start justify-between ${compact ? 'md:mb-2' : 'mb-2'}`}>
-        <h3 className={`font-semibold text-text-primary line-clamp-1 flex-1 ${compact ? 'text-xs md:text-base' : ''}`}>
-          {video.title}
-        </h3>
-        {compact ? <span className="hidden md:inline">{getStatusBadge()}</span> : getStatusBadge()}
+      {/* Ordinal and date share one hairline row above the title, so the title
+          gets a clean left edge with nothing competing beside it. */}
+      <div
+        className={`flex items-baseline gap-3 border-b border-border-subtle pb-1.5 ${
+          compact ? 'mt-2.5 md:mt-4' : 'mt-4'
+        }`}
+      >
+        {typeof index === 'number' && (
+          <span className="font-display text-[0.625rem] text-text-muted tabular-nums tracking-[0.1em]">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+        )}
+        <span
+          className={`font-display text-[0.625rem] uppercase tracking-[0.15em] text-text-muted ml-auto ${
+            compact ? 'hidden md:block' : ''
+          }`}
+        >
+          {formatDate(video.created_at)}
+        </span>
       </div>
 
-      {video.description && (
-        <p className={`text-sm text-text-secondary line-clamp-1 mb-3 ${compact ? 'hidden md:block' : ''}`}>
-          {video.description}
-        </p>
-      )}
-
-      <div className={`flex items-center text-xs text-text-muted mt-2 ${compact ? 'hidden md:flex' : ''}`}>
-        <Clock className="w-3 h-3 mr-1" />
-        {formatDate(video.created_at)}
-      </div>
-    </div>
+      <h3
+        className={`font-display font-medium text-text-primary tracking-[-0.01em] leading-snug line-clamp-2 mt-2.5 transition-colors group-hover:text-white ${
+          compact ? 'text-xs md:text-[0.9375rem]' : 'text-[0.9375rem]'
+        }`}
+      >
+        {video.title}
+      </h3>
+    </button>
   );
 };
 
