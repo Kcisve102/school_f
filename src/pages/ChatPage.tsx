@@ -144,6 +144,21 @@ export const ChatPage: React.FC = () => {
     inputRef.current?.focus();
   }, []);
 
+  // The conversation is persisted, so restore it instead of starting blank
+  // after every refresh.
+  useEffect(() => {
+    let cancelled = false;
+    chatService
+      .getThread()
+      .then((thread) => {
+        if (!cancelled) setMessages(thread);
+      })
+      .catch((err) => console.error('Failed to load chat thread:', err));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const handleScroll = () => {
     const el = scrollContainerRef.current;
     if (!el) return;
@@ -162,7 +177,8 @@ export const ChatPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await chatService.sendMessage(text, messages);
+      // History now lives server-side, keyed on the session user.
+      const response = await chatService.sendMessage(text);
       setMessages((prev) => [...prev, { role: 'assistant', content: response.response }]);
     } catch {
       toast.error(t.sendFailed);
@@ -183,8 +199,14 @@ export const ChatPage: React.FC = () => {
     }
   };
 
-  const handleClear = () => {
+  const handleClear = async () => {
     setMessages([]);
+    // Also clear it server-side, or the conversation returns on next load.
+    try {
+      await chatService.clearThread();
+    } catch (err) {
+      console.error('Failed to clear chat thread:', err);
+    }
     toast.success(t.chatCleared);
     setTimeout(() => inputRef.current?.focus(), 50);
   };

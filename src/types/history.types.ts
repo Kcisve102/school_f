@@ -14,6 +14,8 @@ export interface QuizAttemptSummary {
 export interface WatchHistoryItem {
   video: Video;
   watchedAt: string | null;
+  positionSeconds: number;
+  completed: boolean;
   attempts: QuizAttemptSummary[];
 }
 

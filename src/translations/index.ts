@@ -192,6 +192,15 @@ export const translations = {
     summary: {
       heading: 'Summary',
       keyPoints: 'Key Points',
+      chapters: 'Chapters',
+    },
+    lessonChat: {
+      heading: 'Ask about this lesson',
+      placeholder: 'Ask a question about this video...',
+      emptyState: 'Ask anything about this lesson and the assistant will answer from the transcript.',
+      thinking: 'Thinking...',
+      send: 'Send',
+      failed: 'Could not get an answer. Please try again.',
     },
     quiz: {
       title: 'Video Quiz',
@@ -210,6 +219,8 @@ export const translations = {
       passMessage: 'Great job! You have a good understanding of the video content.',
       failMessage: 'Not quite there yet. Review the explanations below and try again!',
       retake: 'Retake Quiz',
+      newQuestions: 'New Questions',
+      newQuestionsHint: 'Generate a fresh set of questions for this video',
       close: 'Close',
       pleaseAnswerAll: 'Please answer all questions before submitting',
       failedToGenerate: 'Failed to generate quiz. Please try again.',
@@ -219,6 +230,7 @@ export const translations = {
       correct: 'Correct!',
       incorrect: 'Incorrect',
       correctAnswer: 'Correct answer:',
+      yourAnswer: 'your answer',
       relatedJobs: 'Related Job Opportunities',
       findRelatedJobs: 'Find Related Jobs',
       findingJobs: 'Finding relevant jobs...',
@@ -490,6 +502,15 @@ export const translations = {
     summary: {
       heading: '摘要',
       keyPoints: '关键要点',
+      chapters: '课程章节',
+    },
+    lessonChat: {
+      heading: '课程答疑',
+      placeholder: '就这节课提问…',
+      emptyState: '有任何不懂的地方都可以提问，助教会根据本课字幕内容作答。',
+      thinking: '正在思考…',
+      send: '发送',
+      failed: '暂时无法获取回答，请稍后再试。',
     },
     quiz: {
       title: '视频测验',
@@ -508,6 +529,8 @@ export const translations = {
       passMessage: '做得很好！您对视频内容有良好的理解。',
       failMessage: '还差一点！请查看下方解析并再试一次！',
       retake: '重新测验',
+      newQuestions: '换一批题目',
+      newQuestionsHint: '为本视频生成一组全新的题目',
       close: '关闭',
       pleaseAnswerAll: '请回答所有问题后再提交',
       failedToGenerate: '测验生成失败，请重试。',
@@ -517,6 +540,7 @@ export const translations = {
       correct: '回答正确！',
       incorrect: '回答错误',
       correctAnswer: '正确答案：',
+      yourAnswer: '你的答案',
       relatedJobs: '相关职位推荐',
       findRelatedJobs: '查找相关职位',
       findingJobs: '正在查找相关职位...',
@@ -788,6 +812,17 @@ export const translations = {
     summary: {
       heading: 'སྙིང་བསྡུས།',
       keyPoints: 'གནད་དོན་གཙོ་བོ།',
+      // English fallback: awaiting native-speaker translation.
+      chapters: 'Chapters',
+    },
+    // English fallbacks: awaiting native-speaker translation.
+    lessonChat: {
+      heading: 'Ask about this lesson',
+      placeholder: 'Ask a question about this video...',
+      emptyState: 'Ask anything about this lesson and the assistant will answer from the transcript.',
+      thinking: 'Thinking...',
+      send: 'Send',
+      failed: 'Could not get an answer. Please try again.',
     },
     quiz: {
       title: 'བརྙན་འཕྲིན་རྒྱུགས་སྤྲོད།',
@@ -806,6 +841,9 @@ export const translations = {
       passMessage: 'ལེགས་སོ། ཁྱེད་ཀྱིས་བརྙན་འཕྲིན་ནང་དོན་ལེགས་པར་གོ་རྟོགས་བྱུང་འདུག',
       failMessage: 'ད་དུང་མ་ཐོན། འོག་གི་འགྲེལ་བཤད་ལ་བལྟས་ནས་ཡང་བསྐྱར་ཐེངས།',
       retake: 'རྒྱུགས་སྤྲོད་ཡང་བསྐྱར།',
+      // English fallbacks: awaiting native-speaker translation.
+      newQuestions: 'New Questions',
+      newQuestionsHint: 'Generate a fresh set of questions for this video',
       close: 'ཁ་རྒྱག',
       pleaseAnswerAll: 'ཕུལ་བའི་སྔོན་དུ་དྲི་བ་ཡོངས་ལ་ལན་འདེབས་གནང་རོགས།',
       failedToGenerate: 'རྒྱུགས་སྤྲོད་བཟོ་མ་ཐུབ། ཡང་བསྐྱར་གནང་རོགས།',
@@ -815,6 +853,8 @@ export const translations = {
       correct: 'ལེགས་སོ།',
       incorrect: 'ནོར་འདུག',
       correctAnswer: 'ལན་ཚིག་ཏག་ཏག:',
+      // English fallback: awaiting a native-speaker translation.
+      yourAnswer: 'your answer',
       relatedJobs: 'འབྲེལ་ཡོད་ལས་གནས་སྐབས།',
       findRelatedJobs: 'འབྲེལ་ཡོད་ལས་གནས་འཚོལ།',
       findingJobs: 'འབྲེལ་ཡོད་ལས་གནས་འཚོལ་བཞིན...',

@@ -36,11 +36,19 @@ export interface Transcription {
   created_at: string;
 }
 
+/** A chapter marker: where a topic starts, in seconds. */
+export interface SummarySection {
+  start: number;
+  title: string;
+}
+
 export interface Summary {
   id: number;
   video_id: number;
   summary_text: string;
   key_points: string[];
+  /** Null for summaries generated before chapter markers were added. */
+  sections: SummarySection[] | null;
   created_at: string;
 }
 

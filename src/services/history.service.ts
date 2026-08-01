@@ -9,8 +9,25 @@ import {
 } from '../types';
 
 export const historyService = {
-  recordWatch: async (videoId: number): Promise<void> => {
-    await api.post<ApiResponse>('/history/watch', { videoId });
+  recordWatch: async (
+    videoId: number,
+    positionSeconds?: number,
+    completed?: boolean
+  ): Promise<void> => {
+    await api.post<ApiResponse>('/history/watch', {
+      videoId,
+      positionSeconds,
+      completed,
+    });
+  },
+
+  getWatchProgress: async (
+    videoId: number
+  ): Promise<{ positionSeconds: number; completed: boolean }> => {
+    const response = await api.get<
+      ApiResponse<{ positionSeconds: number; completed: boolean }>
+    >(`/history/watch/${videoId}`);
+    return response.data.data!;
   },
 
   /**

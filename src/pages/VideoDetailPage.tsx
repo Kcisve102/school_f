@@ -3,15 +3,20 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Video, Transcription, Summary } from '../types';
 import { videoService } from '../services/video.service';
 import historyService from '../services/history.service';
+import wsService from '../services/websocket.service';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import VideoPlayer, { VideoPlayerHandle } from '../components/video/VideoPlayer';
 import TranscriptDisplay from '../components/video/TranscriptDisplay';
 import SummaryPanel from '../components/video/SummaryPanel';
+import LessonChatPanel from '../components/video/LessonChatPanel';
 import Loader from '../components/common/Loader';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 import { formatDate } from '../utils/helpers';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
+
+/** How often playback position is written back to the server. */
+const SAVE_INTERVAL_MS = 10000;
 
 export const VideoDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,9 +28,16 @@ export const VideoDetailPage: React.FC = () => {
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
   const [refreshingUrl, setRefreshingUrl] = useState(false);
-  // Position to seek back to after a URL refresh; consumed once on ready.
+  // Position to seek back to once the player is ready. Serves both the resume
+  // point loaded from the server and the position captured before a presigned
+  // URL refresh; consumed once on ready.
   const resumeAtRef = useRef<number | null>(null);
   const playerRef = useRef<VideoPlayerHandle>(null);
+  // Latest playback position, kept in a ref so the save timer can read it
+  // without re-subscribing every second as `currentTime` changes.
+  const positionRef = useRef(0);
+  const savedPositionRef = useRef(0);
+  const completedRef = useRef(false);
   const { language } = useLanguage();
   const t = translations[language].videoDetail;
 
@@ -56,6 +68,19 @@ export const VideoDetailPage: React.FC = () => {
             console.error('Failed to fetch summary:', err);
           }
         }
+
+        // Pick up where they left off. A finished video restarts from the
+        // beginning rather than dropping them back on the closing frame.
+        try {
+          const progress = await historyService.getWatchProgress(parseInt(id));
+          completedRef.current = progress.completed;
+          if (!progress.completed && progress.positionSeconds > 0) {
+            resumeAtRef.current = progress.positionSeconds;
+            savedPositionRef.current = progress.positionSeconds;
+          }
+        } catch (err) {
+          console.error('Failed to fetch watch progress:', err);
+        }
       } catch (err: any) {
         setError(err.response?.data?.error || 'Failed to load video');
       } finally {
@@ -64,6 +89,126 @@ export const VideoDetailPage: React.FC = () => {
     };
 
     fetchVideoData();
+  }, [id]);
+
+  /**
+   * The server already broadcasts processing events, but until now only the
+   * admin upload form listened — so a learner who opened a still-processing
+   * video sat on "in progress" until they manually refreshed. Subscribe while
+   * anything is pending and fold the results in as they land.
+   *
+   * Events are global broadcasts, so every handler must filter by videoId.
+   * (`video:compression:progress` carries no videoId and so can't be attributed
+   * to a video; it is deliberately ignored here.)
+   */
+  useEffect(() => {
+    if (!id || !video) return;
+
+    const videoIdNum = parseInt(id);
+    // `pending` counts as in-flight, not idle. Summarization only starts once
+    // transcription finishes, so unsubscribing the moment the transcript lands
+    // would miss the summary events that follow.
+    const inFlight = (status: string) =>
+      status === 'processing' || status === 'pending';
+    if (
+      !inFlight(video.transcription_status) &&
+      !inFlight(video.summary_status)
+    ) {
+      return;
+    }
+
+    const socket = wsService.connect();
+    const isThisVideo = (payload: { videoId?: number }) =>
+      payload?.videoId === videoIdNum;
+
+    const onTranscriptionComplete = async (payload: { videoId: number }) => {
+      if (!isThisVideo(payload)) return;
+      setVideo((prev) =>
+        prev ? { ...prev, transcription_status: 'completed' } : prev
+      );
+      try {
+        setTranscription(await videoService.getTranscript(videoIdNum));
+      } catch (err) {
+        console.error('Failed to fetch transcript after completion:', err);
+      }
+    };
+
+    const onTranscriptionFailed = (payload: { videoId: number }) => {
+      if (!isThisVideo(payload)) return;
+      setVideo((prev) =>
+        prev ? { ...prev, transcription_status: 'failed' } : prev
+      );
+    };
+
+    const onSummaryComplete = async (payload: { videoId: number }) => {
+      if (!isThisVideo(payload)) return;
+      setVideo((prev) => (prev ? { ...prev, summary_status: 'completed' } : prev));
+      try {
+        setSummary(await videoService.getSummary(videoIdNum));
+      } catch (err) {
+        console.error('Failed to fetch summary after completion:', err);
+      }
+    };
+
+    const onSummaryFailed = (payload: { videoId: number }) => {
+      if (!isThisVideo(payload)) return;
+      setVideo((prev) => (prev ? { ...prev, summary_status: 'failed' } : prev));
+    };
+
+    const onSummaryProgress = (payload: { videoId: number }) => {
+      if (!isThisVideo(payload)) return;
+      // Return the same object when nothing changed so React can bail out —
+      // otherwise this effect (which depends on the status) resubscribes on
+      // every progress tick.
+      setVideo((prev) =>
+        prev && prev.summary_status !== 'processing'
+          ? { ...prev, summary_status: 'processing' }
+          : prev
+      );
+    };
+
+    socket.on('video:transcription:complete', onTranscriptionComplete);
+    socket.on('video:transcription:failed', onTranscriptionFailed);
+    socket.on('video:summary:progress', onSummaryProgress);
+    socket.on('video:summary:complete', onSummaryComplete);
+    socket.on('video:summary:failed', onSummaryFailed);
+
+    return () => {
+      socket.off('video:transcription:complete', onTranscriptionComplete);
+      socket.off('video:transcription:failed', onTranscriptionFailed);
+      socket.off('video:summary:progress', onSummaryProgress);
+      socket.off('video:summary:complete', onSummaryComplete);
+      socket.off('video:summary:failed', onSummaryFailed);
+    };
+  }, [id, video?.transcription_status, video?.summary_status]);
+
+  /**
+   * Persist playback position periodically and on unmount, so a learner who
+   * leaves partway through can resume. Previously nothing was recorded until
+   * the video fired `onEnded`, so leaving at 95% left no trace at all.
+   */
+  useEffect(() => {
+    if (!id) return;
+
+    const videoIdNum = parseInt(id);
+
+    const save = () => {
+      const position = Math.floor(positionRef.current);
+      // Only write when the position has actually moved on; avoids a steady
+      // drip of no-op requests while the video is paused.
+      if (position <= 0 || position === savedPositionRef.current) return;
+      savedPositionRef.current = position;
+      historyService
+        .recordWatch(videoIdNum, position, completedRef.current)
+        .catch((err) => console.error('Failed to save watch position:', err));
+    };
+
+    const interval = window.setInterval(save, SAVE_INTERVAL_MS);
+
+    return () => {
+      window.clearInterval(interval);
+      save();
+    };
   }, [id]);
 
   /**
@@ -77,7 +222,7 @@ export const VideoDetailPage: React.FC = () => {
 
     try {
       setRefreshingUrl(true);
-      const resumeAt = currentTime;
+      const resumeAt = positionRef.current;
       const videoData = await videoService.getById(parseInt(id));
       setVideo(videoData);
       resumeAtRef.current = resumeAt;
@@ -96,9 +241,24 @@ export const VideoDetailPage: React.FC = () => {
     }
   };
 
+  // Drives both the transcript segments and the summary's chapter markers.
+  const handleSeek = (seconds: number) => {
+    playerRef.current?.seekTo(seconds);
+  };
+
+  const handleProgress = (playedSeconds: number) => {
+    setCurrentTime(playedSeconds);
+    positionRef.current = playedSeconds;
+  };
+
   const handleVideoEnded = () => {
     if (video) {
-      historyService.recordWatch(video.id).catch((err) => {
+      completedRef.current = true;
+      // Record the full duration rather than the last progress tick, which can
+      // land a second or two short of the end.
+      const endPosition = video.duration ?? Math.floor(positionRef.current);
+      savedPositionRef.current = endPosition;
+      historyService.recordWatch(video.id, endPosition, true).catch((err) => {
         console.error('Failed to record video watch:', err);
       });
     }
@@ -159,7 +319,7 @@ export const VideoDetailPage: React.FC = () => {
             <VideoPlayer
               ref={playerRef}
               url={video.s3_url}
-              onProgress={setCurrentTime}
+              onProgress={handleProgress}
               onEnded={handleVideoEnded}
               onError={handlePlaybackError}
               onReady={handlePlayerReady}
@@ -169,6 +329,7 @@ export const VideoDetailPage: React.FC = () => {
               <TranscriptDisplay
                 segments={transcription.segments}
                 currentTime={currentTime}
+                onSeek={handleSeek}
               />
             )}
 
@@ -196,7 +357,15 @@ export const VideoDetailPage: React.FC = () => {
               <SummaryPanel
                 summaryText={summary.summary_text}
                 keyPoints={summary.key_points}
+                sections={summary.sections}
+                durationSeconds={video.duration}
+                onSeek={handleSeek}
               />
+            )}
+
+            {/* Grounded in the transcript, so only offered once there is one. */}
+            {video.transcription_status === 'completed' && (
+              <LessonChatPanel videoId={video.id} onSeek={handleSeek} />
             )}
 
             {video.summary_status === 'processing' && (
