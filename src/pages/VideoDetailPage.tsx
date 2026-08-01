@@ -313,7 +313,7 @@ export const VideoDetailPage: React.FC = () => {
       <div className="px-6 lg:px-10 xl:px-14 pt-8 pb-6 border-b border-border-subtle">
         <button
           onClick={() => navigate('/')}
-          className="group inline-flex items-center gap-3 font-display text-[0.6875rem] uppercase tracking-[0.2em] text-text-muted hover:text-text-primary transition-colors mb-8"
+          className="group inline-flex items-center gap-3 min-h-[44px] py-2 font-display text-[0.6875rem] uppercase tracking-[0.2em] text-text-muted hover:text-text-primary transition-colors mb-6"
         >
           <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1" />
           {t.backToVideos}

@@ -119,13 +119,13 @@ export const SignupForm: React.FC = () => {
 
         <p className="mt-6 text-sm text-text-secondary">
           {t.alreadyHaveAccount}{' '}
-          <Link to="/login" className="text-accent hover:text-accent-dark font-medium transition-colors">
+          <Link to="/login" className="inline-flex items-center min-h-[44px] text-accent hover:text-accent-dark font-medium transition-colors">
             {t.login}
           </Link>
         </p>
 
         <p className="mt-4 text-sm text-text-secondary">
-          <Link to="/" className="text-accent hover:text-accent-dark font-medium transition-colors">
+          <Link to="/" className="inline-flex items-center min-h-[44px] text-accent hover:text-accent-dark font-medium transition-colors">
             {t.backToVideos}
           </Link>
         </p>

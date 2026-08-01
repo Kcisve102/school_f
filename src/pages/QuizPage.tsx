@@ -190,7 +190,7 @@ export const QuizPage: React.FC = () => {
                 <button
                   onClick={handlePrevious}
                   disabled={currentQuestionIndex === 0}
-                  className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                  className={`px-6 py-3 min-h-[44px] rounded-lg font-medium transition-colors ${
                     currentQuestionIndex === 0
                       ? 'bg-surface-secondary text-text-muted cursor-not-allowed'
                       : 'bg-surface-secondary text-text-primary hover:bg-surface-hover'

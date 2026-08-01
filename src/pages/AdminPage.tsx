@@ -63,7 +63,7 @@ export const AdminPage: React.FC = () => {
               <button
                 key={index}
                 onClick={() => navigate(item.path)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                className={`w-full flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-lg transition-all ${
                   item.active
                     ? 'bg-accent/10 text-accent border border-accent/30'
                     : 'text-text-secondary hover:text-text-primary hover:bg-surface-secondary'
@@ -82,7 +82,7 @@ export const AdminPage: React.FC = () => {
               <button
                 key={index}
                 onClick={() => navigate(item.path)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-all"
+                className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-all"
               >
                 <item.icon className="w-5 h-5" />
                 <span className="font-medium">{item.label}</span>
@@ -118,7 +118,7 @@ export const AdminPage: React.FC = () => {
               <button
                 key={index}
                 onClick={() => navigate(item.path)}
-                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-lg text-sm font-medium transition-all ${
                   item.active
                     ? 'bg-accent/10 text-accent border border-accent/30'
                     : 'text-text-secondary bg-surface-secondary border border-border hover:text-text-primary hover:border-accent/30'

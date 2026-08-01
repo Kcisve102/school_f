@@ -80,13 +80,13 @@ export const LoginForm: React.FC = () => {
 
         <p className="mt-8 text-sm text-text-secondary">
           {t.noAccount}{' '}
-          <Link to="/signup" className="text-accent hover:text-accent-dark font-medium transition-colors">
+          <Link to="/signup" className="inline-flex items-center min-h-[44px] text-accent hover:text-accent-dark font-medium transition-colors">
             {t.signUp}
           </Link>
         </p>
 
         <p className="mt-3 text-sm text-text-secondary">
-          <Link to="/" className="text-accent hover:text-accent-dark font-medium transition-colors">
+          <Link to="/" className="inline-flex items-center min-h-[44px] text-accent hover:text-accent-dark font-medium transition-colors">
             {t.backToVideos}
           </Link>
         </p>

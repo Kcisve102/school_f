@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LogOut, LayoutDashboard, Home, MessageSquare, Menu, X, Grid3X3 } from 'lucide-react';
 import LogoMark from '../common/Logo';
@@ -25,8 +25,23 @@ export const Header: React.FC = () => {
 
   const closeMenu = () => setMenuOpen(false);
 
+  // Publishes the header's real height so full-viewport pages (chat) can size
+  // against it. It differs between mobile and desktop, and a hardcoded guess
+  // pushed the chat frame's top bar off-screen on phones.
+  const headerRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const publish = () =>
+      document.documentElement.style.setProperty('--header-h', `${el.offsetHeight}px`);
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 bg-bg-primary border-b border-border sm:bg-transparent sm:border-b-0 sm:px-6 sm:pt-4">
+    <header ref={headerRef} className="sticky top-0 z-50 bg-bg-primary border-b border-border sm:bg-transparent sm:border-b-0 sm:px-6 sm:pt-4">
       {/* The desktop header is transparent so the pill reads as floating, which
           left section headings scrolling visibly through it. This scrim fades
           the strip the header occupies so passing content dims out instead of

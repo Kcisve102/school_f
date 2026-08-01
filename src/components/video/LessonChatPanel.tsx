@@ -167,13 +167,13 @@ export const LessonChatPanel: React.FC<LessonChatPanelProps> = ({
           maxLength={2000}
           placeholder={t.placeholder}
           disabled={sending}
-          className="flex-1 px-3 py-2 bg-surface-secondary border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent disabled:opacity-50"
+          className="flex-1 px-3 py-3 min-h-[44px] bg-surface-secondary border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent disabled:opacity-50"
         />
         <button
           type="button"
           onClick={handleSend}
           disabled={sending || input.trim().length === 0}
-          className="px-4 py-2 bg-accent text-bg-primary rounded-lg font-medium hover:bg-accent-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 min-h-[44px] min-w-[44px] flex items-center justify-center bg-accent text-bg-primary rounded-lg font-medium hover:bg-accent-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label={t.send}
         >
           <Send className="w-4 h-4" />

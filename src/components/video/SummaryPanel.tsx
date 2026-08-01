@@ -56,13 +56,13 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({
                   type="button"
                   onClick={() => onSeek?.(section.start)}
                   disabled={!onSeek}
-                  className={`w-full flex items-start gap-3 text-left px-2 py-1.5 rounded-lg transition-colors ${
+                  className={`w-full flex items-start gap-3 text-left px-2 py-3 min-h-[44px] rounded-lg transition-colors ${
                     onSeek
                       ? 'hover:bg-surface-hover cursor-pointer'
                       : 'cursor-default'
                   }`}
                 >
-                  <span className="text-xs font-medium text-accent mt-0.5 tabular-nums flex-shrink-0">
+                  <span className="font-display text-xs text-text-muted mt-0.5 tabular-nums flex-shrink-0">
                     {formatDuration(section.start)}
                   </span>
                   <span className="text-sm text-text-secondary">

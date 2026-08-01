@@ -243,10 +243,22 @@ export const ChatPage: React.FC = () => {
         }
       `}</style>
 
-      <div className="flex flex-col bg-page-gradient" style={{ height: 'calc(100vh - 64px)' }}>
+      {/*
+        The frame used `calc(100vh - 64px)`, which counted the header but not
+        the footer, so the column ran 93px past the viewport. The page then
+        scrolled, carrying this bar — and the clear-chat button in it — up
+        under the sticky header where it could not be tapped at all.
+
+        Subtracting both, in dynamic viewport units so mobile browser chrome
+        is tracked as it hides and shows.
+      */}
+      <div
+        className="flex flex-col bg-page-gradient min-h-0"
+        style={{ height: 'calc(100dvh - var(--header-h, 64px) - var(--footer-h, 0px))' }}
+      >
 
         {/* ── Top bar ── */}
-        <div className="flex-shrink-0 flex items-center justify-between px-5 py-3 border-b border-border bg-surface">
+        <div className="flex-shrink-0 flex items-center justify-between gap-3 px-5 py-3 border-b border-border bg-surface">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
             <span className="text-sm font-medium text-text-primary">{t.onlineStatus}</span>

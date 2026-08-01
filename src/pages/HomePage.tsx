@@ -211,7 +211,7 @@ export const HomePage: React.FC = () => {
               </div>
               <button
                 onClick={() => navigate('/categories')}
-                className="group inline-flex items-center gap-4 self-start sm:self-auto border-b border-border-hover pb-2 font-display text-xs uppercase tracking-[0.15em] text-text-primary transition-colors hover:border-text-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-white"
+                className="group inline-flex items-center gap-4 self-start sm:self-auto border-b border-border-hover pt-3 pb-2 min-h-[44px] font-display text-xs uppercase tracking-[0.15em] text-text-primary transition-colors hover:border-text-primary focus:outline-none focus-visible:ring-1 focus-visible:ring-white"
               >
                 {t.viewAllVideos}
                 <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
