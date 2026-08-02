@@ -48,7 +48,7 @@ export const DashboardPage: React.FC = () => {
   );
 
   return (
-    <div className="flex min-h-screen bg-page-gradient text-text-primary">
+    <div className="flex min-h-screen text-text-primary">
 
       {/*
         The sidebar is gone. It duplicated the app header's navigation, repeated

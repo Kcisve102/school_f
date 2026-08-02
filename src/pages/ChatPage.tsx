@@ -253,7 +253,7 @@ export const ChatPage: React.FC = () => {
         is tracked as it hides and shows.
       */}
       <div
-        className="flex flex-col bg-page-gradient min-h-0"
+        className="flex flex-col min-h-0"
         style={{ height: 'calc(100dvh - var(--header-h, 64px) - var(--footer-h, 0px))' }}
       >
 

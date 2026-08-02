@@ -22,7 +22,10 @@ export const Footer: React.FC = () => {
   }, []);
 
   return (
-    <footer ref={ref} className="bg-surface border-t border-border mt-auto">
+    <footer
+      ref={ref}
+      className="relative z-10 bg-surface/80 backdrop-blur-sm border-t border-border mt-auto"
+    >
       <div className="container mx-auto px-4 py-6">
         <div className="text-center text-sm text-text-secondary">
           <p>

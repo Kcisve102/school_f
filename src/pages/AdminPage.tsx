@@ -66,7 +66,7 @@ export const AdminPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-page-gradient text-text-primary">
+    <div className="min-h-screen text-text-primary">
       <main>
 
         {/*

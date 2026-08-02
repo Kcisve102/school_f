@@ -80,7 +80,7 @@ export const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-page-gradient">
+    <div className="min-h-screen">
       {/* Hero Section - Centered Content, plain dark canvas */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Content - Centered */}

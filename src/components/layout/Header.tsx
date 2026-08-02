@@ -41,7 +41,7 @@ export const Header: React.FC = () => {
   }, []);
 
   return (
-    <header ref={headerRef} className="sticky top-0 z-50 bg-bg-primary border-b border-border sm:bg-transparent sm:border-b-0 sm:px-6 sm:pt-4">
+    <header ref={headerRef} className="sticky top-0 z-50 bg-bg-primary/75 backdrop-blur-xl border-b border-border sm:bg-transparent sm:backdrop-blur-none sm:border-b-0 sm:px-6 sm:pt-4">
       {/* The desktop header is transparent so the pill reads as floating, which
           left section headings scrolling visibly through it. This scrim fades
           the strip the header occupies so passing content dims out instead of

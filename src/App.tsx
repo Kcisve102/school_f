@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import LightRays from './components/common/LightRays';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 
@@ -19,7 +20,29 @@ import NotFoundPage from './pages/NotFoundPage';
 
 function AppContent() {
   return (
-    <div className="flex flex-col min-h-screen bg-page-gradient">
+    // #120f17 is the canvas background the React Bits background-studio demo
+    // pairs with this effect; the shader is authored against it.
+    <div className="relative isolate flex flex-col min-h-screen bg-[#120f17]">
+      {/* Animated background, mounted once for the whole app. The LightRays
+          container is position:relative, so this fixed wrapper is what pins it
+          to the viewport behind every route. */}
+      <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
+        <LightRays
+          raysOrigin="top-center"
+          raysColor="#ffffff"
+          raysSpeed={1}
+          lightSpread={0.5}
+          rayLength={3}
+          pulsating={false}
+          fadeDistance={1}
+          saturation={1}
+          followMouse
+          mouseInfluence={0.1}
+          noiseAmount={0}
+          distortion={0}
+        />
+      </div>
+
       <Header />
 
       <main className="flex-grow">
