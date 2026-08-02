@@ -5,13 +5,7 @@ import { videoService } from '../services/video.service';
 import { useAuth } from '../hooks/useAuth';
 import VideoList from '../components/admin/VideoList';
 import VideoEditModal from '../components/video/VideoEditModal';
-import {
-  LayoutDashboard,
-  Upload,
-  BookOpen,
-  Bookmark,
-  Settings,
-} from 'lucide-react';
+import { LayoutDashboard, Upload, BookOpen } from 'lucide-react';
 
 export const AdminPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -41,108 +35,64 @@ export const AdminPage: React.FC = () => {
   const processedVideos = videos.filter(v => v.transcription_status === 'completed').length;
   const processingVideos = videos.filter(v => v.transcription_status === 'processing').length;
 
-  const allNavItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', active: true, path: '/admin' },
+  /* Bookmarks and Settings are gone rather than restyled — both pointed at '#'.
+     A nav item that goes nowhere is worse after a restyle, because it now looks
+     as deliberate as the ones that work. */
+  const navItems = [
+    { icon: LayoutDashboard, label: 'Admin', active: true, path: '/admin' },
     { icon: BookOpen, label: 'Categories', active: false, path: '/categories' },
-    { icon: Bookmark, label: 'Bookmarks', active: false, path: '#' },
-    { icon: Settings, label: 'Settings', active: false, path: '#' },
   ];
 
-  const sidebarMenuItems = allNavItems.slice(0, 2);
-  const sidebarPersonalItems = allNavItems.slice(2);
-
   return (
-    <div className="flex min-h-screen bg-page-gradient text-text-primary">
+    <div className="min-h-screen bg-page-gradient text-text-primary">
+      <main>
 
-      {/* ── Desktop sidebar ── */}
-      <aside className="hidden lg:flex w-64 bg-surface border-r border-border flex-col fixed h-full z-30">
-        <div className="p-6">
-          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">Main Menu</h2>
-          <nav className="space-y-1">
-            {sidebarMenuItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => navigate(item.path)}
-                className={`w-full flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-lg transition-all ${
-                  item.active
-                    ? 'bg-accent/10 text-accent border border-accent/30'
-                    : 'text-text-secondary hover:text-text-primary hover:bg-surface-secondary'
-                }`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-        <div className="p-6 border-t border-border">
-          <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">Personal</h2>
-          <nav className="space-y-1">
-            {sidebarPersonalItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => navigate(item.path)}
-                className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-all"
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-        {user && (
-          <div className="mt-auto p-6 border-t border-border">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-surface-hover border border-border flex items-center justify-center text-text-primary font-display text-sm">
-                {user.full_name.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-text-primary truncate">{user.full_name}</p>
-                <p className="text-xs text-text-muted">Admin</p>
-              </div>
-            </div>
-          </div>
-        )}
-      </aside>
+        {/*
+          The 256px filled rail is gone. It carried an accent-tinted active pill
+          and body-weight labels — the only nav in the app still doing either,
+          which is what made it read as a different product from the header
+          floating directly above it. Two live destinations do not need a
+          permanent column, and the width returns to the video table.
 
-      {/* ── Main content ── */}
-      <main className="flex-1 overflow-auto lg:ml-64">
-
-        {/* ── Mobile: sticky top bar ── */}
-        <div className="lg:hidden sticky top-0 z-30 bg-bg-primary/95 backdrop-blur-xl  border-border">
-         
-
-          {/* Horizontal scrollable nav */}
-          <div className="flex gap-2 px-4 p-6 overflow-x-auto scrollbar-hide">
-            {allNavItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => navigate(item.path)}
-                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-lg text-sm font-medium transition-all ${
-                  item.active
-                    ? 'bg-accent/10 text-accent border border-accent/30'
-                    : 'text-text-secondary bg-surface-secondary border border-border hover:text-text-primary hover:border-accent/30'
-                }`}
-              >
-                <item.icon className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="p-4 md:p-6 lg:p-8">
+          What replaces it is the same tab strip the dashboard and categories
+          pages use: hairline rule, mono uppercase, white underline for active.
+          One nav grammar across every page.
+        */}
+        <div className="px-4 md:px-6 lg:px-8 pt-10 sm:pt-16">
           <div className="max-w-[1800px]">
+            <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-6">
+              Manage videos and monitor platform statistics
+            </p>
+            <h1 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4.5vw,3.5rem)] leading-[1] tracking-[-0.03em]">
+              Admin
+            </h1>
 
-            {/* Welcome */}
-            <div className="mb-10 sm:mb-16">
-              <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-6">
-                Manage videos and monitor platform statistics
-              </p>
-              <h1 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4.5vw,3.5rem)] leading-[1] tracking-[-0.03em]">
-                Admin
-              </h1>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 mt-10 sm:mt-14 border-b border-border-subtle">
+              {navItems.map((item) => (
+                <button
+                  key={item.path}
+                  onClick={() => navigate(item.path)}
+                  className={`relative inline-flex items-center gap-2.5 pt-2 pb-4 min-h-[44px] font-display text-xs uppercase tracking-[0.15em] transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-white ${
+                    item.active
+                      ? 'text-text-primary after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-text-primary'
+                      : 'text-text-muted hover:text-text-secondary'
+                  }`}
+                >
+                  <item.icon className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  {item.label}
+                </button>
+              ))}
+              {user && (
+                <span className="ml-auto pb-4 font-display text-[0.6875rem] uppercase tracking-[0.2em] text-text-muted">
+                  {user.full_name}
+                </span>
+              )}
             </div>
+          </div>
+        </div>
+
+        <div className="px-4 md:px-6 lg:px-8 py-10 sm:py-14">
+          <div className="max-w-[1800px]">
 
             {/* Stats — divided band, matching the dashboard. */}
             <div className="grid grid-cols-3 divide-x divide-border-subtle border-y border-border-subtle mb-12 lg:mb-20">
