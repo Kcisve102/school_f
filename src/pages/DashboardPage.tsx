@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import { useAuth } from '../hooks/useAuth';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import VideoCard from '../components/video/VideoCard';
-import WatchHistorySection from '../components/dashboard/WatchHistorySection';
+import WatchHistorySection from '../components/history/WatchHistorySection';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
 import { PlayCircle, ChevronRight } from 'lucide-react';
@@ -15,7 +15,12 @@ type DashboardTab = 'dashboard' | 'history';
 export const DashboardPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<DashboardTab>('dashboard');
+  /* The tab lives in the URL rather than in state so that returning from an
+     attempt review lands back on History, and so the tab survives a refresh. */
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab: DashboardTab = searchParams.get('tab') === 'history' ? 'history' : 'dashboard';
+  const setActiveTab = (tab: DashboardTab) =>
+    setSearchParams(tab === 'history' ? { tab } : {}, { replace: true });
   const { user } = useAuth();
   const navigate = useNavigate();
   const { language } = useLanguage();

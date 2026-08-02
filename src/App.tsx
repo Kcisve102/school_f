@@ -14,6 +14,7 @@ import VideoDetailPage from './pages/VideoDetailPage';
 import CategoriesPage from './pages/CategoriesPage';
 import DashboardPage from './pages/DashboardPage';
 import QuizPage from './pages/QuizPage';
+import AttemptReviewPage from './pages/AttemptReviewPage';
 import ChatPage from './pages/ChatPage';
 import SignupPage from './pages/SignupPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -72,6 +73,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <QuizPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/attempt/:id"
+            element={
+              <ProtectedRoute>
+                <AttemptReviewPage />
               </ProtectedRoute>
             }
           />
