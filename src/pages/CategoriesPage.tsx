@@ -3,10 +3,13 @@ import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import VideoCard from '../components/video/VideoCard';
+import Pagination from '../components/common/Pagination';
 import { CATEGORIES } from '../constants/categories';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
 import { Grid3X3, List, Search, PlayCircle } from 'lucide-react';
+
+const PAGE_SIZE = 10;
 
 export const CategoriesPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -14,6 +17,7 @@ export const CategoriesPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | 'all'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
   const { language } = useLanguage();
   const t = translations[language].categories;
   const tHome = translations[language].home;
@@ -46,6 +50,19 @@ export const CategoriesPage: React.FC = () => {
     video.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (video.description && video.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
+
+  /* Paged client-side rather than by request. Search matches title and
+     description across the whole category, so paging on the server would
+     narrow it to whichever ten rows happened to be loaded. Filter first,
+     then slice — the pager follows the search results. */
+  const totalPages = Math.ceil(filteredVideos.length / PAGE_SIZE);
+  const pagedVideos = filteredVideos.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  // A narrowed search or a new category can leave the current page past the
+  // end of the results; step back rather than render an empty grid.
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, selectedCategory]);
 
   const handleCategorySelect = (category: string | 'all') => {
     setSelectedCategory(category);
@@ -174,13 +191,13 @@ export const CategoriesPage: React.FC = () => {
             </div>
           ) : viewMode === 'grid' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-5 gap-y-8 lg:gap-x-6 lg:gap-y-12">
-              {filteredVideos.map((video, i) => (
+              {pagedVideos.map((video, i) => (
                 <VideoCard key={video.id} video={video} index={i} />
               ))}
             </div>
           ) : (
             <div className="border-t border-border-subtle">
-              {filteredVideos.map((video) => (
+              {pagedVideos.map((video) => (
                 <div
                   key={video.id}
                   onClick={() => (window.location.href = `/video/${video.id}`)}
@@ -226,6 +243,16 @@ export const CategoriesPage: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {!loading && filteredVideos.length > 0 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-12">
+              <p className="font-display text-[0.6875rem] uppercase tracking-[0.2em] text-text-muted tabular-nums">
+                {(page - 1) * PAGE_SIZE + 1}&ndash;
+                {Math.min(page * PAGE_SIZE, filteredVideos.length)} of {filteredVideos.length}
+              </p>
+              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
             </div>
           )}
         </div>

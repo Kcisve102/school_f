@@ -5,19 +5,39 @@ import { videoService } from '../services/video.service';
 import { useAuth } from '../hooks/useAuth';
 import VideoList from '../components/admin/VideoList';
 import VideoEditModal from '../components/video/VideoEditModal';
+import Pagination from '../components/common/Pagination';
 import { LayoutDashboard, Upload, BookOpen } from 'lucide-react';
+
+const PAGE_SIZE = 10;
 
 export const AdminPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
+  const [totalVideos, setTotalVideos] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [editingVideo, setEditingVideo] = useState<Video | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const fetchVideos = async () => {
+  const totalPages = Math.ceil(totalVideos / PAGE_SIZE);
+
+  const fetchVideos = async (targetPage: number) => {
+    setLoading(true);
     try {
-      const data = await videoService.getAll();
+      const { videos: data, total } = await videoService.getPage(
+        PAGE_SIZE,
+        (targetPage - 1) * PAGE_SIZE
+      );
+
+      /* Deleting the last row of the last page leaves that page empty — step
+         back rather than showing an empty table under a live pager. */
+      if (data.length === 0 && total > 0 && targetPage > 1) {
+        setPage(targetPage - 1);
+        return;
+      }
+
       setVideos(data);
+      setTotalVideos(total);
     } catch (error) {
       console.error('Failed to fetch videos:', error);
     } finally {
@@ -26,12 +46,14 @@ export const AdminPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchVideos();
-  }, []);
+    fetchVideos(page);
+  }, [page]);
 
-  const handleEditSuccess = () => fetchVideos();
+  const handleEditSuccess = () => fetchVideos(page);
 
-  const totalVideos = videos.length;
+  /* The stats band describes the whole library, but only the current page is
+     loaded — total comes from the server, and the two status counts are scoped
+     to this page so the labels stay honest. */
   const processedVideos = videos.filter(v => v.transcription_status === 'completed').length;
   const processingVideos = videos.filter(v => v.transcription_status === 'processing').length;
 
@@ -98,8 +120,8 @@ export const AdminPage: React.FC = () => {
             <div className="grid grid-cols-3 divide-x divide-border-subtle border-y border-border-subtle mb-12 lg:mb-20">
               {[
                 { value: String(totalVideos).padStart(2, '0'), label: 'Total videos' },
-                { value: String(processedVideos).padStart(2, '0'), label: 'Processed' },
-                { value: String(processingVideos).padStart(2, '0'), label: 'In queue' },
+                { value: String(processedVideos).padStart(2, '0'), label: 'Processed (this page)' },
+                { value: String(processingVideos).padStart(2, '0'), label: 'In queue (this page)' },
               ].map((s, i) => (
                 <div key={s.label} className={`py-6 sm:py-10 px-4 sm:px-8 ${i === 0 ? 'pl-0' : ''}`}>
                   <p className="font-display text-text-primary text-[clamp(1.5rem,4vw,3rem)] leading-none tracking-[-0.03em] tabular-nums">
@@ -134,11 +156,27 @@ export const AdminPage: React.FC = () => {
                   <p className="text-text-secondary mt-4 text-sm">Loading videos...</p>
                 </div>
               ) : (
-                <VideoList
-                  videos={videos}
-                  onVideoDeleted={fetchVideos}
-                  onVideoEdit={setEditingVideo}
-                />
+                <>
+                  <VideoList
+                    videos={videos}
+                    onVideoDeleted={() => fetchVideos(page)}
+                    onVideoEdit={setEditingVideo}
+                  />
+
+                  {totalVideos > 0 && (
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8">
+                      <p className="font-display text-[0.6875rem] uppercase tracking-[0.2em] text-text-muted tabular-nums">
+                        {(page - 1) * PAGE_SIZE + 1}&ndash;
+                        {Math.min(page * PAGE_SIZE, totalVideos)} of {totalVideos}
+                      </p>
+                      <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={setPage}
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

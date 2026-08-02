@@ -7,6 +7,14 @@ export const videoService = {
     return response.data.data!;
   },
 
+  getPage: async (limit: number, offset: number): Promise<{ videos: Video[]; total: number }> => {
+    const response = await api.get<ApiResponse<Video[]>>(`/videos?limit=${limit}&offset=${offset}`);
+    return {
+      videos: response.data.data!,
+      total: response.data.total ?? response.data.data!.length,
+    };
+  },
+
   getById: async (id: number): Promise<Video> => {
     const response = await api.get<ApiResponse<Video>>(`/videos/${id}`);
     return response.data.data!;
@@ -61,6 +69,20 @@ export const videoService = {
   getByCategory: async (category: string): Promise<Video[]> => {
     const response = await api.get<ApiResponse<Video[]>>(`/videos/category/${encodeURIComponent(category)}`);
     return response.data.data!;
+  },
+
+  getPageByCategory: async (
+    category: string,
+    limit: number,
+    offset: number
+  ): Promise<{ videos: Video[]; total: number }> => {
+    const response = await api.get<ApiResponse<Video[]>>(
+      `/videos/category/${encodeURIComponent(category)}?limit=${limit}&offset=${offset}`
+    );
+    return {
+      videos: response.data.data!,
+      total: response.data.total ?? response.data.data!.length,
+    };
   },
 
   reRenderTranscript: async (id: number): Promise<void> => {
