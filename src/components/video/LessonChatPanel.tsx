@@ -109,51 +109,65 @@ export const LessonChatPanel: React.FC<LessonChatPanelProps> = ({
     }
   };
 
+  /*
+    No panel chrome or heading — this renders inside a labelled tab. The
+    conversation is capped so the composer stays reachable without scrolling to
+    the bottom of the page; scrollRef still points at the scrolling element,
+    which is what the auto-scroll depends on.
+  */
   return (
-    /* Owns its height rather than capping at a fixed 320px: the panel sits in
-       the video page's right rail, so it can size to the viewport the way the
-       transcript does. scrollRef still points at the scrolling element, which
-       is what the auto-scroll depends on. */
-    <div className="border border-border flex flex-col max-h-[60vh]">
-      <div className="flex items-center gap-2 px-5 py-4 border-b border-border-subtle flex-shrink-0">
-        <MessageCircleQuestion className="w-3.5 h-3.5 text-text-muted" />
-        <h3 className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted">{t.heading}</h3>
-      </div>
-
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-thin space-y-3 px-5 py-4">
+    <div className="flex flex-col max-w-[80ch]">
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto scrollbar-thin space-y-5 min-h-[12rem] max-h-[46vh]"
+      >
         {messages.length === 0 && !sending && (
-          <p className="text-sm text-text-muted">{t.emptyState}</p>
+          <p className="text-sm text-text-muted flex items-center gap-2">
+            <MessageCircleQuestion className="w-3.5 h-3.5" strokeWidth={1.5} />
+            {t.emptyState}
+          </p>
         )}
 
+        {/* Speaker is carried by the label and indent rather than a bubble —
+            two columns of filled rounded rectangles was the card grid again,
+            one row per message. */}
         {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`p-3 rounded-lg text-sm whitespace-pre-wrap ${
-              message.role === 'user'
-                ? 'bg-surface-secondary border border-border-hover text-text-primary'
-                : 'bg-surface-secondary text-text-secondary'
-            }`}
-          >
-            {message.role === 'assistant' ? (
-              <AnswerText text={message.content} onSeek={onSeek} />
-            ) : (
-              message.content
-            )}
+          <div key={index} className="grid grid-cols-[4.5rem_1fr] gap-4 items-baseline">
+            <span className="font-display text-[0.625rem] uppercase tracking-[0.2em] text-text-muted">
+              {message.role === 'user' ? t.you : t.assistant}
+            </span>
+            <div
+              className={`text-sm whitespace-pre-wrap leading-relaxed ${
+                message.role === 'user' ? 'text-text-primary' : 'text-text-secondary'
+              }`}
+            >
+              {message.role === 'assistant' ? (
+                <AnswerText text={message.content} onSeek={onSeek} />
+              ) : (
+                message.content
+              )}
+            </div>
           </div>
         ))}
 
         {sending && (
-          <div className="flex items-center gap-2 text-sm text-text-muted p-3">
-            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-text-muted" />
-            {t.thinking}
+          <div className="grid grid-cols-[4.5rem_1fr] gap-4 items-baseline">
+            <span className="font-display text-[0.625rem] uppercase tracking-[0.2em] text-text-muted">
+              {t.assistant}
+            </span>
+            <div className="flex items-center gap-2 text-sm text-text-muted">
+              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-text-muted" />
+              {t.thinking}
+            </div>
           </div>
         )}
       </div>
 
-      {error && <p className="text-sm text-error px-5 pb-2 flex-shrink-0">{error}</p>}
+      {error && <p className="text-sm text-error mt-3">{error}</p>}
 
-      {/* Docked: the message well above scrolls, this row stays put. */}
-      <div className="flex gap-2 px-5 py-4 border-t border-border-subtle flex-shrink-0">
+      {/* Composer as a single underlined row, matching the search field on
+          categories rather than a filled input plus an accent button. */}
+      <div className="flex items-center gap-3 mt-6 border-b border-border-subtle focus-within:border-text-primary transition-colors">
         <input
           type="text"
           value={input}
@@ -167,16 +181,16 @@ export const LessonChatPanel: React.FC<LessonChatPanelProps> = ({
           maxLength={2000}
           placeholder={t.placeholder}
           disabled={sending}
-          className="flex-1 px-3 py-3 min-h-[44px] bg-surface-secondary border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent disabled:opacity-50"
+          className="flex-1 bg-transparent border-0 py-3 min-h-[44px] text-sm text-text-primary placeholder:text-text-muted focus:outline-none disabled:opacity-50"
         />
         <button
           type="button"
           onClick={handleSend}
           disabled={sending || input.trim().length === 0}
-          className="px-4 min-h-[44px] min-w-[44px] flex items-center justify-center bg-accent text-bg-primary rounded-lg font-medium hover:bg-accent-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-text-muted hover:text-text-primary transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-text-muted focus:outline-none focus-visible:ring-1 focus-visible:ring-white"
           aria-label={t.send}
         >
-          <Send className="w-4 h-4" />
+          <Send className="w-4 h-4" strokeWidth={1.5} />
         </button>
       </div>
     </div>

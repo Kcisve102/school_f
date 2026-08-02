@@ -37,8 +37,18 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       }
     };
 
+    /*
+      Full page width at 16:9, with no pillarboxing.
+
+      The frame takes the container's full width and derives its height from the
+      aspect ratio. A `max-h` cap alongside `aspect-video` was tried and removed:
+      once the cap binds, the box stays wider than the video and black bars
+      appear down both sides. Capping the width instead avoids the bars but
+      stops the player short of the page edge, which is the thing this layout
+      is for. So width wins and the height follows it.
+    */
     return (
-      <div className="relative bg-black rounded-lg overflow-hidden" style={{ paddingTop: '56.25%' }}>
+      <div className="relative bg-black overflow-hidden w-full aspect-video">
         <ReactPlayer
           ref={playerRef}
           url={url}

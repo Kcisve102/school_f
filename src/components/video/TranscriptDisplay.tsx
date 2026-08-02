@@ -1,8 +1,6 @@
 import React from 'react';
 import { TranscriptSegment } from '../../types';
 import { formatDuration } from '../../utils/helpers';
-import { useLanguage } from '../../contexts/LanguageContext';
-import { translations } from '../../translations';
 
 interface TranscriptDisplayProps {
   segments: TranscriptSegment[];
@@ -15,24 +13,24 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
   currentTime = 0,
   onSeek,
 }) => {
-  const { language } = useLanguage();
-  const t = translations[language].transcript;
-
   const handleSegmentClick = (startTime: number) => {
     if (onSeek) {
       onSeek(startTime);
     }
   };
 
+  /*
+    No panel chrome or heading — this renders inside a labelled tab.
+
+    Segments were individually filled rounded blocks, which turned a 200-row
+    transcript into 200 stacked cards. They are now rows on the page surface,
+    separated by hairlines, with only the active row filled. Two columns on wide
+    screens, because a transcript line is short and one column left most of the
+    width empty.
+  */
   return (
-    // A 200-segment transcript was previously capped at 384px, so it read as a
-    // small scrolling box regardless of how much room the page had. It now takes
-    // viewport-relative height and its heading stays put while the body scrolls.
-    <div className="border border-border flex flex-col max-h-[70vh]">
-      <h3 className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted px-5 py-4 border-b border-border-subtle flex-shrink-0">
-        {t.heading}
-      </h3>
-      <div className="space-y-3 overflow-y-auto scrollbar-thin px-5 py-4">
+    <div className="max-h-[65vh] overflow-y-auto scrollbar-thin border-t border-border-subtle">
+      <div className="grid grid-cols-1 xl:grid-cols-2 xl:gap-x-12">
         {segments.map((segment) => {
           const isActive =
             currentTime >= segment.start && currentTime < segment.end;
@@ -40,19 +38,25 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
           return (
             <div
               key={segment.id}
-              className={`p-3 rounded-lg transition-colors ${
-                isActive
-                  ? 'bg-surface-hover border-l-2 border-text-primary'
-                  : 'bg-surface-secondary hover:bg-surface-hover'
+              className={`group grid grid-cols-[3.25rem_1fr] items-baseline gap-3 py-3 pr-3 border-b border-border-subtle transition-colors ${
+                isActive ? 'bg-surface-hover' : 'hover:bg-surface/50'
               } ${onSeek ? 'cursor-pointer' : ''}`}
               onClick={() => handleSegmentClick(segment.start)}
             >
-              <div className="flex items-start">
-                <span className="text-xs font-medium text-text-muted mr-3 mt-1">
-                  {formatDuration(segment.start)}
-                </span>
-                <p className="text-sm text-text-secondary flex-1">{segment.text}</p>
-              </div>
+              <span
+                className={`font-display text-xs tabular-nums transition-colors ${
+                  isActive ? 'text-text-primary' : 'text-text-muted group-hover:text-text-secondary'
+                }`}
+              >
+                {formatDuration(segment.start)}
+              </span>
+              <p
+                className={`text-sm leading-relaxed transition-colors ${
+                  isActive ? 'text-text-primary' : 'text-text-secondary'
+                }`}
+              >
+                {segment.text}
+              </p>
             </div>
           );
         })}

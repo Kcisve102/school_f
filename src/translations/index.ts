@@ -201,6 +201,8 @@ export const translations = {
       thinking: 'Thinking...',
       send: 'Send',
       failed: 'Could not get an answer. Please try again.',
+      you: 'You',
+      assistant: 'Assistant',
     },
     quiz: {
       title: 'Video Quiz',
@@ -511,6 +513,8 @@ export const translations = {
       thinking: '正在思考…',
       send: '发送',
       failed: '暂时无法获取回答，请稍后再试。',
+      you: '你',
+      assistant: '助教',
     },
     quiz: {
       title: '视频测验',
@@ -823,6 +827,8 @@ export const translations = {
       thinking: 'Thinking...',
       send: 'Send',
       failed: 'Could not get an answer. Please try again.',
+      you: 'You',
+      assistant: 'Assistant',
     },
     quiz: {
       title: 'བརྙན་འཕྲིན་རྒྱུགས་སྤྲོད།',

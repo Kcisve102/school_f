@@ -18,6 +18,8 @@ import { translations } from '../translations';
 /** How often playback position is written back to the server. */
 const SAVE_INTERVAL_MS = 10000;
 
+type PanelKey = 'summary' | 'transcript' | 'chat';
+
 export const VideoDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -28,6 +30,7 @@ export const VideoDetailPage: React.FC = () => {
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
   const [refreshingUrl, setRefreshingUrl] = useState(false);
+  const [selectedPanel, setSelectedPanel] = useState<PanelKey>('summary');
   // Position to seek back to once the player is ready. Serves both the resume
   // point loaded from the server and the position captured before a presigned
   // URL refresh; consumed once on ready.
@@ -295,16 +298,63 @@ export const VideoDetailPage: React.FC = () => {
     );
   }
 
+  // Only the panels that actually have something in them. Built after the
+  // guards above so `video` is known to exist.
+  const panels: Array<{ key: PanelKey; label: string; render: () => React.ReactNode }> = [];
+
+  if (summary) {
+    panels.push({
+      key: 'summary',
+      label: translations[language].summary.heading,
+      render: () => (
+        <SummaryPanel
+          summaryText={summary.summary_text}
+          keyPoints={summary.key_points}
+          sections={summary.sections}
+          durationSeconds={video.duration}
+          onSeek={handleSeek}
+        />
+      ),
+    });
+  }
+
+  if (transcription?.segments?.length) {
+    panels.push({
+      key: 'transcript',
+      label: translations[language].transcript.heading,
+      render: () => (
+        <TranscriptDisplay
+          segments={transcription.segments}
+          currentTime={currentTime}
+          onSeek={handleSeek}
+        />
+      ),
+    });
+  }
+
+  // Grounded in the transcript, so only offered once there is one.
+  if (video.transcription_status === 'completed') {
+    panels.push({
+      key: 'chat',
+      label: translations[language].lessonChat.heading,
+      render: () => <LessonChatPanel videoId={video.id} onSeek={handleSeek} />,
+    });
+  }
+
+  // The stored tab may not exist yet on first render — the summary and
+  // transcript arrive from separate requests, and can also land later over the
+  // websocket. Fall back to the first available panel rather than showing none.
+  const activePanel = panels.some((p) => p.key === selectedPanel)
+    ? selectedPanel
+    : panels[0]?.key;
+
   return (
     <div className="min-h-screen">
       {/*
-        Sticky player + dual rail.
+        Masthead, player, then a tabbed workspace.
 
         The player drives everything else on this page — transcript rows, chapter
-        buttons and cited timestamps in the lesson chat all call `seekTo`. In the
-        previous stacked layout the player scrolled away the moment you started
-        reading, so every seek meant scrolling back up. It is now pinned for the
-        length of the rails.
+        buttons and cited timestamps in the lesson chat all call `seekTo`.
 
         Full-bleed rather than `container mx-auto`: the transcript wants real
         height and the summary wants a reading measure, and a centred 1280px box
@@ -350,74 +400,100 @@ export const VideoDetailPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="px-6 lg:px-10 xl:px-14 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12 items-start">
-          {/* Left rail — the player pins here; the transcript scrolls past it. */}
-          <div className="lg:col-span-7 xl:col-span-8 lg:sticky lg:top-24 space-y-5">
-            <VideoPlayer
-              ref={playerRef}
-              url={video.s3_url}
-              onProgress={handleProgress}
-              onEnded={handleVideoEnded}
-              onError={handlePlaybackError}
-              onReady={handlePlayerReady}
-            />
+      <div className="px-6 lg:px-10 xl:px-14 py-8 space-y-8">
+        {/* Full width. The player is the subject of the page, and every other
+            element here — masthead, tab strip, panel content — starts at the
+            same left padding and runs to the same right edge, so the video
+            capping short of that edge was the one thing breaking the alignment. */}
+        <div className="space-y-5">
+          <VideoPlayer
+            ref={playerRef}
+            url={video.s3_url}
+            onProgress={handleProgress}
+            onEnded={handleVideoEnded}
+            onError={handlePlaybackError}
+            onReady={handlePlayerReady}
+          />
 
-            {video.transcription_status === 'processing' && (
-              <div className="flex items-center gap-3 border border-border px-5 py-4 text-info">
-                <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-info" />
-                <p className="text-sm">{t.transcriptionInProgress}</p>
-              </div>
-            )}
+          {video.transcription_status === 'processing' && (
+            <div className="flex items-center gap-3 border border-border px-5 py-4 text-info">
+              <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-info" />
+              <p className="text-sm">{t.transcriptionInProgress}</p>
+            </div>
+          )}
 
-            {video.transcription_status === 'failed' && (
-              <div className="flex items-center gap-3 border border-error/30 bg-error/10 px-5 py-4 text-error">
-                <AlertCircle className="w-4 h-4" />
-                <p className="text-sm">{t.transcriptionFailed}</p>
-              </div>
-            )}
+          {video.transcription_status === 'failed' && (
+            <div className="flex items-center gap-3 border border-error/30 bg-error/10 px-5 py-4 text-error">
+              <AlertCircle className="w-4 h-4" />
+              <p className="text-sm">{t.transcriptionFailed}</p>
+            </div>
+          )}
 
-            {video.summary_status === 'processing' && (
-              <div className="flex items-center gap-3 border border-border px-5 py-4 text-info">
-                <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-info" />
-                <p className="text-sm">{t.summarizationInProgress}</p>
-              </div>
-            )}
+          {video.summary_status === 'processing' && (
+            <div className="flex items-center gap-3 border border-border px-5 py-4 text-info">
+              <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-info" />
+              <p className="text-sm">{t.summarizationInProgress}</p>
+            </div>
+          )}
 
-            {video.summary_status === 'failed' && (
-              <div className="flex items-center gap-3 border border-error/30 bg-error/10 px-5 py-4 text-error">
-                <AlertCircle className="w-4 h-4" />
-                <p className="text-sm">{t.summarizationFailed}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Right rail — everything that is read while the video plays. */}
-          <div className="lg:col-span-5 xl:col-span-4 space-y-8">
-            {summary && (
-              <SummaryPanel
-                summaryText={summary.summary_text}
-                keyPoints={summary.key_points}
-                sections={summary.sections}
-                durationSeconds={video.duration}
-                onSeek={handleSeek}
-              />
-            )}
-
-            {transcription && transcription.segments && transcription.segments.length > 0 && (
-              <TranscriptDisplay
-                segments={transcription.segments}
-                currentTime={currentTime}
-                onSeek={handleSeek}
-              />
-            )}
-
-            {/* Grounded in the transcript, so only offered once there is one. */}
-            {video.transcription_status === 'completed' && (
-              <LessonChatPanel videoId={video.id} onSeek={handleSeek} />
-            )}
-          </div>
+          {video.summary_status === 'failed' && (
+            <div className="flex items-center gap-3 border border-error/30 bg-error/10 px-5 py-4 text-error">
+              <AlertCircle className="w-4 h-4" />
+              <p className="text-sm">{t.summarizationFailed}</p>
+            </div>
+          )}
         </div>
+
+        {/*
+          Summary, transcript and chat are peers, not a queue. Stacked in one
+          rail they measured 1326px, 561px and 203px, which put the chat input
+          2270px down the page — nearly three screens below the fold, and only
+          reachable by scrolling past an entire transcript. Meanwhile the sticky
+          player column left roughly 2000px of empty space beside them.
+
+          As tabs they occupy the same rectangle and are each one click away,
+          and the page stops being taller than its tallest panel.
+        */}
+        {panels.length > 0 && (
+          <section>
+            <div
+              role="tablist"
+              aria-label={t.backToVideos}
+              className="flex flex-wrap items-center gap-x-8 gap-y-3 border-b border-border-subtle"
+            >
+              {panels.map((p) => (
+                <button
+                  key={p.key}
+                  role="tab"
+                  id={`panel-tab-${p.key}`}
+                  aria-selected={activePanel === p.key}
+                  aria-controls={`panel-${p.key}`}
+                  onClick={() => setSelectedPanel(p.key)}
+                  className={`relative pt-2 pb-4 min-h-[44px] font-display text-xs uppercase tracking-[0.15em] transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-white ${
+                    activePanel === p.key
+                      ? 'text-text-primary after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-text-primary'
+                      : 'text-text-muted hover:text-text-secondary'
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+
+            {panels.map((p) => (
+              <div
+                key={p.key}
+                role="tabpanel"
+                id={`panel-${p.key}`}
+                aria-labelledby={`panel-tab-${p.key}`}
+                hidden={activePanel !== p.key}
+                className="pt-8"
+              >
+                {p.render()}
+              </div>
+            ))}
+          </section>
+        )}
       </div>
     </div>
   );
