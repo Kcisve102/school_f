@@ -83,12 +83,16 @@ export const StringListEditor: React.FC<StringListEditorProps> = ({
               className="inline-flex items-center gap-1.5 rounded-full bg-surface border border-border pl-3 pr-1.5 py-1.5 text-sm text-text-primary"
             >
               <span className="max-w-[32ch] truncate">{item}</span>
+              {/* The visible control stays chip-sized, but a 20px tap target
+                  is a miss waiting to happen on a phone. The ::after box
+                  expands the touchable area to 44px without growing the chip
+                  or shifting the row. */}
               <button
                 type="button"
                 onClick={() => removeItem(index)}
                 disabled={disabled}
                 aria-label={`${removeLabel}: ${item}`}
-                className="p-1 rounded-full text-text-muted hover:text-error hover:bg-error/10 transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                className="relative p-1 rounded-full text-text-muted hover:text-error hover:bg-error/10 transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-11 after:h-11 after:content-[''] sm:after:hidden"
               >
                 <X className="w-3 h-3" />
               </button>

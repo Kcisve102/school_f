@@ -120,7 +120,7 @@ export const PlatformHandoffPanel: React.FC<PlatformHandoffPanelProps> = ({ prof
           </label>
           <button
             onClick={copyToClipboard}
-            className="flex items-center gap-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-white rounded px-1"
+            className="flex-shrink-0 flex items-center gap-1.5 min-h-[44px] sm:min-h-0 px-2 py-2 sm:py-1 -mr-2 sm:mr-0 text-xs text-text-secondary hover:text-text-primary transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-white rounded"
           >
             {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
             {copied ? t.copied : t.copy}

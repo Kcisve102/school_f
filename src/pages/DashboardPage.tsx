@@ -67,7 +67,7 @@ export const DashboardPage: React.FC = () => {
   );
 
   return (
-    <div className="flex min-h-screen text-text-primary">
+    <div className="min-h-screen text-text-primary">
 
       {/*
         The sidebar is gone. It duplicated the app header's navigation, repeated
@@ -77,9 +77,12 @@ export const DashboardPage: React.FC = () => {
         and a 256px fixed rail plus a full-width non-functional search bar was a
         lot of chrome around a heading, three numbers and four cards.
 
-        What is left is the real destinations, as a tab strip.
+        What is left is the real destinations, as a tab strip. The flex row
+        that used to hold the rail went with it: a single `flex-1` child gets
+        `min-width: auto`, which refuses to shrink below its content and pushed
+        the page wider than a phone viewport.
       */}
-      <main className="flex-1">
+      <main>
         <div className="px-6 lg:px-12 xl:px-20 pt-10 sm:pt-16">
           <div className="max-w-[1600px]">
             <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-5">
@@ -89,7 +92,10 @@ export const DashboardPage: React.FC = () => {
               {t.welcomeBack}, {user?.full_name.split(' ')[0] || ''}
             </h1>
 
-            <div className="flex gap-8 mt-10 sm:mt-14 border-b border-border-subtle">
+            {/* Scrolls rather than wraps or crushes: three uppercase labels
+                with letter-spacing do not fit a narrow phone, and a wrapped
+                tab strip reads as two rows of unrelated links. */}
+            <div className="flex gap-5 sm:gap-8 mt-10 sm:mt-14 border-b border-border-subtle overflow-x-auto scrollbar-hide">
               {([
                 ['dashboard', t.menuDashboard],
                 ['history', th.title],
