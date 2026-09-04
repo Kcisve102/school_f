@@ -8,6 +8,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../translations';
 import FreelancerJobCard from './FreelancerJobCard';
 import FreelancerConnectPanel from '../profile/FreelancerConnectPanel';
+import FreelancerAccountBar from './FreelancerAccountBar';
 
 /**
  * The Jobs tab.
@@ -66,6 +67,15 @@ export const JobsPanel: React.FC = () => {
 
   return (
     <div>
+      <FreelancerAccountBar
+        status={status}
+        onDisconnected={() => {
+          setStatus({ connected: false });
+          setProjects([]);
+          setMatchedSkills([]);
+        }}
+      />
+
       <div className="mb-8">
         <h2 className="font-display text-lg text-text-primary mb-2">{t.matchedHeading}</h2>
         {matchedSkills.length > 0 && (

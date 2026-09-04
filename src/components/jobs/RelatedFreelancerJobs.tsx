@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { JobSuggestion } from '../../types/job.types';
-import freelancerService, { FreelancerProject } from '../../services/freelancer.service';
+import freelancerService, {
+  FreelancerProject,
+  FreelancerStatus,
+} from '../../services/freelancer.service';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../translations';
 import FreelancerJobCard from './FreelancerJobCard';
+import FreelancerConnectPanel from '../profile/FreelancerConnectPanel';
+import FreelancerAccountBar from './FreelancerAccountBar';
 
 interface RelatedFreelancerJobsProps {
   suggestions: JobSuggestion[];
@@ -27,6 +32,7 @@ export const RelatedFreelancerJobs: React.FC<RelatedFreelancerJobsProps> = ({ su
   const t = translations[language].freelancer;
 
   const [projects, setProjects] = useState<FreelancerProject[]>([]);
+  const [status, setStatus] = useState<FreelancerStatus | null>(null);
   const [loading, setLoading] = useState(true);
 
   const keywords = suggestions
@@ -45,6 +51,13 @@ export const RelatedFreelancerJobs: React.FC<RelatedFreelancerJobsProps> = ({ su
     let cancelled = false;
     (async () => {
       try {
+        // Jobs are gated on the connection here exactly as on the Jobs tab,
+        // so unlinking takes them away everywhere rather than only there.
+        const current = await freelancerService.getStatus();
+        if (cancelled) return;
+        setStatus(current);
+        if (!current.connected) return;
+
         const result = await freelancerService.getRecommended(keywordKey.split(','), 6);
         if (!cancelled) setProjects(result.projects);
       } catch {
@@ -64,10 +77,34 @@ export const RelatedFreelancerJobs: React.FC<RelatedFreelancerJobsProps> = ({ su
     return <Loader2 className="w-4 h-4 text-text-muted animate-spin" />;
   }
 
-  if (projects.length === 0) return null;
+  // The same panel the Jobs tab shows, so linking an account looks and works
+  // identically wherever a learner meets it.
+  if (!status?.connected) {
+    return (
+      <div>
+        <p className="text-text-secondary text-sm leading-relaxed mb-4">{t.connectForJobs}</p>
+        <FreelancerConnectPanel />
+      </div>
+    );
+  }
+
+  const accountBar = (
+    <FreelancerAccountBar
+      status={status}
+      onDisconnected={() => {
+        setStatus({ connected: false });
+        setProjects([]);
+      }}
+    />
+  );
+
+  // Still show which account is linked when nothing matched, or there is no
+  // way to unlink from this page.
+  if (projects.length === 0) return accountBar;
 
   return (
     <div>
+      {accountBar}
       <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-5">
         {t.matchedHeading}
       </p>
