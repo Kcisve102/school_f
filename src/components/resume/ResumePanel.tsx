@@ -3,7 +3,7 @@ import { Download, FileText } from 'lucide-react';
 import ResumeClassic from './ResumeClassic';
 import ResumeSidebar from './ResumeSidebar';
 import ResumeCompact from './ResumeCompact';
-import { ResumeData, ResumeLayoutId, ResumeLayoutProps } from './resume.types';
+import { ResumeData, ResumeLabels, ResumeLayoutId, ResumeLayoutProps } from './resume.types';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../translations';
 
@@ -39,6 +39,10 @@ export const ResumePanel: React.FC<ResumePanelProps> = ({ data }) => {
   const [layout, setLayout] = useState<ResumeLayoutId>('classic');
   const [scale, setScale] = useState(1);
   const [sheetHeight, setSheetHeight] = useState(SHEET_WIDTH_PX * A4_RATIO);
+  /* A resume with real work history runs past one page. The height is already
+     measured for the preview, so the page count is free — and saying it up
+     front beats the learner discovering it in the print dialog. */
+  const [pages, setPages] = useState(1);
   const frameRef = useRef<HTMLDivElement>(null);
   const scalerRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +61,9 @@ export const ResumePanel: React.FC<ResumePanelProps> = ({ data }) => {
     const fit = () => {
       const next = Math.min(1, frame.clientWidth / SHEET_WIDTH_PX);
       setScale(next);
-      setSheetHeight(Math.max(scaler.offsetHeight, SHEET_WIDTH_PX * A4_RATIO) * next);
+      const contentHeight = Math.max(scaler.offsetHeight, SHEET_WIDTH_PX * A4_RATIO);
+      setSheetHeight(contentHeight * next);
+      setPages(Math.max(1, Math.round(contentHeight / (SHEET_WIDTH_PX * A4_RATIO))));
     };
 
     fit();
@@ -72,11 +78,18 @@ export const ResumePanel: React.FC<ResumePanelProps> = ({ data }) => {
   }, []);
 
   const Layout = LAYOUTS[layout];
-  const labels = {
+  const labels: ResumeLabels = {
     contactEmail: t.contactEmail,
+    contactPhone: t.contactPhone,
+    contactLocation: t.contactLocation,
     sectionSummary: t.sectionSummary,
     sectionSkills: t.sectionSkills,
     sectionTargets: t.sectionTargets,
+    sectionExperience: t.sectionExperience,
+    sectionEducation: t.sectionEducation,
+    sectionProjects: t.sectionProjects,
+    sectionCertifications: t.sectionCertifications,
+    present: t.present,
   };
 
   const options: { id: ResumeLayoutId; name: string; desc: string }[] = [
@@ -132,6 +145,9 @@ export const ResumePanel: React.FC<ResumePanelProps> = ({ data }) => {
       {/* Preview */}
       <p className="text-[11px] uppercase tracking-[0.2em] text-text-muted mt-8 mb-3">
         {t.previewLabel}
+        {pages > 1 && <span className="ml-2 normal-case tracking-normal">
+          ({t.pageCount.replace('{count}', String(pages))})
+        </span>}
       </p>
       <div ref={frameRef} className="overflow-hidden rounded-lg">
         {/* The wrapper reserves the scaled height; without it the untransformed

@@ -19,17 +19,48 @@ interface PlatformHandoffPanelProps {
  */
 function buildProfileText(
   profile: CareerProfile,
-  labels: { summary: string; skills: string; targets: string }
+  labels: {
+    summary: string;
+    skills: string;
+    targets: string;
+    experience: string;
+    education: string;
+    certifications: string;
+    present: string;
+  }
 ): string {
-  return [
-    profile.headline,
-    '',
-    `${labels.summary}:`,
-    profile.summary,
-    '',
-    `${labels.skills}: ${profile.skills.join(', ')}`,
-    `${labels.targets}: ${profile.job_titles.join(', ')}`,
-  ].join('\n');
+  const lines: string[] = [profile.headline, '', `${labels.summary}:`, profile.summary];
+
+  // Everything below is optional, and a section with nothing in it is left out
+  // entirely rather than pasted as an empty heading.
+  if (profile.experience.length > 0) {
+    lines.push('', `${labels.experience}:`);
+    for (const job of profile.experience) {
+      const dates = [job.start, job.current ? labels.present : job.end].filter(Boolean).join(' — ');
+      lines.push(`- ${job.role}, ${job.employer}${dates ? ` (${dates})` : ''}`);
+      for (const bullet of job.bullets) lines.push(`  · ${bullet}`);
+    }
+  }
+
+  if (profile.education.length > 0) {
+    lines.push('', `${labels.education}:`);
+    for (const item of profile.education) {
+      const where = [item.institution, item.end].filter(Boolean).join(', ');
+      lines.push(`- ${item.credential}${where ? ` — ${where}` : ''}`);
+    }
+  }
+
+  if (profile.certifications.length > 0) {
+    lines.push('', `${labels.certifications}:`);
+    for (const cert of profile.certifications) {
+      lines.push(`- ${[cert.name, cert.issuer, cert.issued].filter(Boolean).join(' — ')}`);
+    }
+  }
+
+  lines.push('', `${labels.skills}: ${profile.skills.join(', ')}`);
+  lines.push(`${labels.targets}: ${profile.job_titles.join(', ')}`);
+
+  return lines.join('\n');
 }
 
 export const PlatformHandoffPanel: React.FC<PlatformHandoffPanelProps> = ({ profile }) => {
@@ -43,6 +74,10 @@ export const PlatformHandoffPanel: React.FC<PlatformHandoffPanelProps> = ({ prof
     summary: tr.sectionSummary,
     skills: tr.sectionSkills,
     targets: tr.sectionTargets,
+    experience: tr.sectionExperience,
+    education: tr.sectionEducation,
+    certifications: tr.sectionCertifications,
+    present: tr.present,
   });
 
   const copyToClipboard = async (): Promise<boolean> => {

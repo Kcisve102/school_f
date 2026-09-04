@@ -1,5 +1,16 @@
 import React from 'react';
 import { ResumeLayoutProps } from './resume.types';
+import {
+  CertificationEntries,
+  EducationEntries,
+  ExperienceEntries,
+  ProjectEntries,
+} from './ResumeSections';
+
+/* The sidebar is 34% of the sheet, so dated multi-line entries would wrap to
+   shreds in it. Experience, education and projects go in the main column;
+   contact details and certifications, which are short, stay in the sidebar. */
+const MAIN_SCALE = { title: 10.5, meta: 9.5, body: 10 };
 
 /**
  * Two columns: skills and target roles in a tinted sidebar, summary in the main
@@ -20,12 +31,27 @@ export const ResumeSidebar: React.FC<ResumeLayoutProps> = ({ data, labels }) => 
         borderRight: '1px solid #e5e7eb',
       }}
     >
-      {data.email && (
+      {(data.email || data.phone || data.city || (data.links && data.links.length > 0)) && (
         <SideSection title={labels.contactEmail}>
-          {/* Long addresses must wrap rather than overflow the column. */}
-          <p style={{ fontSize: '9px', color: '#374151', margin: 0, wordBreak: 'break-word' }}>
-            {data.email}
-          </p>
+          {/* Long addresses and URLs must wrap rather than overflow the column. */}
+          {[data.email, data.phone, data.city]
+            .filter(Boolean)
+            .map((line) => (
+              <p
+                key={line as string}
+                style={{ fontSize: '9px', color: '#374151', margin: '0 0 3px', wordBreak: 'break-word' }}
+              >
+                {line}
+              </p>
+            ))}
+          {data.links?.map((link) => (
+            <p
+              key={link.url}
+              style={{ fontSize: '9px', color: '#374151', margin: '0 0 3px', wordBreak: 'break-word' }}
+            >
+              {link.url}
+            </p>
+          ))}
         </SideSection>
       )}
 
@@ -56,6 +82,15 @@ export const ResumeSidebar: React.FC<ResumeLayoutProps> = ({ data, labels }) => 
               </li>
             ))}
           </ul>
+        </SideSection>
+      )}
+
+      {data.certifications && data.certifications.length > 0 && (
+        <SideSection title={labels.sectionCertifications}>
+          <CertificationEntries
+            items={data.certifications}
+            scale={{ title: 9.5, meta: 9, body: 9.5 }}
+          />
         </SideSection>
       )}
     </aside>
@@ -100,8 +135,51 @@ export const ResumeSidebar: React.FC<ResumeLayoutProps> = ({ data, labels }) => 
       <p style={{ fontSize: '10.5px', lineHeight: 1.7, color: '#1f2937', margin: 0 }}>
         {data.summary}
       </p>
+
+      {data.experience && data.experience.length > 0 && (
+        <>
+          <MainHeading>{labels.sectionExperience}</MainHeading>
+          <ExperienceEntries
+            items={data.experience}
+            presentLabel={labels.present}
+            scale={MAIN_SCALE}
+          />
+        </>
+      )}
+
+      {data.education && data.education.length > 0 && (
+        <>
+          <MainHeading>{labels.sectionEducation}</MainHeading>
+          <EducationEntries items={data.education} scale={MAIN_SCALE} />
+        </>
+      )}
+
+      {data.projects && data.projects.length > 0 && (
+        <>
+          <MainHeading>{labels.sectionProjects}</MainHeading>
+          <ProjectEntries items={data.projects} scale={MAIN_SCALE} />
+        </>
+      )}
     </div>
   </article>
+);
+
+/** Matches the "Summary" heading already used in the main column. */
+const MainHeading: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <h2
+    style={{
+      fontSize: '10px',
+      fontWeight: 700,
+      letterSpacing: '0.14em',
+      textTransform: 'uppercase',
+      color: '#111827',
+      margin: '16px 0 7px',
+      breakAfter: 'avoid',
+      pageBreakAfter: 'avoid',
+    }}
+  >
+    {children}
+  </h2>
 );
 
 const SideSection: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (

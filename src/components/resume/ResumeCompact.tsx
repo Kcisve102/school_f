@@ -1,5 +1,14 @@
 import React from 'react';
 import { ResumeLayoutProps } from './resume.types';
+import {
+  CertificationEntries,
+  EducationEntries,
+  ExperienceEntries,
+  ProjectEntries,
+} from './ResumeSections';
+
+/** Tighter than the default so a fuller history still fits the page. */
+const COMPACT_SCALE = { title: 10, meta: 9.5, body: 9.5 };
 
 /**
  * Left-aligned name, skills as chips, tighter vertical rhythm. Fits more onto
@@ -13,13 +22,20 @@ export const ResumeCompact: React.FC<ResumeLayoutProps> = ({ data, labels }) => 
         <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#111827', margin: 0 }}>
           {data.fullName}
         </h1>
-        {data.email && (
-          <span style={{ fontSize: '9px', color: '#6b7280', whiteSpace: 'nowrap' }}>{data.email}</span>
+        {(data.email || data.phone || data.city) && (
+          <span style={{ fontSize: '9px', color: '#6b7280', textAlign: 'right' }}>
+            {[data.email, data.phone, data.city].filter(Boolean).join('  ·  ')}
+          </span>
         )}
       </div>
       <p style={{ fontSize: '11px', color: '#2563eb', margin: '4px 0 0', fontWeight: 600 }}>
         {data.headline}
       </p>
+      {data.links && data.links.length > 0 && (
+        <p style={{ fontSize: '9px', color: '#6b7280', margin: '3px 0 0', wordBreak: 'break-word' }}>
+          {data.links.map((link) => link.url).join('  ·  ')}
+        </p>
+      )}
       <div style={{ height: '3px', backgroundColor: '#2563eb', width: '46px', marginTop: '9px' }} />
     </header>
 
@@ -27,6 +43,38 @@ export const ResumeCompact: React.FC<ResumeLayoutProps> = ({ data, labels }) => 
       <Heading>{labels.sectionSummary}</Heading>
       <p style={{ fontSize: '10px', lineHeight: 1.6, color: '#1f2937', margin: 0 }}>{data.summary}</p>
     </section>
+
+    {data.experience && data.experience.length > 0 && (
+      <section style={{ marginBottom: '13px' }}>
+        <Heading>{labels.sectionExperience}</Heading>
+        <ExperienceEntries
+          items={data.experience}
+          presentLabel={labels.present}
+          scale={COMPACT_SCALE}
+        />
+      </section>
+    )}
+
+    {data.education && data.education.length > 0 && (
+      <section style={{ marginBottom: '13px' }}>
+        <Heading>{labels.sectionEducation}</Heading>
+        <EducationEntries items={data.education} scale={COMPACT_SCALE} />
+      </section>
+    )}
+
+    {data.projects && data.projects.length > 0 && (
+      <section style={{ marginBottom: '13px' }}>
+        <Heading>{labels.sectionProjects}</Heading>
+        <ProjectEntries items={data.projects} scale={COMPACT_SCALE} />
+      </section>
+    )}
+
+    {data.certifications && data.certifications.length > 0 && (
+      <section style={{ marginBottom: '13px' }}>
+        <Heading>{labels.sectionCertifications}</Heading>
+        <CertificationEntries items={data.certifications} scale={COMPACT_SCALE} />
+      </section>
+    )}
 
     {data.skills.length > 0 && (
       <section style={{ marginBottom: '13px' }}>
@@ -72,6 +120,8 @@ const Heading: React.FC<{ children: React.ReactNode }> = ({ children }) => (
       textTransform: 'uppercase',
       color: '#2563eb',
       margin: '0 0 5px',
+      breakAfter: 'avoid',
+      pageBreakAfter: 'avoid',
     }}
   >
     {children}

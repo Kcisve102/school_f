@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Info, Sparkles } from 'lucide-react';
+import { FileText, Info, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { profileService } from '../services/profile.service';
 import { CareerProfile, CareerProfileSaveInput } from '../types';
@@ -9,6 +9,7 @@ import CareerProfileForm, {
 } from '../components/profile/CareerProfileForm';
 import ResumePanel from '../components/resume/ResumePanel';
 import PlatformHandoffPanel from '../components/profile/PlatformHandoffPanel';
+import ResumeIntakeWizard, { IntakeResult } from '../components/profile/intake/ResumeIntakeWizard';
 import Loader from '../components/common/Loader';
 import Button from '../components/common/Button';
 import { useAuth } from '../hooks/useAuth';
@@ -51,10 +52,18 @@ export const CareerProfilePage: React.FC<CareerProfilePageProps> = ({ embedded =
     videoId: number | null;
     attemptId: number | null;
   }>({ videoId: null, attemptId: null });
+  /* A draft from the intake needs a different notice than one from a quiz: it
+     contains structured facts the model derived from the learner's own answers,
+     and that derivation is exactly what they need to check before saving. */
+  const [draftFromIntake, setDraftFromIntake] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
+  /* The wizard replaces the form while it runs rather than opening a modal or a
+     route: a modal fights the keyboard on a phone, and a route would lose the
+     dashboard's ?tab=profile context. */
+  const [intakeOpen, setIntakeOpen] = useState(false);
 
   const generateDraft = useCallback(
     async (attemptId: number) => {
@@ -71,6 +80,7 @@ export const CareerProfilePage: React.FC<CareerProfilePageProps> = ({ embedded =
           videoId: generated.sourceVideoId,
           attemptId: generated.sourceAttemptId,
         });
+        setDraftFromIntake(false);
       } catch (error: any) {
         // The server sends a user-facing `message` for the Gemini path and a
         // plain `error` for the validation ones (score too low, not your
@@ -123,6 +133,7 @@ export const CareerProfilePage: React.FC<CareerProfilePageProps> = ({ embedded =
       const saved = await profileService.saveProfile(input);
       setProfile(saved);
       setDraft(null);
+      setDraftFromIntake(false);
       toast.success(t.saved);
       // Drop ?attemptId= once saved so a refresh does not look like a fresh
       // draft request. Only that parameter: clearing the whole query string
@@ -140,6 +151,32 @@ export const CareerProfilePage: React.FC<CareerProfilePageProps> = ({ embedded =
     }
   };
 
+  /**
+   * Folds the intake result into the editor.
+   *
+   * New entries are appended to whatever is already saved, and the headline and
+   * summary are offered as a proposal in the form rather than written straight
+   * to the profile — the learner's own edits outrank a generated one, which is
+   * the same rule the draft path follows.
+   */
+  const handleIntakeComplete = ({ draft: result }: IntakeResult) => {
+    setDraft({
+      headline: result.headline || profile?.headline || '',
+      summary: result.summary || profile?.summary || '',
+      skills: result.skills.length > 0 ? result.skills : profile?.skills ?? [],
+      jobTitles: result.jobTitles.length > 0 ? result.jobTitles : profile?.job_titles ?? [],
+      experience: [...(profile?.experience ?? []), ...result.experience],
+      education: [...(profile?.education ?? []), ...result.education],
+      projects: [...(profile?.projects ?? []), ...result.projects],
+      certifications: [...(profile?.certifications ?? []), ...result.certifications],
+      phone: result.phone ?? profile?.phone ?? null,
+      city: result.city ?? profile?.city ?? null,
+      links: result.links.length > 0 ? result.links : profile?.links ?? [],
+    });
+    setDraftFromIntake(true);
+    setIntakeOpen(false);
+  };
+
   const formValues: CareerProfileFormValues | null = draft
     ? draft
     : profile
@@ -148,8 +185,24 @@ export const CareerProfilePage: React.FC<CareerProfilePageProps> = ({ embedded =
         summary: profile.summary,
         skills: profile.skills,
         jobTitles: profile.job_titles,
+        experience: profile.experience,
+        education: profile.education,
+        projects: profile.projects,
+        certifications: profile.certifications,
+        phone: profile.phone,
+        city: profile.city,
+        links: profile.links,
       }
     : null;
+
+  /** Whether the learner has already filled in any resume detail. */
+  const hasResumeDetail = Boolean(
+    profile &&
+      (profile.experience.length > 0 ||
+        profile.education.length > 0 ||
+        profile.projects.length > 0 ||
+        profile.certifications.length > 0)
+  );
 
   const sourceVideoId = draft ? draftSource.videoId : profile?.source_video_id ?? null;
   const sourceAttemptId = draft ? draftSource.attemptId : profile?.source_attempt_id ?? null;
@@ -190,12 +243,22 @@ export const CareerProfilePage: React.FC<CareerProfilePageProps> = ({ embedded =
 
       {loading || generating ? (
         <Loader text={generating ? t.generating : t.loading} />
+      ) : intakeOpen && profile ? (
+        <ResumeIntakeWizard
+          suggestedRole={profile.job_titles[0] ?? ''}
+          onComplete={handleIntakeComplete}
+          onCancel={() => setIntakeOpen(false)}
+        />
       ) : formValues ? (
         <>
           {draft && (
             <div className="flex gap-3 rounded-lg border border-accent/30 bg-accent/5 px-4 py-3 mb-6">
               <Sparkles className="w-4 h-4 flex-shrink-0 mt-0.5 text-accent" />
-              <p className="text-xs text-text-secondary leading-relaxed">{t.draftNotice}</p>
+              <div className="min-w-0">
+                <p className="text-xs text-text-secondary leading-relaxed">
+                  {draftFromIntake ? t.reviewBody : t.draftNotice}
+                </p>
+              </div>
             </div>
           )}
           <CareerProfileForm
@@ -214,6 +277,29 @@ export const CareerProfilePage: React.FC<CareerProfilePageProps> = ({ embedded =
               the app itself has not kept. */}
           {profile && !draft && (
             <>
+              {/* The offer to fill the resume out properly. It stays available
+                  after the first run — a learner changes jobs, and the
+                  questions are chosen per target role, so a second pass for a
+                  different role is a normal thing to want. */}
+              <section className="mt-14 pt-10 border-t border-border">
+                <div className="flex items-start gap-3">
+                  <FileText className="w-5 h-5 flex-shrink-0 mt-0.5 text-text-muted" />
+                  <div className="min-w-0">
+                    <h2 className="font-display text-lg text-text-primary leading-tight">
+                      {t.intakeHeading}
+                    </h2>
+                    <p className="text-sm text-text-secondary mt-1 leading-relaxed max-w-[60ch]">
+                      {t.intakeBody}
+                    </p>
+                    <div className="mt-4">
+                      <Button variant="secondary" onClick={() => setIntakeOpen(true)}>
+                        {hasResumeDetail ? t.intakeUpdate : t.intakeStart}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
               <ResumePanel
                 data={{
                   fullName: user?.full_name ?? '',
@@ -222,6 +308,13 @@ export const CareerProfilePage: React.FC<CareerProfilePageProps> = ({ embedded =
                   summary: profile.summary,
                   skills: profile.skills,
                   jobTitles: profile.job_titles,
+                  phone: profile.phone,
+                  city: profile.city,
+                  links: profile.links,
+                  experience: profile.experience,
+                  education: profile.education,
+                  projects: profile.projects,
+                  certifications: profile.certifications,
                 }}
               />
               <PlatformHandoffPanel profile={profile} />

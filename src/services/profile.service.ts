@@ -5,6 +5,9 @@ import {
   CareerProfileDraft,
   CareerProfileSaveInput,
   HandoffPlatform,
+  IntakeAnswer,
+  IntakeDraft,
+  IntakePlan,
 } from '../types';
 
 export const profileService = {
@@ -32,6 +35,33 @@ export const profileService = {
 
   saveProfile: async (input: CareerProfileSaveInput): Promise<CareerProfile> => {
     const response = await api.put<ApiResponse<CareerProfile>>('/profile', input);
+    return response.data.data!;
+  },
+
+  /**
+   * Asks the server which questions this learner still needs to answer for a
+   * given target role. Nothing is persisted; the questions are chosen against
+   * the saved profile, so a profile must exist first.
+   */
+  planIntake: async (targetRole: string): Promise<IntakePlan> => {
+    const response = await api.post<ApiResponse<IntakePlan>>('/profile/intake/questions', {
+      targetRole,
+    });
+    return response.data.data!;
+  },
+
+  /**
+   * Turns the learner's answers into structured resume sections.
+   *
+   * Like generateDraft, this persists nothing: the result is shown for review
+   * and correction first. That review is the last check on the model before
+   * anything reaches the learner's resume, so it must not be skipped.
+   */
+  draftFromIntake: async (targetRole: string, answers: IntakeAnswer[]): Promise<IntakeDraft> => {
+    const response = await api.post<ApiResponse<IntakeDraft>>('/profile/intake/draft', {
+      targetRole,
+      answers,
+    });
     return response.data.data!;
   },
 

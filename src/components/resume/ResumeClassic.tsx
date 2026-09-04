@@ -1,5 +1,11 @@
 import React from 'react';
 import { ResumeLayoutProps } from './resume.types';
+import {
+  CertificationEntries,
+  EducationEntries,
+  ExperienceEntries,
+  ProjectEntries,
+} from './ResumeSections';
 
 /**
  * Single column, centred name, rules under each heading. The most conservative
@@ -26,8 +32,16 @@ export const ResumeClassic: React.FC<ResumeLayoutProps> = ({ data, labels }) => 
         {data.fullName}
       </h1>
       <p style={{ fontSize: '11.5px', color: '#374151', margin: '6px 0 0' }}>{data.headline}</p>
-      {data.email && (
-        <p style={{ fontSize: '10px', color: '#6b7280', margin: '5px 0 0' }}>{data.email}</p>
+      {/* Only the details the learner actually gave; every one is optional. */}
+      {(data.email || data.phone || data.city) && (
+        <p style={{ fontSize: '10px', color: '#6b7280', margin: '5px 0 0' }}>
+          {[data.email, data.phone, data.city].filter(Boolean).join('  ·  ')}
+        </p>
+      )}
+      {data.links && data.links.length > 0 && (
+        <p style={{ fontSize: '9.5px', color: '#6b7280', margin: '3px 0 0', wordBreak: 'break-word' }}>
+          {data.links.map((link) => link.url).join('  ·  ')}
+        </p>
       )}
     </header>
 
@@ -36,6 +50,30 @@ export const ResumeClassic: React.FC<ResumeLayoutProps> = ({ data, labels }) => 
         {data.summary}
       </p>
     </Section>
+
+    {data.experience && data.experience.length > 0 && (
+      <Section title={labels.sectionExperience}>
+        <ExperienceEntries items={data.experience} presentLabel={labels.present} />
+      </Section>
+    )}
+
+    {data.education && data.education.length > 0 && (
+      <Section title={labels.sectionEducation}>
+        <EducationEntries items={data.education} />
+      </Section>
+    )}
+
+    {data.projects && data.projects.length > 0 && (
+      <Section title={labels.sectionProjects}>
+        <ProjectEntries items={data.projects} />
+      </Section>
+    )}
+
+    {data.certifications && data.certifications.length > 0 && (
+      <Section title={labels.sectionCertifications}>
+        <CertificationEntries items={data.certifications} />
+      </Section>
+    )}
 
     {data.skills.length > 0 && (
       <Section title={labels.sectionSkills}>
@@ -68,6 +106,8 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
   <section style={{ marginTop: '16px' }}>
     <h2
       style={{
+        breakAfter: 'avoid',
+        pageBreakAfter: 'avoid',
         fontSize: '10.5px',
         fontWeight: 700,
         letterSpacing: '0.14em',
