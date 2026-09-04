@@ -422,6 +422,10 @@ export const translations = {
       popupBlocked: 'Your browser blocked the new tab. Allow pop-ups for this site, or open the job board yourself.',
     },
     freelancer: {
+      tabJobs: 'Jobs',
+      matchedHeading: 'Jobs matching your skills',
+      matchedOn: 'Matched on:',
+      matchedEmpty: 'No open jobs match your skills right now. Check back soon — new work is posted every day.',
       jobHeading: 'Job details',
       jobBack: 'Back to jobs',
       jobBudget: 'Budget',
@@ -943,6 +947,10 @@ export const translations = {
       popupBlocked: '浏览器拦截了新标签页。请允许本站弹出窗口，或自行打开招聘网站。',
     },
     freelancer: {
+      tabJobs: '工作',
+      matchedHeading: '与您技能匹配的工作',
+      matchedOn: '匹配依据：',
+      matchedEmpty: '目前没有与您技能匹配的公开工作。请稍后再来——每天都有新工作发布。',
       jobHeading: '工作详情',
       jobBack: '返回工作列表',
       jobBudget: '预算',
@@ -1469,6 +1477,10 @@ export const translations = {
       popupBlocked: 'བརྡ་འཛིན་གྱིས་ཤོག་ངོས་གསར་པ་བཀག་སོང་། དྲ་ཚིགས་འདིར་ཆོག་མཆན་སྤྲོད་པའམ། རང་ཉིད་ཀྱིས་ཁ་ཕྱེ་རོགས།',
     },
     freelancer: {
+      tabJobs: 'ལས་ཀ',
+      matchedHeading: 'ཁྱེད་ཀྱི་ལག་རྩལ་དང་མཐུན་པའི་ལས་ཀ',
+      matchedOn: 'མཐུན་པའི་ལག་རྩལ།',
+      matchedEmpty: 'ད་ལྟ་ཁྱེད་ཀྱི་ལག་རྩལ་དང་མཐུན་པའི་ལས་ཀ་མེད། ཉིན་ལྟར་ལས་ཀ་གསར་པ་སྤེལ་གྱི་ཡོད་པས་རྗེས་སུ་ལྟ་རོགས།',
       jobHeading: 'ལས་ཀའི་ཞིབ་ཕྲ།',
       jobBack: 'ལས་ཀའི་ཐོ་གཞུང་ལ་ཕྱིར་ལོག',
       jobBudget: 'དངུལ་འབབ།',

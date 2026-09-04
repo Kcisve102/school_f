@@ -8,7 +8,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
 import Loader from '../components/common/Loader';
 import QuizReviewList from '../components/quiz/QuizReviewList';
-import JobSuggestionCard from '../components/quiz/JobSuggestionCard';
+import RelatedFreelancerJobs from '../components/jobs/RelatedFreelancerJobs';
 
 const HISTORY_ROUTE = '/dashboard?tab=history';
 
@@ -167,15 +167,12 @@ export const AttemptReviewPage: React.FC = () => {
           <div className="lg:col-span-8 xl:col-span-9 min-w-0">
             {jobs.length > 0 && (
               <div className="mb-12">
-                <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-5">
-                  {tq.relatedJobs}
-                </p>
-                {/* Two-up: the width this content never had in the rail. */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {jobs.map((job, i) => (
-                    <JobSuggestionCard key={i} job={job} />
-                  ))}
-                </div>
+                {/* Real Freelancer.com postings, matched on the generated
+                    keywords. These replaced AI-written role descriptions that
+                    linked to an Indeed keyword search: a learner can see the
+                    budget and the number of bids before spending a proposal.
+                    JobSuggestionCard is kept for a future career-guidance view. */}
+                <RelatedFreelancerJobs suggestions={jobs} />
                 <button
                   onClick={handleFindMoreJobs}
                   disabled={findingMoreJobs}

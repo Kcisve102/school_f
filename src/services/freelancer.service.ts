@@ -94,6 +94,27 @@ export const freelancerService = {
     return response.data.data!;
   },
 
+  /**
+   * Real jobs matching the learner's skills, filtered on Freelancer's skill
+   * taxonomy rather than a text query — a text search for "Video Editing"
+   * returns finance and automation work, because it matches anywhere in the
+   * description.
+   *
+   * `skills` is optional: omitted, the server uses the learner's career
+   * profile; passed, it matches one quiz attempt instead.
+   */
+  getRecommended: async (
+    skills?: string[],
+    limit = 12
+  ): Promise<{ projects: FreelancerProject[]; matchedSkills: string[] }> => {
+    const response = await api.get<
+      ApiResponse<{ projects: FreelancerProject[]; matchedSkills: string[] }>
+    >('/freelancer/recommended', {
+      params: { limit, ...(skills?.length ? { skills: skills.join(',') } : {}) },
+    });
+    return response.data.data ?? { projects: [], matchedSkills: [] };
+  },
+
   /** Project search that works whether or not an account is connected. */
   browseProjects: async (query: string, limit = 10): Promise<FreelancerProject[]> => {
     const response = await api.get<ApiResponse<{ result?: { projects?: FreelancerProject[] } }>>(

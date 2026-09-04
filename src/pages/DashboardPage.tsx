@@ -7,13 +7,14 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 import VideoCard from '../components/video/VideoCard';
 import WatchHistorySection from '../components/history/WatchHistorySection';
 import CareerProfilePage from './CareerProfilePage';
+import JobsPanel from '../components/jobs/JobsPanel';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
 import { PlayCircle, ChevronRight } from 'lucide-react';
 
-type DashboardTab = 'dashboard' | 'history' | 'profile';
+type DashboardTab = 'dashboard' | 'history' | 'profile' | 'jobs';
 
-const TAB_PARAMS: readonly string[] = ['history', 'profile'];
+const TAB_PARAMS: readonly string[] = ['history', 'profile', 'jobs'];
 
 export const DashboardPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -40,6 +41,7 @@ export const DashboardPage: React.FC = () => {
   const t = translations[language].dashboard;
   const th = translations[language].history;
   const tp = translations[language].profile;
+  const tf = translations[language].freelancer;
 
   useScrollReveal(undefined, [loading, activeTab]);
 
@@ -100,6 +102,7 @@ export const DashboardPage: React.FC = () => {
                 ['dashboard', t.menuDashboard],
                 ['history', th.title],
                 ['profile', tp.title],
+                ['jobs', tf.tabJobs],
               ] as const).map(([tab, label]) => (
                 <button
                   key={tab}
@@ -182,6 +185,8 @@ export const DashboardPage: React.FC = () => {
               </>
             ) : activeTab === 'history' ? (
               <WatchHistorySection />
+            ) : activeTab === 'jobs' ? (
+              <JobsPanel />
             ) : (
               <CareerProfilePage embedded />
             )}

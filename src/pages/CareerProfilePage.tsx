@@ -9,7 +9,6 @@ import CareerProfileForm, {
 } from '../components/profile/CareerProfileForm';
 import ResumePanel from '../components/resume/ResumePanel';
 import PlatformHandoffPanel from '../components/profile/PlatformHandoffPanel';
-import FreelancerConnectPanel from '../components/profile/FreelancerConnectPanel';
 import ResumeIntakeWizard, { IntakeResult } from '../components/profile/intake/ResumeIntakeWizard';
 import Loader from '../components/common/Loader';
 import Button from '../components/common/Button';
@@ -322,7 +321,6 @@ export const CareerProfilePage: React.FC<CareerProfilePageProps> = ({ embedded =
               {/* Freelancer.com sits apart from the click-through boards: it is
                   a real OAuth connection, so it can search and apply in place.
                   The learner's generated job titles seed the project search. */}
-              <FreelancerConnectPanel suggestedKeywords={profile.job_titles} />
             </>
           )}
         </>
