@@ -72,3 +72,4 @@ export interface AuthContextType {
 export * from './quiz.types';
 export * from './job.types';
 export * from './history.types';
+export * from './profile.types';

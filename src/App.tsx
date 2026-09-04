@@ -16,6 +16,7 @@ import DashboardPage from './pages/DashboardPage';
 import QuizPage from './pages/QuizPage';
 import AttemptReviewPage from './pages/AttemptReviewPage';
 import ChatPage from './pages/ChatPage';
+import CareerProfilePage from './pages/CareerProfilePage';
 import SignupPage from './pages/SignupPage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -89,6 +90,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <ChatPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <CareerProfilePage />
               </ProtectedRoute>
             }
           />

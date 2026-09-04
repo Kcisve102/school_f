@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import { useAuth } from '../hooks/useAuth';
@@ -8,7 +8,7 @@ import VideoCard from '../components/video/VideoCard';
 import WatchHistorySection from '../components/history/WatchHistorySection';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
-import { PlayCircle, ChevronRight } from 'lucide-react';
+import { PlayCircle, ChevronRight, Briefcase } from 'lucide-react';
 
 type DashboardTab = 'dashboard' | 'history';
 
@@ -26,6 +26,7 @@ export const DashboardPage: React.FC = () => {
   const { language } = useLanguage();
   const t = translations[language].dashboard;
   const th = translations[language].history;
+  const tp = translations[language].profile;
 
   useScrollReveal(undefined, [loading, activeTab]);
 
@@ -121,6 +122,26 @@ export const DashboardPage: React.FC = () => {
                     </div>
                   ))}
                 </div>
+
+                {/* Career profile entry point. Deliberately not gated on a
+                    score here: the page itself handles the empty case, and a
+                    card that appears only after a qualifying quiz would hide
+                    the feature from the people yet to take one. */}
+                <Link
+                  to="/profile"
+                  className="group flex items-center gap-4 rounded-lg border border-border bg-surface/60 px-5 py-5 mb-12 lg:mb-20 transition-colors hover:border-border-hover reveal-up"
+                >
+                  <Briefcase className="w-5 h-5 flex-shrink-0 text-accent" />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-display text-text-primary text-base leading-tight">
+                      {tp.title}
+                    </p>
+                    <p className="text-sm text-text-secondary mt-1 leading-relaxed">
+                      {tp.subtitle}
+                    </p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 flex-shrink-0 text-text-muted transition-transform duration-200 group-hover:translate-x-1" />
+                </Link>
 
                 {/* Recommended Videos */}
                 <div className="mb-8 reveal-up">

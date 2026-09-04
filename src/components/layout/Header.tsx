@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, LayoutDashboard, Home, MessageSquare, Menu, X, Grid3X3 } from 'lucide-react';
+import { LogOut, LayoutDashboard, Home, MessageSquare, Menu, X, Grid3X3, Briefcase } from 'lucide-react';
 import LogoMark from '../common/Logo';
 import { useAuth } from '../../hooks/useAuth';
 import LanguageToggle from '../common/LanguageToggle';
@@ -87,6 +87,12 @@ export const Header: React.FC = () => {
                   <span className="text-sm">{t.dashboard}</span>
                 </Link>
               )}
+              {/* Outside the admin ternary above: a career profile belongs to
+                  the person, so admins get one too. */}
+              <Link to="/profile" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
+                <Briefcase className="w-4 h-4" />
+                <span className="text-sm">{t.profile}</span>
+              </Link>
               <div className="flex items-center gap-3">
                 <LanguageToggle size="sm" />
                 <div className="flex items-center gap-2 rounded-full bg-white text-[#16171b] pl-3 pr-1.5 py-1.5">
@@ -181,6 +187,7 @@ export const Header: React.FC = () => {
                 user.is_admin
                   ? { to: '/admin', Icon: LayoutDashboard, label: t.admin }
                   : { to: '/dashboard', Icon: LayoutDashboard, label: t.dashboard },
+                { to: '/profile', Icon: Briefcase, label: t.profile },
               ].map(({ to, Icon, label }, i) => (
                 <Link
                   key={to}
