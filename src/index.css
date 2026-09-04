@@ -405,3 +405,76 @@
     transform: translateX(100%);
   }
 }
+
+/* ─── Resume sheet & printing ─────────────────────────────────────────────────
+   The app is a fixed dark theme; a resume is a white document. The sheet
+   therefore sets its own light palette and font rather than inheriting the
+   app's, and print-color-adjust keeps the sidebar tint from being stripped —
+   browsers drop background fills when printing unless told otherwise. */
+.resume-sheet {
+  background: #ffffff;
+  color: #1f2937;
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+  width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Scales the A4 sheet down to fit the on-screen preview column. transform
+   keeps the layout at true print dimensions, so what is previewed is what
+   prints — a percentage width would reflow the text and misrepresent it. */
+.resume-preview-scaler {
+  transform-origin: top left;
+}
+
+@media print {
+  /* Print only the resume. Everything outside it — header, footer, the page's
+     own form and controls — is hidden by walking up from the sheet, rather
+     than by listing selectors that would rot as the app changes. */
+  body * {
+    visibility: hidden;
+  }
+
+  .resume-print-root,
+  .resume-print-root * {
+    visibility: visible;
+  }
+
+  .resume-print-root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* The preview is scaled to fit a column on screen; printing must use the
+     sheet at its true size. */
+  .resume-preview-scaler {
+    transform: none !important;
+  }
+
+  .resume-sheet {
+    width: 100%;
+    min-height: auto;
+    box-shadow: none;
+    margin: 0;
+  }
+
+  /* The app paints a dark canvas and a fixed shader background; neither
+     belongs on paper. */
+  html,
+  body {
+    background: #ffffff !important;
+  }
+
+  @page {
+    size: A4;
+    /* The sheet carries its own margins, so the page adds none — otherwise the
+       two stack and the content sits in a narrow strip. */
+    margin: 0;
+  }
+}

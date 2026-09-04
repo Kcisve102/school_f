@@ -7,8 +7,10 @@ import { CareerProfile, CareerProfileSaveInput } from '../types';
 import CareerProfileForm, {
   CareerProfileFormValues,
 } from '../components/profile/CareerProfileForm';
+import ResumePanel from '../components/resume/ResumePanel';
 import Loader from '../components/common/Loader';
 import Button from '../components/common/Button';
+import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
 
@@ -25,6 +27,7 @@ import { translations } from '../translations';
  * action reaches this page.
  */
 export const CareerProfilePage: React.FC = () => {
+  const { user } = useAuth();
   const { language } = useLanguage();
   const t = translations[language].profile;
 
@@ -180,6 +183,21 @@ export const CareerProfilePage: React.FC = () => {
             saving={saving}
             onSave={handleSave}
           />
+
+          {/* Only for a saved profile. Offering a download of an unsaved draft
+              would hand the learner a resume that the app itself has not kept. */}
+          {profile && !draft && (
+            <ResumePanel
+              data={{
+                fullName: user?.full_name ?? '',
+                email: user?.email ?? '',
+                headline: profile.headline,
+                summary: profile.summary,
+                skills: profile.skills,
+                jobTitles: profile.job_titles,
+              }}
+            />
+          )}
         </>
       ) : (
         <div className="rounded-lg border border-border bg-surface/60 px-6 py-12 text-center">
