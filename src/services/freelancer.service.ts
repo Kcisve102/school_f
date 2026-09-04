@@ -18,6 +18,21 @@ export interface FreelancerStatus {
   connectedAt?: string | null;
 }
 
+export interface FreelancerEmployer {
+  id?: number;
+  username?: string;
+  display_name?: string;
+  registration_date?: number;
+  country?: { name?: string; flag_url_cdn?: string } | null;
+  employer_reputation?: {
+    entire_history?: {
+      overall?: number;
+      reviews?: number;
+      complete?: number;
+    };
+  } | null;
+}
+
 export interface FreelancerProject {
   id: number;
   title: string;
@@ -29,6 +44,19 @@ export interface FreelancerProject {
   bid_stats?: { bid_count?: number; bid_avg?: number };
   jobs?: { id: number; name: string }[];
   seo_url?: string;
+  status?: string;
+  frontend_project_status?: string;
+  bidperiod?: number;
+  time_submitted?: number;
+  submitdate?: number;
+  owner_id?: number | null;
+  language?: string;
+  upgrades?: Record<string, boolean | null>;
+}
+
+export interface FreelancerProjectDetail {
+  project: FreelancerProject;
+  employer: FreelancerEmployer | null;
 }
 
 export const freelancerService = {
@@ -55,6 +83,26 @@ export const freelancerService = {
    * suggestions, which stay in English on purpose so they match how clients
    * write their listings.
    */
+  /**
+   * One job in full. Public: reading a listing needs no Freelancer.com account,
+   * so a learner can explore work in their own language before signing up.
+   */
+  getProject: async (id: number): Promise<FreelancerProjectDetail> => {
+    const response = await api.get<ApiResponse<FreelancerProjectDetail>>(
+      `/freelancer/projects/${id}`
+    );
+    return response.data.data!;
+  },
+
+  /** Project search that works whether or not an account is connected. */
+  browseProjects: async (query: string, limit = 10): Promise<FreelancerProject[]> => {
+    const response = await api.get<ApiResponse<{ result?: { projects?: FreelancerProject[] } }>>(
+      '/freelancer/browse',
+      { params: { q: query, limit } }
+    );
+    return response.data.data?.result?.projects ?? [];
+  },
+
   searchProjects: async (query: string, limit = 10): Promise<FreelancerProject[]> => {
     const response = await api.get<ApiResponse<{ result?: { projects?: FreelancerProject[] } }>>(
       '/freelancer/projects',

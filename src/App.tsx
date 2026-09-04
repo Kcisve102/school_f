@@ -18,6 +18,7 @@ import AttemptReviewPage from './pages/AttemptReviewPage';
 import ChatPage from './pages/ChatPage';
 import SignupPage from './pages/SignupPage';
 import NotFoundPage from './pages/NotFoundPage';
+import FreelancerJobPage from './pages/FreelancerJobPage';
 
 function AppContent() {
   return (
@@ -60,6 +61,8 @@ function AppContent() {
             }
           />
           <Route path="/categories" element={<CategoriesPage />} />
+          {/* Public: a learner can read a job before signing up anywhere. */}
+          <Route path="/jobs/:id" element={<FreelancerJobPage />} />
           <Route
             path="/video/:id"
             element={

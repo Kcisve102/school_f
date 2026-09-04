@@ -1,5 +1,6 @@
+import { Link } from 'react-router-dom';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Check, ExternalLink, Loader2, Unlink } from 'lucide-react';
+import { Check, ExternalLink, Loader2, Unlink, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import freelancerService, { FreelancerStatus } from '../../services/freelancer.service';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -263,17 +264,15 @@ const FreelancerProjectSearch: React.FC<{ keywords: string[] }> = ({ keywords })
                     {t.bids.replace('{count}', String(project.bid_stats.bid_count))}
                   </span>
                 )}
-                {project.seo_url && (
-                  <a
-                    href={`https://www.freelancer.com/projects/${project.seo_url}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors"
-                  >
-                    {t.viewOnFreelancer}
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                )}
+                {/* Opens in Knowverd, in the learner's own language, rather
+                    than dropping them onto an English page on freelancer.com. */}
+                <Link
+                  to={`/jobs/${project.id}`}
+                  className="inline-flex items-center gap-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors"
+                >
+                  {t.jobHeading}
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
               </div>
             </li>
           ))}
