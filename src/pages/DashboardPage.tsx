@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Video } from '../types';
 import { videoService } from '../services/video.service';
 import { useAuth } from '../hooks/useAuth';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import VideoCard from '../components/video/VideoCard';
 import WatchHistorySection from '../components/history/WatchHistorySection';
+import CareerProfilePage from './CareerProfilePage';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
-import { PlayCircle, ChevronRight, Briefcase } from 'lucide-react';
+import { PlayCircle, ChevronRight } from 'lucide-react';
 
-type DashboardTab = 'dashboard' | 'history';
+type DashboardTab = 'dashboard' | 'history' | 'profile';
+
+const TAB_PARAMS: readonly string[] = ['history', 'profile'];
 
 export const DashboardPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -18,9 +21,19 @@ export const DashboardPage: React.FC = () => {
   /* The tab lives in the URL rather than in state so that returning from an
      attempt review lands back on History, and so the tab survives a refresh. */
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab: DashboardTab = searchParams.get('tab') === 'history' ? 'history' : 'dashboard';
-  const setActiveTab = (tab: DashboardTab) =>
-    setSearchParams(tab === 'history' ? { tab } : {}, { replace: true });
+  const tabParam = searchParams.get('tab');
+  const activeTab: DashboardTab = TAB_PARAMS.includes(tabParam ?? '')
+    ? (tabParam as DashboardTab)
+    : 'dashboard';
+  const setActiveTab = (tab: DashboardTab) => {
+    // Preserve ?attemptId= when switching to the profile tab: the post-quiz
+    // call to action arrives with it, and dropping it here would lose the
+    // draft the learner just asked for.
+    const next = new URLSearchParams(searchParams);
+    if (tab === 'dashboard') next.delete('tab');
+    else next.set('tab', tab);
+    setSearchParams(next, { replace: true });
+  };
   const { user } = useAuth();
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -64,7 +77,7 @@ export const DashboardPage: React.FC = () => {
         and a 256px fixed rail plus a full-width non-functional search bar was a
         lot of chrome around a heading, three numbers and four cards.
 
-        What is left is the two real destinations, as a tab strip.
+        What is left is the real destinations, as a tab strip.
       */}
       <main className="flex-1">
         <div className="px-6 lg:px-12 xl:px-20 pt-10 sm:pt-16">
@@ -80,6 +93,7 @@ export const DashboardPage: React.FC = () => {
               {([
                 ['dashboard', t.menuDashboard],
                 ['history', th.title],
+                ['profile', tp.title],
               ] as const).map(([tab, label]) => (
                 <button
                   key={tab}
@@ -123,26 +137,6 @@ export const DashboardPage: React.FC = () => {
                   ))}
                 </div>
 
-                {/* Career profile entry point. Deliberately not gated on a
-                    score here: the page itself handles the empty case, and a
-                    card that appears only after a qualifying quiz would hide
-                    the feature from the people yet to take one. */}
-                <Link
-                  to="/profile"
-                  className="group flex items-center gap-4 rounded-lg border border-border bg-surface/60 px-5 py-5 mb-12 lg:mb-20 transition-colors hover:border-border-hover reveal-up"
-                >
-                  <Briefcase className="w-5 h-5 flex-shrink-0 text-accent" />
-                  <div className="min-w-0 flex-1">
-                    <p className="font-display text-text-primary text-base leading-tight">
-                      {tp.title}
-                    </p>
-                    <p className="text-sm text-text-secondary mt-1 leading-relaxed">
-                      {tp.subtitle}
-                    </p>
-                  </div>
-                  <ChevronRight className="w-4 h-4 flex-shrink-0 text-text-muted transition-transform duration-200 group-hover:translate-x-1" />
-                </Link>
-
                 {/* Recommended Videos */}
                 <div className="mb-8 reveal-up">
                   <div className="flex items-end justify-between mb-8 gap-4">
@@ -180,8 +174,10 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
               </>
-            ) : (
+            ) : activeTab === 'history' ? (
               <WatchHistorySection />
+            ) : (
+              <CareerProfilePage embedded />
             )}
           </div>
         </div>

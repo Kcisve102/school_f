@@ -8,6 +8,7 @@ import CareerProfileForm, {
   CareerProfileFormValues,
 } from '../components/profile/CareerProfileForm';
 import ResumePanel from '../components/resume/ResumePanel';
+import PlatformHandoffPanel from '../components/profile/PlatformHandoffPanel';
 import Loader from '../components/common/Loader';
 import Button from '../components/common/Button';
 import { useAuth } from '../hooks/useAuth';
@@ -26,7 +27,17 @@ import { translations } from '../translations';
  * `?attemptId=` drafts immediately on mount, which is how the post-quiz call to
  * action reaches this page.
  */
-export const CareerProfilePage: React.FC = () => {
+interface CareerProfilePageProps {
+  /**
+   * Rendered inside the dashboard's tab strip rather than as its own page.
+   * The dashboard already supplies the page heading and horizontal padding,
+   * so the standalone header and outer container are dropped to avoid a
+   * second title competing with "Welcome back".
+   */
+  embedded?: boolean;
+}
+
+export const CareerProfilePage: React.FC<CareerProfilePageProps> = ({ embedded = false }) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const t = translations[language].profile;
@@ -114,8 +125,14 @@ export const CareerProfilePage: React.FC = () => {
       setDraft(null);
       toast.success(t.saved);
       // Drop ?attemptId= once saved so a refresh does not look like a fresh
-      // draft request.
-      if (attemptIdParam) setSearchParams({}, { replace: true });
+      // draft request. Only that parameter: clearing the whole query string
+      // would also drop ?tab=profile and throw the learner back to the
+      // dashboard tab the moment they saved.
+      if (attemptIdParam) {
+        const next = new URLSearchParams(searchParams);
+        next.delete('attemptId');
+        setSearchParams(next, { replace: true });
+      }
     } catch (error: any) {
       toast.error(error?.response?.data?.error || t.saveFailed);
     } finally {
@@ -138,23 +155,31 @@ export const CareerProfilePage: React.FC = () => {
   const sourceAttemptId = draft ? draftSource.attemptId : profile?.source_attempt_id ?? null;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
-      <header className="mb-8">
-        <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-3">
-          {t.eyebrow}
-        </p>
-        <h1 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4vw,2.5rem)] leading-[1.1] tracking-[-0.03em]">
-          {t.title}
-        </h1>
-        <p className="mt-3 text-sm text-text-secondary max-w-[60ch] leading-relaxed">
-          {t.subtitle}
-        </p>
-        {profile && (
-          <p className="mt-3 text-xs text-text-muted">
+    <div className={embedded ? 'max-w-3xl' : 'max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16'}>
+      {embedded ? (
+        profile && (
+          <p className="mb-8 text-xs text-text-muted">
             {t.lastUpdated} {new Date(profile.updated_at).toLocaleDateString()}
           </p>
-        )}
-      </header>
+        )
+      ) : (
+        <header className="mb-8">
+          <p className="font-display text-[0.6875rem] uppercase tracking-[0.3em] text-text-muted mb-3">
+            {t.eyebrow}
+          </p>
+          <h1 className="font-display font-medium text-text-primary text-[clamp(1.75rem,4vw,2.5rem)] leading-[1.1] tracking-[-0.03em]">
+            {t.title}
+          </h1>
+          <p className="mt-3 text-sm text-text-secondary max-w-[60ch] leading-relaxed">
+            {t.subtitle}
+          </p>
+          {profile && (
+            <p className="mt-3 text-xs text-text-muted">
+              {t.lastUpdated} {new Date(profile.updated_at).toLocaleDateString()}
+            </p>
+          )}
+        </header>
+      )}
 
       {/* The profile is written in English regardless of the interface
           language, so say why rather than letting it look like a bug. */}
@@ -184,19 +209,23 @@ export const CareerProfilePage: React.FC = () => {
             onSave={handleSave}
           />
 
-          {/* Only for a saved profile. Offering a download of an unsaved draft
-              would hand the learner a resume that the app itself has not kept. */}
+          {/* Both panels are for a saved profile only. Offering a download or a
+              handoff of an unsaved draft would hand the learner a resume that
+              the app itself has not kept. */}
           {profile && !draft && (
-            <ResumePanel
-              data={{
-                fullName: user?.full_name ?? '',
-                email: user?.email ?? '',
-                headline: profile.headline,
-                summary: profile.summary,
-                skills: profile.skills,
-                jobTitles: profile.job_titles,
-              }}
-            />
+            <>
+              <ResumePanel
+                data={{
+                  fullName: user?.full_name ?? '',
+                  email: user?.email ?? '',
+                  headline: profile.headline,
+                  summary: profile.summary,
+                  skills: profile.skills,
+                  jobTitles: profile.job_titles,
+                }}
+              />
+              <PlatformHandoffPanel profile={profile} />
+            </>
           )}
         </>
       ) : (

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -16,7 +16,6 @@ import DashboardPage from './pages/DashboardPage';
 import QuizPage from './pages/QuizPage';
 import AttemptReviewPage from './pages/AttemptReviewPage';
 import ChatPage from './pages/ChatPage';
-import CareerProfilePage from './pages/CareerProfilePage';
 import SignupPage from './pages/SignupPage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -93,14 +92,10 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <CareerProfilePage />
-              </ProtectedRoute>
-            }
-          />
+          {/* The profile now lives as a dashboard tab. This route is kept so
+              existing links (and anyone who bookmarked it) still land in the
+              right place rather than on the 404. */}
+          <Route path="/profile" element={<Navigate to="/dashboard?tab=profile" replace />} />
           <Route
             path="/admin"
             element={

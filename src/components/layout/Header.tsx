@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, LayoutDashboard, Home, MessageSquare, Menu, X, Grid3X3, Briefcase } from 'lucide-react';
+import { LogOut, LayoutDashboard, Home, MessageSquare, Menu, X, Grid3X3 } from 'lucide-react';
 import LogoMark from '../common/Logo';
 import { useAuth } from '../../hooks/useAuth';
 import LanguageToggle from '../common/LanguageToggle';
@@ -76,22 +76,18 @@ export const Header: React.FC = () => {
                 <MessageSquare className="w-4 h-4" />
                 <span className="text-sm">{t.aiAssistant}</span>
               </Link>
-              {user.is_admin ? (
+              {/* Admins get both. The career profile lives inside the
+                  dashboard, and an admin whose only link is /admin would have
+                  no way to reach their own profile. */}
+              {Boolean(user.is_admin) && (
                 <Link to="/admin" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
                   <LayoutDashboard className="w-4 h-4" />
                   <span className="text-sm">{t.admin}</span>
                 </Link>
-              ) : (
-                <Link to="/dashboard" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
-                  <LayoutDashboard className="w-4 h-4" />
-                  <span className="text-sm">{t.dashboard}</span>
-                </Link>
               )}
-              {/* Outside the admin ternary above: a career profile belongs to
-                  the person, so admins get one too. */}
-              <Link to="/profile" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
-                <Briefcase className="w-4 h-4" />
-                <span className="text-sm">{t.profile}</span>
+              <Link to="/dashboard" className="flex items-center space-x-1.5 text-text-secondary hover:text-text-primary transition-colors">
+                <LayoutDashboard className="w-4 h-4" />
+                <span className="text-sm">{t.dashboard}</span>
               </Link>
               <div className="flex items-center gap-3">
                 <LanguageToggle size="sm" />
@@ -184,10 +180,10 @@ export const Header: React.FC = () => {
                 { to: '/', Icon: Home, label: t.home },
                 { to: '/categories', Icon: Grid3X3, label: t.categories },
                 { to: '/chat', Icon: MessageSquare, label: t.aiAssistant },
-                user.is_admin
-                  ? { to: '/admin', Icon: LayoutDashboard, label: t.admin }
-                  : { to: '/dashboard', Icon: LayoutDashboard, label: t.dashboard },
-                { to: '/profile', Icon: Briefcase, label: t.profile },
+                ...(user.is_admin
+                  ? [{ to: '/admin', Icon: LayoutDashboard, label: t.admin }]
+                  : []),
+                { to: '/dashboard', Icon: LayoutDashboard, label: t.dashboard },
               ].map(({ to, Icon, label }, i) => (
                 <Link
                   key={to}

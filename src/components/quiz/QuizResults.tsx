@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ValidationResponse, Question, JobSuggestion } from '../../types';
+import { ValidationResponse, Question, JobSuggestion, CAREER_PROFILE_THRESHOLD } from '../../types';
 import QuizReviewList from './QuizReviewList';
 import JobSuggestionCard from './JobSuggestionCard';
+import CareerProfileCTA from './CareerProfileCTA';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../translations';
 import historyService from '../../services/history.service';
@@ -18,6 +19,8 @@ interface QuizResultsProps {
    *  deliberate second action rather than the default retake. */
   onNewQuestions: () => void;
   attemptId: number | null;
+  /** Sends the learner to the profile page seeded from this attempt. */
+  onCreateProfile: (attemptId: number) => void;
 }
 
 export const QuizResults: React.FC<QuizResultsProps> = ({
@@ -28,10 +31,14 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
   onRetake,
   onNewQuestions,
   attemptId,
+  onCreateProfile,
 }) => {
   const { score, totalQuestions, percentageScore, results } = validationResults;
   const passed = percentageScore >= 60;
   const qualifiesForJobs = percentageScore >= JOB_SUGGESTION_THRESHOLD;
+  // Higher bar than passing: a profile goes out under the learner's own name.
+  // The server checks this too, and that check is the one that counts.
+  const qualifiesForProfile = percentageScore >= CAREER_PROFILE_THRESHOLD;
   const { language } = useLanguage();
   const t = translations[language].quiz;
 
@@ -129,6 +136,13 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
       </div>
 
       <div className="lg:col-span-8 xl:col-span-9 min-w-0">
+
+      {/* Career profile offer, above the job list: it is the action that needs
+          a high score, so it should not be buried under suggestions everyone
+          gets. */}
+      {qualifiesForProfile && attemptId && (
+        <CareerProfileCTA onCreateProfile={() => onCreateProfile(attemptId)} />
+      )}
 
       {/* Related Job Opportunities */}
       {qualifiesForJobs && (

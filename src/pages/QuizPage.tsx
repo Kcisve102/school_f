@@ -126,6 +126,13 @@ export const QuizPage: React.FC = () => {
     navigate('/dashboard');
   };
 
+  // The attempt id travels in the query string so the profile tab can draft
+  // from it. The tab drops the parameter once saved, so a refresh does not
+  // read as a fresh draft request.
+  const handleCreateProfile = (attemptId: number) => {
+    navigate(`/dashboard?tab=profile&attemptId=${attemptId}`);
+  };
+
   const currentQuestion = questions[currentQuestionIndex];
   const currentAnswer = currentQuestion ? userAnswers.get(currentQuestion.id) ?? null : null;
   const allQuestionsAnswered = userAnswers.size === questions.length;
@@ -243,6 +250,7 @@ export const QuizPage: React.FC = () => {
               onRetake={handleRetake}
               onNewQuestions={handleNewQuestions}
               attemptId={lastAttemptId}
+              onCreateProfile={handleCreateProfile}
             />
           )}
         </div>
