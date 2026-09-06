@@ -1,105 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import { Loader2 } from 'lucide-react';
-import freelancerService, {
-  FreelancerProject,
-  FreelancerStatus,
-} from '../../services/freelancer.service';
-import { useLanguage } from '../../contexts/LanguageContext';
-import { translations } from '../../translations';
-import FreelancerJobCard from './FreelancerJobCard';
-import FreelancerConnectPanel from '../profile/FreelancerConnectPanel';
-import FreelancerAccountBar from './FreelancerAccountBar';
+import CareerjetJobList from './CareerjetJobList';
+import profileService from '../../services/profile.service';
+
+/** Used until the learner's own profile says something more specific. */
+const DEFAULT_JOB_QUERY = 'entry level';
+
+/*
+ * Searches are deliberately country-wide. Passing the learner's profile city
+ * looked better but was worse: the city is free text and the locale is not
+ * derived from it, so a learner in Leeds, UK searched US places and Careerjet
+ * matched Leeds, Alabama — zero results. These roles are remote-capable
+ * anyway, so breadth beats a precision that silently returns nothing.
+ */
 
 /**
  * The Jobs tab.
  *
- * One thing at a time: before the account is linked this is the connect flow
- * and nothing else, and once linked it is the jobs. Showing both at once was
- * what made the career page unreadable.
+ * Careerjet needs no account of any kind, so there is no connection gate:
+ * every learner sees real vacancies immediately, including one who has just
+ * signed up.
  */
 export const JobsPanel: React.FC = () => {
-  const { language } = useLanguage();
-  const t = translations[language].freelancer;
-
-  const [status, setStatus] = useState<FreelancerStatus | null>(null);
-  const [projects, setProjects] = useState<FreelancerProject[]>([]);
-  const [matchedSkills, setMatchedSkills] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [query, setQuery] = useState(DEFAULT_JOB_QUERY);
 
   useEffect(() => {
     let cancelled = false;
 
-    (async () => {
-      try {
-        const current = await freelancerService.getStatus();
-        if (cancelled) return;
-        setStatus(current);
-
-        // Jobs are only fetched once connected — that is the whole point of
-        // the gate, and it keeps the call off the page for learners who have
-        // nothing to match against yet.
-        if (current.connected) {
-          const result = await freelancerService.getRecommended();
-          if (cancelled) return;
-          setProjects(result.projects);
-          setMatchedSkills(result.matchedSkills);
-        }
-      } catch {
-        if (!cancelled) setError(t.jobLoadError);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
+    profileService
+      .getProfile()
+      .then((profile) => {
+        if (cancelled || !profile) return;
+        setQuery(profile.job_titles?.[0] || profile.skills?.[0] || DEFAULT_JOB_QUERY);
+      })
+      .catch(() => {
+        /* No profile yet: the broad default query still shows real work. */
+      });
 
     return () => {
       cancelled = true;
     };
-  }, [t.jobLoadError]);
+  }, []);
 
-  if (loading) {
-    return <Loader2 className="w-5 h-5 text-text-muted animate-spin" />;
-  }
-
-  if (!status?.connected) {
-    return <FreelancerConnectPanel />;
-  }
-
-  return (
-    <div>
-      <FreelancerAccountBar
-        status={status}
-        onDisconnected={() => {
-          setStatus({ connected: false });
-          setProjects([]);
-          setMatchedSkills([]);
-        }}
-      />
-
-      <div className="mb-8">
-        <h2 className="font-display text-lg text-text-primary mb-2">{t.matchedHeading}</h2>
-        {matchedSkills.length > 0 && (
-          <p className="text-text-muted text-sm">
-            {t.matchedOn} {matchedSkills.join(' · ')}
-          </p>
-        )}
-      </div>
-
-      {error ? (
-        <p className="text-text-muted text-sm">{error}</p>
-      ) : projects.length === 0 ? (
-        <p className="text-text-muted text-sm">{t.matchedEmpty}</p>
-      ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {projects.map((project) => (
-            <li key={project.id}>
-              <FreelancerJobCard project={project} />
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+  return <CareerjetJobList query={query} />;
 };
 
 export default JobsPanel;

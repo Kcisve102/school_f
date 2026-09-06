@@ -318,9 +318,6 @@ export const CareerProfilePage: React.FC<CareerProfilePageProps> = ({ embedded =
                 }}
               />
               <PlatformHandoffPanel profile={profile} />
-              {/* Freelancer.com sits apart from the click-through boards: it is
-                  a real OAuth connection, so it can search and apply in place.
-                  The learner's generated job titles seed the project search. */}
             </>
           )}
         </>

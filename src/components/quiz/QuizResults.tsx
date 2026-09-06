@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ValidationResponse, Question, JobSuggestion, CAREER_PROFILE_THRESHOLD } from '../../types';
 import QuizReviewList from './QuizReviewList';
-import RelatedFreelancerJobs from '../jobs/RelatedFreelancerJobs';
+import CareerjetJobList from '../jobs/CareerjetJobList';
 import CareerProfileCTA from './CareerProfileCTA';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../translations';
@@ -170,12 +170,10 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
 
           {jobs && jobs.length > 0 && (
             <>
-              {/* Real Freelancer.com postings rather than AI-written role
-                  descriptions. JobSuggestionCard is kept for a future
-                  career-guidance view. */}
-              <div className="mt-2">
-                <RelatedFreelancerJobs suggestions={jobs} />
-              </div>
+              {/* Real vacancies rather than AI-written role descriptions,
+                  matched on the generated keywords. JobSuggestionCard is kept
+                  for a future career-guidance view. */}
+              <CareerjetJobList query={jobs[0]?.keywords || jobs[0]?.title || ''} />
 
               <button
                 onClick={handleFindMoreJobs}

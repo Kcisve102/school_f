@@ -8,7 +8,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
 import Loader from '../components/common/Loader';
 import QuizReviewList from '../components/quiz/QuizReviewList';
-import RelatedFreelancerJobs from '../components/jobs/RelatedFreelancerJobs';
+import CareerjetJobList from '../components/jobs/CareerjetJobList';
 
 const HISTORY_ROUTE = '/dashboard?tab=history';
 
@@ -167,12 +167,9 @@ export const AttemptReviewPage: React.FC = () => {
           <div className="lg:col-span-8 xl:col-span-9 min-w-0">
             {jobs.length > 0 && (
               <div className="mb-12">
-                {/* Real Freelancer.com postings, matched on the generated
-                    keywords. These replaced AI-written role descriptions that
-                    linked to an Indeed keyword search: a learner can see the
-                    budget and the number of bids before spending a proposal.
-                    JobSuggestionCard is kept for a future career-guidance view. */}
-                <RelatedFreelancerJobs suggestions={jobs} />
+                {/* Real vacancies matched on the generated keywords, in
+                    place of AI-written role descriptions. */}
+                <CareerjetJobList query={jobs[0]?.keywords || jobs[0]?.title || ''} />
                 <button
                   onClick={handleFindMoreJobs}
                   disabled={findingMoreJobs}

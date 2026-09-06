@@ -41,7 +41,7 @@ export const DashboardPage: React.FC = () => {
   const t = translations[language].dashboard;
   const th = translations[language].history;
   const tp = translations[language].profile;
-  const tf = translations[language].freelancer;
+  const tf = translations[language].careerjet;
 
   useScrollReveal(undefined, [loading, activeTab]);
 
