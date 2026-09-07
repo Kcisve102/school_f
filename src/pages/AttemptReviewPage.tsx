@@ -8,7 +8,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
 import Loader from '../components/common/Loader';
 import QuizReviewList from '../components/quiz/QuizReviewList';
-import CareerjetJobList from '../components/jobs/CareerjetJobList';
+import JobSuggestionCard from '../components/quiz/JobSuggestionCard';
 
 const HISTORY_ROUTE = '/dashboard?tab=history';
 
@@ -167,9 +167,15 @@ export const AttemptReviewPage: React.FC = () => {
           <div className="lg:col-span-8 xl:col-span-9 min-w-0">
             {jobs.length > 0 && (
               <div className="mb-12">
-                {/* Real vacancies matched on the generated keywords, in
-                    place of AI-written role descriptions. */}
-                <CareerjetJobList query={jobs[0]?.keywords || jobs[0]?.title || ''} />
+                {/* The roles this attempt suggested, kept with the attempt:
+                    they are what the learner saw at the time, and each still
+                    searches Indeed for remote work on its own keywords or
+                    opens Fiverr. */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {jobs.map((job, i) => (
+                    <JobSuggestionCard key={`${job.title}-${i}`} job={job} />
+                  ))}
+                </div>
                 <button
                   onClick={handleFindMoreJobs}
                   disabled={findingMoreJobs}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ValidationResponse, Question, JobSuggestion, CAREER_PROFILE_THRESHOLD } from '../../types';
 import QuizReviewList from './QuizReviewList';
-import CareerjetJobList from '../jobs/CareerjetJobList';
+import JobSuggestionCard from './JobSuggestionCard';
 import CareerProfileCTA from './CareerProfileCTA';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { translations } from '../../translations';
@@ -170,10 +170,15 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
 
           {jobs && jobs.length > 0 && (
             <>
-              {/* Real vacancies rather than AI-written role descriptions,
-                  matched on the generated keywords. JobSuggestionCard is kept
-                  for a future career-guidance view. */}
-              <CareerjetJobList query={jobs[0]?.keywords || jobs[0]?.title || ''} />
+              {/* The roles this quiz opens up. Each searches Indeed for
+                  remote work on its own keywords, or opens Fiverr to sell the
+                  skill directly — a generated role is a direction to look in,
+                  so it hands off to a search rather than claiming a vacancy. */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {jobs.map((job, i) => (
+                  <JobSuggestionCard key={`${job.title}-${i}`} job={job} />
+                ))}
+              </div>
 
               <button
                 onClick={handleFindMoreJobs}

@@ -421,16 +421,10 @@ export const translations = {
       copyFailed: 'Could not copy automatically. Select the text below and copy it.',
       popupBlocked: 'Your browser blocked the new tab. Allow pop-ups for this site, or open the job board yourself.',
     },
-    careerjet: {
+    jobs: {
       tabJobs: 'Jobs',
-      heading: 'Related jobs',
-      viewJob: 'View job',
-      poweredBy: 'Jobs by Careerjet',
-      perYear: '/yr',
-      perMonth: '/mo',
-      perWeek: '/wk',
-      perDay: '/day',
-      perHour: '/hr',
+      noSuggestionsYet:
+        'Pass a quiz and the roles it opens up will show here, each one searchable as remote work.',
     },
     videoCard: {
       ready: 'Ready',
@@ -911,16 +905,9 @@ export const translations = {
       copyFailed: '无法自动复制。请选中下方文本并手动复制。',
       popupBlocked: '浏览器拦截了新标签页。请允许本站弹出窗口，或自行打开招聘网站。',
     },
-    careerjet: {
-      tabJobs: '工作',
-      heading: '相关工作',
-      viewJob: '查看职位',
-      poweredBy: '职位来自 Careerjet',
-      perYear: '/年',
-      perMonth: '/月',
-      perWeek: '/周',
-      perDay: '/天',
-      perHour: '/小时',
+    jobs: {
+      tabJobs: '职位',
+      noSuggestionsYet: '通过一次测验后，相关职位会显示在这里，均可按远程工作搜索。',
     },
     videoCard: {
       ready: '就绪',
@@ -1406,16 +1393,9 @@ export const translations = {
       copyFailed: 'རང་འགུལ་གྱིས་འདྲ་བཤུས་མ་ཐུབ། འོག་གི་ཡི་གེ་བདམས་ནས་འདྲ་བཤུས་གནང་།',
       popupBlocked: 'བརྡ་འཛིན་གྱིས་ཤོག་ངོས་གསར་པ་བཀག་སོང་། དྲ་ཚིགས་འདིར་ཆོག་མཆན་སྤྲོད་པའམ། རང་ཉིད་ཀྱིས་ཁ་ཕྱེ་རོགས།',
     },
-    careerjet: {
-      tabJobs: 'ལས་ཀ',
-      heading: 'འབྲེལ་ཡོད་ལས་ཀ',
-      viewJob: 'ལས་ཀ་ལྟ་བ',
-      poweredBy: 'ལས་ཀ་Careerjet་ནས',
-      perYear: '/ལོ',
-      perMonth: '/ཟླ',
-      perWeek: '/བདུན',
-      perDay: '/ཉིན',
-      perHour: '/ཆུ་ཚོད',
+    jobs: {
+      tabJobs: 'ལས་གནས།',
+      noSuggestionsYet: 'རྒྱུགས་ཤིག་ལེགས་གྲུབ་བྱུང་རྗེས། འབྲེལ་ཡོད་ལས་གནས་འདིར་སྟོན་ཞིང་། ཐག་རིང་ལས་ཀའི་ཐོག་འཚོལ་ཐུབ།',
     },
     videoCard: {
       ready: 'གྲ་སྒྲིག་ཟིན།',
